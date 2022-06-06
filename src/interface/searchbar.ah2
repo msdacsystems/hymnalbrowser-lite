@@ -20,8 +20,6 @@ class UISearchBar {
             Format("XS R1 W{1} H{2} +WantReturn",
             this.WIDTH, this.HEIGHT), "")
 
-        SetTimer(ObjBindMethod(this, "Listener"), 20)
-
         Hotkey("~^BackSpace", ObjBindMethod(this, "KeyPress"))
         Hotkey("~^A", ObjBindMethod(this, "KeyPress"))
     }
@@ -54,11 +52,9 @@ class UISearchBar {
     }
 
     Listener() {
-        if !StrLen(this.text()) {                                                           ;; Clears the Hymn text when there's no input in search
-            UI.MAIN.ClearHymnText()
-            try UI.BTN.LAUNCH.Text := "Insert Hymn"
-            try UI.BTN.LaunchSetEnabled(0)
-            try (UI.CPLTR.ACTIVE ? UI.CPLTR.Close():0)
+        if !StrLen(this.text()) && SES.LAUNCH_READY {                                       ;; Clears the Hymn text when there's no input in search
+            UI.BTN.LaunchSetMode("InsertHymn")
+            _LOG.Verbose("No text detected in search bar")
         }
     }
 
@@ -84,32 +80,33 @@ class UISearchBar {
     }
 
     RetrieveDetails() {
-        if !StrLen(this.text())
+        if !StrLen(this.Text())
             return
         ST := A_TickCount
-        REF := HymnalDB.ToHymnNumber(this.text())
+        REF := HymnalDB.ToHymnNumber(this.Text())                                           ;; Set a reference hymn number (000)
         
         if !HymnalDB.isValidHymn(this.Text(true)) {
-            try REF := HymnalDB.ToHymnNumber(UI.CPLTR.GetCurrentCompletion())               ;; Substitute the first reference
-            catch Error {
+            try REF := HymnalDB.ToHymnNumber(UI.CPLTR.GetCurrentCompletion())               ;; Substitute the first reference if text is understandable
+            catch Error as e {                                                              ;; Invalid index
                 UI.MAIN.ClearHymnText()
             }
         }
         
-        
         /*
             Scan for Base Hymn and its equivalent hymn
+
+            CT = Category (i.e: EN, TL)
         */
-        DC := ['EN', 'TL']
-        for i, SQ in DC {
-            EQ_SQ := DC[Inv(i)]
-            if ArrayMatch(REF, HYMNAL[SQ][1]) {
-                IDX := ArrayFind(HYMNAL[SQ][1], REF)
-                NUM := HYMNAL[SQ][1][IDX]
-                TTL := HYMNAL[SQ][2][IDX]
+        CTS := ['EN', 'TL']
+        for i, CT in CTS {
+            EQ_CT := CTS[i=1?2:1]
+            if ArrayMatch(REF, HYMNAL[CT][1]) {
+                IDX := ArrayFind(HYMNAL[CT][1], REF)
+                NUM := HYMNAL[CT][1][IDX]
+                TTL := HYMNAL[CT][2][IDX]
                 try {
-                    EQ_NUM := HYMNAL[EQ_SQ][1][IDX]
-                    EQ_TTL := HYMNAL[EQ_SQ][2][IDX]
+                    EQ_NUM := HYMNAL[EQ_CT][1][IDX]
+                    EQ_TTL := HYMNAL[EQ_CT][2][IDX]
                 }
                 catch Error {
                     EQ_NUM := 000
@@ -117,33 +114,33 @@ class UISearchBar {
                 }
                 
                 if this.text() = NUM ' ' TTL {
-                    UI.MAIN.SetHymnText(Format("{1}: {2} {3}", EQ_SQ, EQ_NUM, EQ_TTL))
+                    UI.MAIN.SetHymnText(Format("{1}: {2} {3}", EQ_CT, EQ_NUM, EQ_TTL))
                     UI.MAIN.HYMN.SetFont("C" SW.TEXT_DISABLED)
                 } else {
                     UI.MAIN.SetHymnText(Format("{1} {2}", NUM, TTL))
                     UI.MAIN.HYMN.SetFont("C" SW.TEXT)
                 }
-                if SW.VERBOSE_LOG {
-                    _LOG.Verbose(Format("Query: Hymn #{1} Found at index {2} in {3} ({4} ms)",
-                                REF, ZFill(IDX, 3), SQ, A_TickCount-ST))
-                }
+                _LOG.Verbose(Format("Query: Hymn #{1} Found at index {2} in {3} ({4} ms)",
+                            REF, ZFill(IDX, 3), CT, A_TickCount-ST))
                 
                 /*  Save to session data */
                 SES.CURR_NUM := NUM
                 SES.CURR_TTL := TTL
+                SES.CURR_HYMN := NUM ' ' TTL
                 SES.FILENAME := Format("{1} {2}.pptx", NUM, TTL)
-                SES.HYMN_PATH := Format("{1}/{2}", SQ, SES.FILENAME)
-                ; (SW.VERBOSE_LOG ? SES._GetCurrentData():0)
+                SES.HYMN_PATH := Format("{1}/{2}", CT, SES.FILENAME)
 
-                UI.BTN.LAUNCH.Text := "Launch"
                 UI.BTN.LaunchSetEnabled(1)
+
+                ; HYMNSIZE := StrLen(SES.CURR_HYMN)                                         ;; For hymn details
+                ; ControlMove(
+                ;     (HYMNSIZE > 40 ? 1000:HYMNSIZE*6.65),
+                ;     33, 200, 20, UI.MAIN.DETAILS
+                ; )
+                ; UI.MAIN.DETAILS.Text := Format("({1})", Random(1, 59) " minutes ago")
                 return
             }
         }
-        UI.BTN.LAUNCH.Text := "Not Available"
-        UI.MAIN.SetHymnText(Format("No matching results for '{1}'", UI.SEARCH.Text()))
-        UI.MAIN.HYMN.Opt('C' SW.TEXT_DISABLED)
-        UI.BTN.LaunchSetEnabled(0)
-
+        UI.BTN.LaunchSetMode("NotAvailable")
     }
 }
