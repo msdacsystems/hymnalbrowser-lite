@@ -10,11 +10,14 @@
 
 Class Launcher {
     static Launch() {
+        /*
+            Extracts the target file from the database and launches them
+        */
         ST := A_TickCount
-        UI.BTN.LaunchSetEnabled(0)
-        UI.BTN.LAUNCH.Text := "Launching"
+        UI.BTN.LaunchSetMode("Launching")
         
-        System.VerifyDirectories()
+        (!IsFolderExists(SW.DIR_TEMP) ? DirCreate(SW.DIR_TEMP):0)                           ;; Check for temp directory
+        
         System.SetActive()                                                                  ;; Weird. Prevents windows sound from playing when a hotkey (Return/Enter) was pressed.
         ZIP := TarZip(SW.FILE_HYMNALDB)
         ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
@@ -22,7 +25,7 @@ Class Launcher {
         try {
             FileMove(PathJoin(SW.DIR_TEMP, SES.HYMN_PATH), SW.DIR_TEMP)
         } catch Error {
-            (SW.VERBOSE_LOG ? _LOG.Verbose('"' SES.FILENAME "`" already exists in temp folder"):0)
+            _LOG.Verbose('"' SES.FILENAME "`" already exists in temp folder")
         }
         
         SetTimer(ObjBindMethod(System.FileManagement, "RemoveTempSubdirs"), -2000)
@@ -31,6 +34,7 @@ Class Launcher {
 
         _LOG.Info(Format("Launcher: Launched Hymn #{1} {2} ({3} ms)",
                 SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount-ST)))
-        UI.BTN.LAUNCH.Text := "Launched"
+        Sleep(500)                                                                          ;; Time allowance before concluding the launch
+        UI.BTN.LaunchSetMode("Launched")
     }
 }
