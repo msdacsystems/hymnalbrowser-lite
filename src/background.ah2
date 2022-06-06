@@ -23,8 +23,10 @@ class BackgroundThread {
             }
         }
         for method in methods {                                                             ;; Connect all methods to its background task
-            SetTimer(ObjBindMethod(BackgroundThread, method),
-                    BackgroundThread.REFRESH_RATE)
+            SetTimer(
+                ObjBindMethod(BackgroundThread, method),
+                BackgroundThread.REFRESH_RATE
+            )
         }
         
         /* Keybindings; might move to a separate class */
@@ -42,15 +44,21 @@ class BackgroundThread {
         */
 
         if !System.IsActive() && UI.ACTIVE {
-            (SW.VERBOSE_LOG ? _LOG.Verbose('Window is inactive'):0)
+            (SW.VERBOSE_LOG ? _LOG.Verbose('BackgroundThread: Window is inactive'):0)
             UI.SetInactive()
         }
 
         if System.IsActive() && !UI.ACTIVE {
-            (SW.VERBOSE_LOG ? _LOG.Verbose('Window is activated'):0)
+            (SW.VERBOSE_LOG ? _LOG.Verbose('BackgroundThread: Window is activated'):0)
             UI.SetActive()
-            UI.SEARCH.SelectAll()                                                           ;; Automatically highlights all text whenever the window is reactivated
         }
     }
 
+    static LaunchButton() {
+        if !System.IsActive()
+            return
+        if SES.LAUNCH_READY and A_TimeIdleKeyboard > 1250 {                                 ;; Make a delay before setting the text back to ready mode
+            UI.BTN.LaunchSetMode("Ready")
+        }
+    }
 }
