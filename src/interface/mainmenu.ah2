@@ -21,26 +21,11 @@ class UIMainMenu {
         this.VERSION := this.GUI.AddText("X143 Y11 C555555", SW.VERSION_STRING)
         this.VERSION.SetFont('S' 7, SW.GLB_FONT_NAME)
         this.STATUS := this.GUI.AddText("YS+0 C818181", "")
-        this.HYMN := this.GUI.AddText("XS +BackgroundTrans W220", "")
-        this.DETAILS := this.GUI.AddText("YP C818181", "")
+        this.HYMN := this.GUI.AddText("XS +BackgroundTrans W300", "")
+        this.DETAILS := this.GUI.AddText(Format("XP1 C{1} +BackgroundTrans", SW.TEXT_DISABLED), "")
         ; this.GUI.BackColor := 0xBBBBBB
         ; WinSetTransColor("f0f0f0", this.GUI)
         ; ControlSetStyle("+BackgroundTrans", this.HYMN) 
-        OnMessage(0x0201, ObjBindMethod(this, "LeftMousePressEvent"))
-        OnMessage(0x0204, ObjBindMethod(this, "RightMousePressEvent"))
-    }
-
-    LeftMousePressEvent(args*) {
-        MouseGetPos(&X, &Y, &W, &C)
-        if WinExist(System.AHK_PID) == W {
-            (SW.VERBOSE_LOG && !UI.ACTIVE ? _LOG.Verbose('Window is activated'):0)
-            System.moveMain()                                                               ;; Allows the user to click-hold on the window to move
-            UI.SetActive()
-        }
-    }
-
-    RightMousePressEvent(args*) {
-        
     }
 
     ShowStatus(message, timeout:=2) {
