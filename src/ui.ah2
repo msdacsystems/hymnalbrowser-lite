@@ -43,7 +43,9 @@ class UI {
         for classObj in UI.UIs {
             UI.DefineProp(StrUpper(classObj._NAME), {value: classObj.Setup()})              ;; Initiate GUI Setup for the class; Store the class instance
         }
+        _LOG.Verbose("UI: UI Classes were successfully setup")
         UI.ConnectEvents()
+        UI.StartThreads()
     }
 
     static ConnectEvents() {
@@ -51,6 +53,7 @@ class UI {
             Connects all events for every control.
             Events are forwarded to Events class.
         */
+        _LOG.Verbose("UI: Connecting UI Events")
         UI.MAIN.GUI.OnEvent("Close", Events.CloseEvent)
         UI.MAIN.HYMN.OnEvent("Click", Events.Hymn.Click)
         UI.MAIN.TITLE.OnEvent("Click", Events.Title.Click)
@@ -60,6 +63,31 @@ class UI {
         UI.BTN.CLEAR.OnEvent("Click", Events.Search.Clear)
         UI.SEARCH.OBJ.OnEvent("Change", Events.Search.Changed)        
         UI.CPLTR.LIST.OnEvent("Change", Events.Completer.Changed)
+
+        OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
+        OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
+    }
+    
+    static StartThreads() {
+        _LOG.Verbose("UI: Starting UI Listener Threads")
+        SetTimer(ObjBindMethod(UI.SEARCH, "Listener"), 20)
+        SetTimer(ObjBindMethod(UI.CPLTR, "Listener"), SW.CPLTR_LIS_RATE)                    ;; Start the listener thread
+    }
+
+
+    static LeftMousePressEvent(args*) {
+        MouseGetPos(&X, &Y, &W, &C)
+        if WinExist(System.AHK_PID) == W {
+            if SW.VERBOSE_LOG && !UI.ACTIVE {
+                _LOG.Verbose('Window is activated from LMouse')
+                UI.SetActive()
+            }
+            System.MoveMain()                                                               ;; Allows the user to click-hold on the window to move
+        }
+    }
+    
+    static RightMousePressEvent(args*) {
+        
     }
 
 
@@ -72,6 +100,7 @@ class UI {
     static SetActive() {
         /*  Sets the UI to an active state */
         UI.ACTIVE := true
+        UI.SEARCH.SelectAll()                                                               ;; Automatically highlights all text whenever the window is reactivated
         UI.CPLTR.Close()                                                                    ;; Close the Completer
     }
 }
