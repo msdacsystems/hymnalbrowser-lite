@@ -15,7 +15,7 @@ class Config {
             _LOG.warn("Config: Configuration is missing. Generating defaults.")
             Config.GenerateDefaults()
         }
-        _LOG.warn("Config: Reading configuration from `"" Config.FILE '"')
+        _LOG.info("Config: Reading configuration from `"" Config.FILE '"')
         ; OpenFolder(Config.FILE)
         ; Config.CFG := KConfig.Read(Config.FILE)
 
