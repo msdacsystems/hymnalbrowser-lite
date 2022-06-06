@@ -62,7 +62,6 @@ class UI {
         
         UI.BTN.CLEAR.OnEvent("Click", Events.Search.Clear)
         UI.SEARCH.OBJ.OnEvent("Change", Events.Search.Changed)        
-        UI.CPLTR.LIST.OnEvent("Change", Events.Completer.Changed)
 
         OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
         OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
