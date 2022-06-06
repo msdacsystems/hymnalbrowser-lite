@@ -20,7 +20,6 @@ Class UICompleter {
         this.MAX_ITEMS := SW.CPLTR_MAX_ITEMS
         this.ITEM_HEIGHT := 25                                                              ;; Size of a single item measured in pixels
         this.DATA := Object()
-        this.DATA.DefineProp("LSZ", {value: 0})                                             ;; Size of the current items in completer (List Size)
         this.DATA.DefineProp("LIT", {value: []})                                            ;; Array of the items in completer (List Items / LIT)
         this.DATA.DefineProp("IDX", {value: 0})                                             ;; Cached index number of completer
         this.DATA.DefineProp("FCS", {value: ''})                                            ;; Cached current item text of completer
@@ -28,8 +27,7 @@ Class UICompleter {
         this.REQUEST_SEARCH_UPDATE := false                                                 ;; Search updater indicator; when turned on, the listener will change the text according to the recent IDX
         
         this.Update(true)                                                                   ;; Update the completer for the first time
-        SetTimer(ObjBindMethod(this, "Listener"), SW.CPLTR_LIS_RATE)                        ;; Start the listener thread
-        
+
         /* Binds all hotkeys to their corresponding keypress mode */
         Hotkey('~Esc', ObjBindMethod(this, "KeyPress", "Close"))
         Hotkey('~Tab', ObjBindMethod(this, "KeyPress", "Close"))
@@ -83,7 +81,6 @@ Class UICompleter {
         FLEN := FILTERED.Length        
 
         if FLEN <= 0 {                                                                      ;; When there's no matching results
-            ; TooltipX(Format("No matching results for '{1}'", UI.SEARCH.Text()), 1)        ;; Notify user via Tooltip
             UI.MAIN.ShowStatus('')
             UI.MAIN.ClearHymnText()
             return this.Close()
@@ -99,14 +96,11 @@ Class UICompleter {
         }
 
         WinActivate(A_IsCompiled ? System.AHK_EXE:System.AHK_PID)                           ;; Responsible for keeping the focus on main window
-
-        ; if this.ACTIVE {                                                                    
-        ;     WinGetPos(&X, &Y, &W, &H, System.AHK_PID)
-        ;     TooltipX(FLEN " suggestion" (FLEN == 1 ? '':"s"), 1)                          ;; Shows suggestion count via UI.MAIN.STATUS control
-        ; }
         
-        this.DATA.LSZ := FLEN                                                               ;; Update item count data (List Size)
+        SES.SUGGESTIONS := FLEN                                                             ;; Update item count data (List Size); Sets suggestion count
         this.DATA.LIT := FILTERED                                                           ;; Update items array (List Items)
+        
+        UI.BTN.LaunchSetMode("ShowSuggestions")
     }
 
 
@@ -122,12 +116,16 @@ Class UICompleter {
             are pressed and requested for changes.
         */
         if this.ACTIVE {                                                                    ;; Only record an index and text value if the completer is present & active
-            try this.DATA.IDX := this.LIST.Value
-            try this.DATA.FCS := this.LIST.Text
+            try {
+                this.DATA.IDX := this.LIST.Value
+                this.DATA.FCS := this.LIST.Text
+            } catch Error as e {
+                _LOG.Error("UICompleter: " e.Message)
+            }
         }
         if this.REQUEST_SEARCH_UPDATE {
-            UI.SEARCH.SetText(this.DATA.FCS)                                                ;; Apply the new focused item's text to the search bar
             this.REQUEST_SEARCH_UPDATE := false
+            UI.SEARCH.SetText(this.DATA.FCS)                                                ;; Apply the new focused item's text to the search bar
             Send("{End}")                                                                   ;; Keep text cursor at the end of the search bar
             UI.SEARCH.RetrieveDetails()
         }
@@ -163,18 +161,27 @@ Class UICompleter {
                         (this.DATA.IDX < this.DATA.LIT.Length ? this.DATA.IDX++:0)          ;; Next item
                 }
                 this.LIST.Choose(this.DATA.IDX)                                             ;; Focus the next item
-                this.REQUEST_SEARCH_UPDATE := (this.DATA.IDX ? true: false)                 ;; Request an update of search bar for the listener
+                if this.DATA.IDX && this.DATA.LIT[this.DATA.IDX] != UI.SEARCH.Text() {      ;; Prevent search request for if same item is queried.
+                    this.REQUEST_SEARCH_UPDATE := true                                      ;; Request an update of search bar for the listener
+                } 
             } catch Error as e {
                 _LOG.Error('UICompleter: Unable to process item actions. ' e.Message)
+                _LOG.Error("UICompleter: Source trigger: " key)
+                _LOG.Error("UICompleter: Current List Size: " SES.SUGGESTIONS)
+                _LOG.Error("UICompleter: Current Index: " this.DATA.IDX)
+                _LOG.Error("UICompleter: Current Focused Item: " this.DATA.FCS)
+                _LOG.Error("UICompleter: Matched Items: " ArrayAsStr(this.DATA.LIT))
             }
         }
 
-        if Key == "Close" {                                                                   ;; Closes the completer if the tab is pressed.
+        if Key == "Close" {                                                                 ;; Closes the completer if the tab is pressed.
             this.Close()
         }
 
         if ArrayMatch(key, ['LButton Up', 'LButton Down']) {                                ;; Simulates an action when clicking on an item.
-            this.REQUEST_SEARCH_UPDATE := true                                              ;; Request for changes
+            if this.IsFocused() {                                                           ;; Only request for an update if the completer is focused
+                this.REQUEST_SEARCH_UPDATE := true                                          ;; Request for changes
+            }
             this.Close()                                                                    ;; Close the completer after picking.
         }
     }
@@ -188,11 +195,12 @@ Class UICompleter {
             will reflect to the search bar.
             
         */
-        if !this.ACTIVE                                                                     ;; Ignore when the complete is already destroyed
+        if !this.ACTIVE                                                                     ;; Ignore when the completer is already destroyed
             return
-        this.DATA.IDX := 0                                                              ;; Sets back the recent index to 0
-        try this.OBJ.Destroy()
         this.ACTIVE := false
+        this.DATA.IDX := 0                                                                  ;; Sets back the recent index to 0
+        this.DATA.LIT := []
+        try this.OBJ.Destroy()
     }
 
     IsFocused() {
@@ -210,7 +218,7 @@ Class UICompleter {
             This method considers edge regions.
         */
         WinGetClientPos(&X, &Y, &W, &H, SW.NAME)
-        Y += 81
+        Y += 81                                                                             ;; Offset from the search bar
     }
 
     GetCurrentCompletion() {
