@@ -42,7 +42,7 @@ class Events {
                 return
             }
             source := (!source ? 'MouseReleaseEvent':source)
-            (SW.VERBOSE_LOG ? _LOG.Verbose("Events: Launch button was pressed. From: " source):0)
+            _LOG.Verbose("Events: Launch button was pressed. From: " source)
             Launcher.Launch()
         }
     }
@@ -59,14 +59,9 @@ class Events {
             UI.SEARCH.RetrieveDetails()
         }
         static Clear(args) {
+            _LOG.Verbose("Events: Search bar was cleared")
             UI.SEARCH.Clear()
             UI.SEARCH.SetFocus()
-        }
-    }
-
-    class Completer {
-        static Changed(args*) {
-            _LOG.Verbose("Events: Item was focused.")
         }
     }
 }
