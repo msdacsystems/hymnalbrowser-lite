@@ -15,7 +15,7 @@ Class Software {
     static AUTHORS := ["Ken Verdadero", "Reynald Ycong"]
     static NAME := "Hymnal Browser Lite"
     static EXE_NAME := "Hymnal Browser Lite.exe"
-    static VERSION := "0.1.0.0"
+    static VERSION := "0.1.1.0"
     static VERSION_LABEL := "Alpha"
     static VERSION_STRING := ('v' Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.')
                             ' ' this.VERSION_LABEL)
@@ -26,13 +26,16 @@ Class Software {
     static SIZE := [300, 85]                                                                ;; Main GUI Size (W,H)
     static FILE_ICON := "res\app_icon.ico"
     static FILE_BG := "res\bg.png"
-    static VERBOSE_LOG := true                                                             ;; Extra verbose
+    static VERBOSE_LOG := true                                                              ;; Extra details when logging
 
     static DIR_PARENT := PathJoin(A_AppDataCommon, this.PARENT)
     static DIR_PROGRAM := PathJoin(this.DIR_PARENT, this.NAME)
     static DIR_TEMP := PathJoin(this.DIR_PROGRAM, "temp")
     static FILE_CONFIG := PathJoin(this.DIR_PROGRAM, "settings.cfg")
-    static FILE_LOG := PathJoin(this.DIR_PROGRAM, "app.log")
+    static FILE_LOG := (
+        (A_IsCompiled ? PathJoin(this.DIR_PROGRAM, "app.log"):
+                        PathJoin(A_ScriptDir, "dev.log"))
+    )
     static FILE_HYMNALDB := PathJoin(this.DIR_PROGRAM, "hymns.sda")
     static LOG_CLEAR_OLD := true
 
