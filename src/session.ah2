@@ -13,7 +13,7 @@ class Session {
     }
 
     __New() {
-        _LOG.Debug('Session data was started.')
+        _LOG.Info('Session data was started.')
         this.GenerateProps()
     }
 
@@ -21,8 +21,11 @@ class Session {
         this.DATA := Map(
             "CURR_NUM", 0,
             "CURR_TTL", '',
+            "CURR_HYMN", '',
             "HYMN_PATH", '',
             "FILENAME", '',
+            "SUGGESTIONS", 0,
+            "LAUNCH_READY", false,
         )
 
         for name, val in this.DATA {
