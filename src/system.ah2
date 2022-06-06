@@ -17,14 +17,18 @@ Class System {
         */
         global _STARTUP := A_TickCount
         global SW := Software                                                               ;; Software alias
-        global _LOG := KLogger(
-            (A_IsCompiled ? SW.FILE_LOG:"dev.log"),
-            SW.GenerateMetadata(), SW.LOG_CLEAR_OLD
+        global VRB := SW.VERBOSE_LOG
+        global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata(), SW.LOG_CLEAR_OLD)
+        _LOG.SetVerbose(VRB)
+        System.Errors.Setup()
+        _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
+        _LOG.Info(
+            Format("System Info: Windows {1} {2}; User: {3} {4}",
+            A_OSVersion, GetOSBit(1), A_ComputerName, A_UserName)
         )
-        _LOG.Info("System is now running.")
         _LOG.Info(!A_IsCompiled ? "APPLICATION IS RUNNING ON DEVELOPER MODE":'')
         _LOG.Info("Process ID: " System.GetPID())
-        _LOG.Info("Verbose Log is " (SW.VERBOSE_LOG ? 'ON':'OFF'))
+        _LOG.Info("Verbose logging is " (VRB ? 'ON':'OFF'))
         _LOG.Info("Initializing core")
         System.VerifyDirectories()
         Config.Setup()
@@ -49,7 +53,7 @@ Class System {
         DIRS := [
             SW.DIR_PARENT,
             SW.DIR_PROGRAM,
-            SW.DIR_TEMP,
+            ; SW.DIR_TEMP,                                                                  ;; Not necessarily needed
         ]
         
         for dir in DIRS {
@@ -101,12 +105,12 @@ Class System {
         MouseGetPos(&X, &Y, &W, &C)
         return (WinExist(System.AHK_PID) == W ? 1:0)
     }
-    static moveMain() {
+    static MoveMain() {
         /*
             Allows the window to be moved.
             This is triggered by the title control object
         */
-        try PostMessage(0xA1, 2,,, "A")
+        try PostMessage(0xA1, 2,,, System.AHK_PID)
     }
 
     
@@ -117,14 +121,28 @@ Class System {
             Errors:
                 - HymnsDB
         */
+        static Setup() {
+            /*  Sets up the error binding to log */
+            OnError(ObjBindMethod(System.Errors, "BaseError"))
+        }
+        static BaseError(exception, mode) {
+            _LOG.Crit(Format('Errors: ' exception.Message))
+            System.Errors.Notify(
+                "The application has encountered an error and needs to terminate."
+                " See " PathSplit(SW.FILE_LOG)[2] " for details."
+            )
+            System.CloseEvent(13)
+        }
         static Notify(message, tray:=false) {
             /* Notifies the user about the error */
-            MsgBox(message, SW.NAME, "Icon! 0x40000")
+            MsgBox("Error: " message, SW.NAME, "Icon! 0x40000")
         }
         static HymnsDB(errorType) {
             if errorType == "AbsentFile" {
-                System.Errors.Notify("Error: Hymnal database cannot be found.`n"
-                                    "Please contact the developers.")
+                System.Errors.Notify(
+                    "Hymnal database cannot be found.`n"
+                    "Please contact the developers."
+                )
                 System.CloseEvent(1, "Hymnal database cannot be found.")
             }
         }
@@ -147,13 +165,13 @@ Class System {
                 if !MAX_TRIES
                     break
                 Sleep(10)
-                (SW.VERBOSE_LOG ? _LOG.Verbose("System: Deleting temp subfolders (Tries: " 14-MAX_TRIES ")"):0)
+                _LOG.Verbose("System: Deleting temp subfolders (Tries: " 14-MAX_TRIES ")")
                 for dir in SUBDIRS {
                     try DirDelete(dir, 1)
                 }
                 MAX_TRIES--
             }
-            (SW.VERBOSE_LOG ? _LOG.Verbose("System: Temp subfolders were successfully deleted."):0)
+            _LOG.Verbose("System: Temp subfolders were successfully deleted.")
         }
 
         static GetTempAttrib() {
@@ -188,11 +206,9 @@ Class System {
                 IDX := ArrayMinIndex(TA.TM)
                 try {
                     FileDelete(TA.FN[IDX])                                                  ;; Delete the oldest file from array using ArrayMinIndex
-                    if SW.VERBOSE_LOG {
-                        _LOG.Verbose(
-                            Format("System: Deleted older temp file `"{1}`"", TA.FN[IDX])
-                        )
-                    }
+                    _LOG.Verbose(
+                        Format("System: Deleted older temp file `"{1}`"", TA.FN[IDX])
+                    )
                     TA.FN.RemoveAt(IDX)
                 }
             }
