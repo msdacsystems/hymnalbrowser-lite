@@ -7,23 +7,27 @@
 ## What is Hymnal Browser?
 Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.
 
-
-> Alpha version
 ![Image](res/mainmenu.png)
 
 
 ## Features
 - Browse through 474 Hymns based on SDA Philippine Hymnal
-- Fast and responsive version
-- Customize presentation files
+- Fast and responsive search
 - See what's most searched and launched hymns
 
+## Usage
+1. Open **Hymnal Browser Lite**
+2. Type the number or the title of the hymn
+3. Click <Kbd>Launch</Kbd> or press <Kbd>Enter</Kbd> to launch the presentation.
+
+Suggestion box will appear when you type in the search bar. This helps to find what hymn matches the keyword.
+
 ## Build
-This application is built with Autohotkey v2 (Beta 3) GUI for simplicity. Though it is not mainly for GUI development, this is a temporary implementation of much lighter version compared to the Python-based app.
+This application is written in Autohotkey v2 (Beta 3) for simplicity. Though it is not mainly for GUI development, this is a temporary implementation of much lighter version compared to the Python-based app.
 
 1. Download and install AutoHotkey and AutoHotkey v2 from [here](https://www.autohotkey.com/). Make sure to set the v2 as interpreter.
-2. Download the latest [external](https://github.com/verdaderoken/AHK2ExtLib) library for AHKv2.
-3. Build the app using Ahk2Exe.
+2. Download the latest [~~external~~](https://github.com/verdaderoken/AHK2ExtLib) library for AHKv2.
+3. Compile the app using Ahk2Exe with AHKv2 as compiler.
 
 ## Changelog
 View the latest changelog [here](CHANGELOG.md)
@@ -37,4 +41,3 @@ View the latest changelog [here](CHANGELOG.md)
 [Email](mailto:msdacsystems@gmail.com)
 
 Hymnal Browser Lite © 2022 MSDAC Systems
-
