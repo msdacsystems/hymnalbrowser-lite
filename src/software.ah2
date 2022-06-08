@@ -14,13 +14,15 @@ Class Software {
 
     /*  Core metadata */
     static PARENT := "MSDAC Systems"
-    static COPYRIGHT := "© 2022 MSDAC Systems"
     static AUTHORS := ["Ken Verdadero", "Reynald Ycong"]
     static NAME := "Hymnal Browser Lite"
+    static COPYRIGHT := "© 2022 MSDAC Systems"
+    static COPYRIGHT_NAME := this.NAME " © 2022 MSDAC Systems"
     static TITLE := this.NAME
     static PARENT_NAME := this.PARENT ' ' this.NAME
     static EXE_NAME := "Hymnal Browser Lite.exe"
-    static VERSION := "0.2.0.0"
+    static VERSION := "0.2.1.0"
+    static VERSION_SHORT := 'v' Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.')
     static VERSION_LABEL := "Beta"
     static VERSION_STRING := Format("v{1} {2}",
         Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.'), this.VERSION_LABEL
