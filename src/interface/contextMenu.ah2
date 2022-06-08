@@ -18,12 +18,13 @@ Class UIContextMenu {
         ; this.VER := this.OBJ.Add(SW.COPYRIGHT, PlaceholderCallback)
         ; this.OBJ.Disable(SW.COPYRIGHT)
         ; this.OBJ.Add()
-        this.OBJ.Add("&Settings", Events.Settings.Click)
+        ; this.OBJ.Add("&Settings", Events.Settings.Click)                                  ;; Temporarily turned off until Settings UI is complete
+        this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add("&Exit", System.CloseEvent)
     }
 
     ShowMenu() {
-        (SW.VERBOSE_LOG ? _LOG.Debug("ContextMenu: Context menu was opened"):0)
+        _LOG.Verbose("ContextMenu: Context menu was opened")
         this.OBJ.Show()
     }
 }
