@@ -19,9 +19,6 @@ class UISearchBar {
         this.OBJ := UI.MAIN.GUI.AddEdit(
             Format("XS R1 W{1} H{2} +WantReturn",
             this.WIDTH, this.HEIGHT), "")
-
-        Hotkey("~^BackSpace", ObjBindMethod(this, "KeyPress"))
-        Hotkey("~^A", ObjBindMethod(this, "KeyPress"))
     }
 
     SetText(text:='') {
@@ -36,6 +33,11 @@ class UISearchBar {
         return (raw ? this.OBJ.Text:Trim(this.OBJ.Text, ' `t`r`n'))
     }
 
+    HasText() {
+        /*  Returns true if there's text in search bar except for whitespaces */
+        return (StrLen(this.Text()) ? 1:0)
+    }
+
     Clear() {
         /*  Clears the search bar */
         this.OBJ.Text := ''
@@ -46,15 +48,18 @@ class UISearchBar {
         ControlFocus(this.OBJ)
     }
 
+    IsEnabled() {
+        return ControlGetEnabled(this.OBJ)
+    }
+
     SelectAll() {
         this.SetFocus()
         Send("^A")
     }
 
     Listener() {
-        if !StrLen(this.text()) && SES.LAUNCH_READY {                                       ;; Clears the Hymn text when there's no input in search
-            UI.BTN.LaunchSetMode("InsertHymn")
-            _LOG.Verbose("No text detected in search bar")
+        if !this.HasText() && UI.BTN.LaunchIsEnabled() {                                       ;; Clears the Hymn text when there's no input in search
+            _LOG.Verbose("Query: No text detected in search bar")
         }
     }
 
@@ -79,7 +84,7 @@ class UISearchBar {
         }
     }
 
-    RetrieveDetails() {
+    RetrieveDetails(source:='') {
         if !StrLen(this.Text())
             return
         ST := A_TickCount
@@ -104,6 +109,7 @@ class UISearchBar {
                 IDX := ArrayFind(HYMNAL[CT][1], REF)
                 NUM := HYMNAL[CT][1][IDX]
                 TTL := HYMNAL[CT][2][IDX]
+
                 try {
                     EQ_NUM := HYMNAL[EQ_CT][1][IDX]
                     EQ_TTL := HYMNAL[EQ_CT][2][IDX]
@@ -113,15 +119,19 @@ class UISearchBar {
                     EQ_TTL := "N/A"
                 }
                 
-                if this.text() = NUM ' ' TTL {
+                if this.text() = NUM ' ' TTL {                                              ;; Display the equivalent hymn if the search bar's text is complete
                     UI.MAIN.SetHymnText(Format("{1}: {2} {3}", EQ_CT, EQ_NUM, EQ_TTL))
                     UI.MAIN.HYMN.SetFont("C" SW.TEXT_DISABLED)
-                } else {
+                } else {                                                                    ;; Display the closest hymn based on search text
                     UI.MAIN.SetHymnText(Format("{1} {2}", NUM, TTL))
                     UI.MAIN.HYMN.SetFont("C" SW.TEXT)
                 }
-                _LOG.Verbose(Format("Query: Hymn #{1} Found at index {2} in {3} ({4} ms)",
-                            REF, ZFill(IDX, 3), CT, A_TickCount-ST))
+                _LOG.Verbose(
+                    Format(
+                        "Query: Hymn #{1} Found at index {2} in {3} ({4} ms) | Source: {5}",
+                        REF, ZFill(IDX, 3), CT, A_TickCount-ST, source
+                    )
+                )
                 
                 /*  Save to session data */
                 SES.CURR_NUM := NUM
@@ -142,5 +152,12 @@ class UISearchBar {
             }
         }
         UI.BTN.LaunchSetMode("NotAvailable")
+        _LOG.Verbose(
+            Format(
+                "Query: No matching results for {1} ({2}ms)",
+                this.Text(), A_TickCount-ST
+            )
+        )
+        
     }
 }
