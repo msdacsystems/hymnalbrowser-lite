@@ -43,7 +43,7 @@ class UI {
         */
         ST := A_TickCount
         for classObj in UI.UIs {
-            UI.DefineProp(StrUpper(classObj._NAME), {value: classObj.Setup()})              ;; Initiate GUI Setup for the class; Store the class instance
+            UI.DefineProp(StrUpper(classObj._NAME), {value: classObj.Call()})               ;; Initiate GUI Setup for the class; Store the class instance
         }
         UI.ConnectEvents()
         UI.StartThreads()
@@ -106,15 +106,6 @@ class UI {
         UI.CPLTR.Close()
     }
 
-    static UpdatePos() {
-        /*  Dumps the new window coordinates to the settings */
-        WinGetPos(&X, &Y,,, System.AHK_PID)
-        CF.WINDOW.XPOS := X
-        CF.WINDOW.YPOS := Y
-        CF.WINDOW.MON := Window.GetCurrentMonitor(System.AHK_PID)
-        CF.Dump()
-    }
-    
     static Show(x:='', y:='') {
         /*
             Shows the main window.
@@ -133,6 +124,15 @@ class UI {
         }
     }
 
+    static UpdatePos() {
+        /*  Dumps the new window coordinates to the settings */
+        WinGetPos(&X, &Y,,, System.AHK_PID)
+        CF.WINDOW.XPOS := X
+        CF.WINDOW.YPOS := Y
+        CF.WINDOW.MON := Window.GetCurrentMonitor(System.AHK_PID)
+        CF.Dump()
+    }
+
     static Minimize(args*) {
         WinMinimize(System.AHK_PID)
     }
@@ -148,5 +148,11 @@ class UI {
         UI.ACTIVE := true
         UI.SEARCH.SelectAll()                                                               ;; Automatically highlights all text whenever the window is reactivated
         UI.CPLTR.Close()                                                                    ;; Close the Completer
+    }
+
+    static About(args*) {
+        /* Shows the about notification */
+        TrayTip(Format("{1}`n{2}, {3}", SW.COPYRIGHT, SW.AUTHORS[1], SW.AUTHORS[2]),
+            "About", "0x24")
     }
 }
