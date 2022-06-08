@@ -1,9 +1,10 @@
 /*
     Hymnal Database
     ----------------
-    Manages and parses the hymnal database (zip)
+    Manages and parses the hymnal database
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
 */
 
 Class HymnalDB {
@@ -61,13 +62,31 @@ Class HymnalDB {
         /*
             Returns a map of all hymnal data extracted from the .sda file zip.
         */
-        FILE_HYMNAL := SW.FILE_HYMNALDB
-        if !FileExist(FILE_HYMNAL) {
-            _LOG.Error("HymnsDB: Hymnal data cannot be found at `"" FILE_HYMNAL '"')
+        CF.__FILE_HYMNALDB := 0
+
+        for dir in SW.DIRS_HYMNAL_PACKAGE {
+            _LOG.Verbose("HymnsDB: Scanning from directory `"" dir '"')
+            if FileExist(PathJoin(dir, CF.HYMNAL.PACKAGE)) {
+                _LOG.Verbose("HymnsDB: Database was found.")
+                CF.__FILE_HYMNALDB := PathJoin(dir, CF.HYMNAL.PACKAGE)
+                break
+            }
+            _LOG.Verbose("HymnsDB: Database was not found.")
+        }
+
+        if !CF.__FILE_HYMNALDB {
+            _LOG.Error(
+                Format(
+                    "HymnsDB: Hymnal package '{1}' cannot be found "
+                    "in any of scanned directories: {2}",
+                    CF.HYMNAL.PACKAGE, ArrayAsStr(SW.DIRS_HYMNAL_PACKAGE,, '.', false,,, '"')
+                )
+            )
             System.Errors.HymnsDB("AbsentFile")
         }
-        _LOG.Info("HymnsDB: Scanning hymnal from `"" FILE_HYMNAL '"')
-        HymnZip := TarZip(FILE_HYMNAL)
+
+        _LOG.Info("HymnsDB: Scanning hymnal from `"" CF.__FILE_HYMNALDB '"')
+        HymnZip := TarZip(CF.__FILE_HYMNALDB)
         _HYMNAL := [[[], []], [[], []], [[], []], -1, -1, -1]
         CATS := ["EN", "TL", "US"]
         HNUMS := []
