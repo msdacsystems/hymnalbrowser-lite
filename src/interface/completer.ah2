@@ -3,7 +3,8 @@
     -----------------------------
     A customized ListBox as a line completer suggestion box.
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-04
 */
 
@@ -17,6 +18,7 @@ Class UICompleter {
     __New() {
         this.WIDTH := UI.SEARCH.WIDTH
         this.HEIGHT := UI.SEARCH.HEIGHT
+        this.TITLE := "HBL Completer"
         this.MAX_ITEMS := SW.CPLTR_MAX_ITEMS
         this.ITEM_HEIGHT := 25                                                              ;; Size of a single item measured in pixels
         this.DATA := Object()
@@ -47,7 +49,7 @@ Class UICompleter {
             the listbox unless it's destroyed and created again.
         */
         this.Close()
-        this.OBJ := Gui("-Caption +ToolWindow", SW.NAME ' Completer')                       ;; Completer GUI Object
+        this.OBJ := Gui("-Caption +ToolWindow", this.TITLE)                                 ;; Completer GUI Object
         this.OBJ.SetFont("S" SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.LIST := this.OBJ.AddListBox(Format("W{1} H{2} -VScroll",                       ;; List box inside the completer.
                                         this.WIDTH, this.HEIGHT))
@@ -64,7 +66,7 @@ Class UICompleter {
 
     ScanSearchBar() {
         /*
-            Handles TextChange event for completer.
+            Handles TextChangedEvent for completer.
             Forwarded from Events.Search.Changed
 
             Scans the search bar's value and filters the hymns according
@@ -95,7 +97,7 @@ Class UICompleter {
             this.LIST.Opt("+Redraw")
         }
 
-        WinActivate(A_IsCompiled ? System.AHK_EXE:System.AHK_PID)                           ;; Responsible for keeping the focus on main window
+        System.SetActive()                                                                  ;; Responsible for keeping the focus on main window
         
         SES.SUGGESTIONS := FLEN                                                             ;; Update item count data (List Size); Sets suggestion count
         this.DATA.LIT := FILTERED                                                           ;; Update items array (List Items)
@@ -123,11 +125,12 @@ Class UICompleter {
                 _LOG.Error("UICompleter: " e.Message)
             }
         }
+
         if this.REQUEST_SEARCH_UPDATE {
             this.REQUEST_SEARCH_UPDATE := false
             UI.SEARCH.SetText(this.DATA.FCS)                                                ;; Apply the new focused item's text to the search bar
             Send("{End}")                                                                   ;; Keep text cursor at the end of the search bar
-            UI.SEARCH.RetrieveDetails()
+            UI.SEARCH.RetrieveDetails("CompleterRequest")
         }
     }
 
@@ -147,7 +150,6 @@ Class UICompleter {
         }
 
         if ArrayMatch(key, ['PrevItem', 'NextItem', 'WheelUp', 'WheelDown']) {              ;; Handles behavior of Previous and Next item in completer (ListBox)
-            this.IsFocused() 
             if ArrayMatch(key, ['WheelUp', 'WheelDown']) {
                 if !System.IsFocused() && !this.IsFocused() {                               ;; Prevent scrolling of list when the mouse is not on top of the window
                     return
@@ -161,7 +163,7 @@ Class UICompleter {
                         (this.DATA.IDX < this.DATA.LIT.Length ? this.DATA.IDX++:0)          ;; Next item
                 }
                 this.LIST.Choose(this.DATA.IDX)                                             ;; Focus the next item
-                if this.DATA.IDX && this.DATA.LIT[this.DATA.IDX] != UI.SEARCH.Text() {      ;; Prevent search request for if same item is queried.
+                if this.DATA.IDX && this.DATA.LIT[this.DATA.IDX] != UI.SEARCH.Text() {      ;; Prevent search request for if same item is queried
                     this.REQUEST_SEARCH_UPDATE := true                                      ;; Request an update of search bar for the listener
                 } 
             } catch Error as e {
@@ -210,7 +212,6 @@ Class UICompleter {
         MouseGetPos(&X, &Y, &W, &C)
         return (WinExist(this.OBJ) = W ? 1:0)
     }
-
 
     GetSpawnPoint(&X, &Y) {
         /*
