@@ -1,9 +1,10 @@
 /*
     Session data for HBL
     ----------------------------
-    Contains session data such as hymn
+    Contains session data
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-06
 */
 
@@ -13,7 +14,7 @@ class Session {
     }
 
     __New() {
-        _LOG.Info('Session data was started.')
+        _LOG.Info('Session: Session data was started.')
         this.GenerateProps()
     }
 
@@ -26,6 +27,7 @@ class Session {
             "FILENAME", '',
             "SUGGESTIONS", 0,
             "LAUNCH_READY", false,
+            "LAUNCH_COUNT", 0,
         )
 
         for name, val in this.DATA {
