@@ -9,7 +9,8 @@
     To access one of UI objects, call the property:
         - UI.SEARCH.OBJ.Show()
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-03
 */
 
@@ -40,12 +41,14 @@ class UI {
             The setup method should return an instance of the class.
             
         */
+        ST := A_TickCount
         for classObj in UI.UIs {
             UI.DefineProp(StrUpper(classObj._NAME), {value: classObj.Setup()})              ;; Initiate GUI Setup for the class; Store the class instance
         }
-        _LOG.Verbose("UI: UI Classes were successfully setup")
         UI.ConnectEvents()
         UI.StartThreads()
+        UI.Keybinds()
+        _LOG.Info(Format("UI: Setup finished ({1} ms)", A_TickCount-ST))
     }
 
     static ConnectEvents() {
@@ -69,18 +72,26 @@ class UI {
     
     static StartThreads() {
         _LOG.Verbose("UI: Starting UI Listener Threads")
-        SetTimer(ObjBindMethod(UI.SEARCH, "Listener"), 20)
-        SetTimer(ObjBindMethod(UI.CPLTR, "Listener"), SW.CPLTR_LIS_RATE)                    ;; Start the listener thread
+        SetTimer(ObjBindMethod(UI.SEARCH, "Listener"), 50)
+        SetTimer(ObjBindMethod(UI.BTN, "Listener"), 50)
+        SetTimer(ObjBindMethod(UI.CPLTR, "Listener"), SW.CPLTR_LIS_RATE)
+    }
+    
+    static Keybinds() {
+        _LOG.Verbose("UI: Binding keys")
+        Hotkey("~^BackSpace", ObjBindMethod(UI.SEARCH, "KeyPress"))
+        Hotkey("~^A", ObjBindMethod(UI.SEARCH, "KeyPress"))
     }
 
 
     static LeftMousePressEvent(args*) {
         MouseGetPos(&X, &Y, &W, &C)
         if WinExist(System.AHK_PID) == W {
-            if SW.VERBOSE_LOG && !UI.ACTIVE {
-                _LOG.Verbose('Window is activated from LMouse')
+            if !UI.ACTIVE {
+                _LOG.Verbose('UI: Window is activated from LMouse')
                 UI.SetActive()
             }
+            UI.CPLTR.Close()                                                                ;; Close the completer if the window is starting to move
             System.MoveMain()                                                               ;; Allows the user to click-hold on the window to move
         }
     }
@@ -89,6 +100,42 @@ class UI {
         
     }
 
+    static Hide() {
+        /*  Hides the main window as well as the completer */
+        UI.MAIN.GUI.Hide()
+        UI.CPLTR.Close()
+    }
+
+    static UpdatePos() {
+        /*  Dumps the new window coordinates to the settings */
+        WinGetPos(&X, &Y,,, System.AHK_PID)
+        CF.WINDOW.XPOS := X
+        CF.WINDOW.YPOS := Y
+        CF.WINDOW.MON := Window.GetCurrentMonitor(System.AHK_PID)
+        CF.Dump()
+    }
+    
+    static Show(x:='', y:='') {
+        /*
+            Shows the main window.
+            Automaticaly adjust the window's position if it's near edge.
+        */
+        try {
+            if !GUIx.IsInSafeRegion(x, y, 361, 88, CF.WINDOW.MON) {                         ;; Check if the proposed coordinates is in safe region
+                UI.MAIN.GUI.Show()                                                          ;; Show at center of primary monitor
+                UI.UpdatePos()                                                              ;; Reupdate position with new coords
+                return
+            }
+            UI.MAIN.GUI.Show(Format("X{1} Y{2}", x, y))                                     ;; Show in specific coordinates. Only works if arg 1 and 2 are valid.
+        } catch Error as e {
+            _LOG.Error(e.Message)
+            UI.MAIN.GUI.Show()                                                              ;; Show at last coords when arg 1 and 2 is not specified.
+        }
+    }
+
+    static Minimize(args*) {
+        WinMinimize(System.AHK_PID)
+    }
 
     static SetInactive() {
         /*  Sets the UI to inactive state */
