@@ -2,7 +2,8 @@
     Interface for Buttons
     -----------------------
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-03
 */
 
@@ -16,7 +17,16 @@ class UIButtons {
     __New() {
         this.CLEAR := UI.MAIN.GUI.AddButton("YP H25 W25", "❌")
         this.LAUNCH := UI.MAIN.GUI.AddButton("YP W100", "Launch")
-        UI.MAIN.BG := UI.MAIN.GUI.AddPicture("X0 Y0 +0x4000000", SW.FILE_BG)
+        ; UI.MAIN.BG := UI.MAIN.GUI.AddPicture("X0 Y0 +0x4000000", SW.FILE_BG)              ;; Temporarily disabled until integration of files to compiled exe is fixed
+    }
+
+    Listener() {
+        if !UI.SEARCH.HasText() {
+            this.LaunchSetMode("InsertHymn")
+        }
+        if !StrLen(UI.MAIN.HymnText()) && this.LaunchIsEnabled() {                          ;; Disable the launch button as soon as the hymn text is found to be none
+            this.LaunchSetMode("NotAvailable")
+        }
     }
 
     LaunchSetEnabled(mode:=1) {
