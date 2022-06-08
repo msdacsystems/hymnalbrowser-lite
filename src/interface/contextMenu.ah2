@@ -20,6 +20,8 @@ Class UIContextMenu {
         ; this.OBJ.Add()
         ; this.OBJ.Add("&Settings", Events.Settings.Click)                                  ;; Temporarily turned off until Settings UI is complete
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
+        this.OBJ.Add()
+        this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
         this.OBJ.Add("&Exit", System.CloseEvent)
     }
 
