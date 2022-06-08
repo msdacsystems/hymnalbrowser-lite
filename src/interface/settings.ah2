@@ -2,7 +2,8 @@
     Settings GUI for HBL
     --------------------
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-05
 */
 
