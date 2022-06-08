@@ -31,6 +31,7 @@ Class System {
         global SW := Software                                                               ;; Software alias
         global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata(), SW.LOG_CLEAR_OLD)
         global CF := Config.Setup()
+        A_TrayMenu.Delete()
         _LOG.SetVerbose(CF.MAIN.VERBOSE_LOG)
         System.Errors.Setup()
         _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
