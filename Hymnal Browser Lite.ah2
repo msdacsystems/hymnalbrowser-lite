@@ -88,20 +88,21 @@
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
 ;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
 ;@Ahk2Exe-SetDescription Hymnal Browser Lite
-;@Ahk2Exe-SetFileVersion 0.2.0.0
+;@Ahk2Exe-SetFileVersion 0.2.1.0
 ;@Ahk2Exe-SetInternalName Hymnal Browser Lite
 ;@Ahk2Exe-SetLanguage 0x3409
 ;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
 ;@Ahk2Exe-SetName Hymnal Browser Lite
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
-;@Ahk2Exe-SetProductName 0.2.0.0
-;@Ahk2Exe-SetVersion 0.2.0.0
+;@Ahk2Exe-SetProductName 0.2.1.0
+;@Ahk2Exe-SetVersion 0.2.1.0
 
 /* AHK Settings */
 #SingleInstance Force                                                                       ;; One (1) Hymnal Browser is only allowed.
-#NoTrayIcon
+#MaxThreads 100
 SetTitleMatchMode("RegEx")
 A_MaxHotkeysPerInterval := 5000
+TraySetIcon(A_IconFile)
 Thread("Interrupt", 0)
 
 ; Misc.HookReloadScript(1)                                                                    ;; NOTE: REMOVE OR COMMENT BEFORE COMPILING

@@ -2,6 +2,11 @@
 
 ### Latest
 
+*Changes for* patch **v0.2.1.0** (2022-06-08)
+- Added about option in context menu
+- Added tray icon
+- Rebranded application icon
+
 *Changes for* update **v0.2.0.0** (2022-06-08)
 - Added Hymnal package verifier. Hymnal will now be scanned in several directories: (1) Same folder as app, (2) in Documents, and (3) ProgramData
 - Added configuration settings such as focus back on Hymnal Browser after launching, auto-slideshow, and always on top.
