@@ -31,10 +31,6 @@
         to what's available resources.
         - Although efforts have been made to maximize user interface, the
 
-    Notable Changes:
-        v0.2.0 (2022-06-??) - [Empty]
-        v0.1.0 (2022-06-06) - Initial Build
-
     ------------------------------- Code architecture -----------------------------------
 
     Notes:
