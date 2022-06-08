@@ -2,7 +2,8 @@
     Event handler and forwarder for interface
     -------------------------------------------
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Ken Verdadero, Reynald Ycong
     Written 2022-06-03
 */
 
@@ -42,7 +43,7 @@ class Events {
                 return
             }
             source := (!source ? 'MouseReleaseEvent':source)
-            _LOG.Verbose("Events: Launch button was pressed. From: " source)
+            _LOG.Verbose("Events: Launch button was pressed. | Source: " source)
             Launcher.Launch()
         }
     }
@@ -56,7 +57,7 @@ class Events {
     class Search {
         static Changed(args*) {
             UI.CPLTR.ScanSearchBar()
-            UI.SEARCH.RetrieveDetails()
+            UI.SEARCH.RetrieveDetails("ChangedEvent")
         }
         static Clear(args) {
             _LOG.Verbose("Events: Search bar was cleared")
