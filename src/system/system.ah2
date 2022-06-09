@@ -14,6 +14,7 @@
 
 Class System {
     static WIN_ACTIVE := false ;; Maybe unused???
+    static DEV_MODE := false
     static STATE_CRASH := false
     static AHK_PID := "ahk_pid " System.GetPID()
     static AHK_EXE := "ahk_exe Hymnal Browser Lite.exe"
@@ -29,17 +30,19 @@ Class System {
         */
         global _STARTUP := A_TickCount
         global SW := Software                                                               ;; Software alias
-        global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata(), SW.LOG_CLEAR_OLD)
+        System.CheckDevMode()
+        global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata())
         global CF := Config.Setup()
         A_TrayMenu.Delete()
-        _LOG.SetVerbose(CF.MAIN.VERBOSE_LOG)
         System.Errors.Setup()
+        _LOG.SetVerbose(CF.MAIN.VERBOSE_LOG)
+        _LOG.SetMaxLines(SW.LOG_MAX_LINES)
         _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
         _LOG.Info(
             Format("System Info: Windows {1} {2}; User: {3} {4}",
             A_OSVersion, GetOSBit(1), A_ComputerName, A_UserName)
         )
-        _LOG.Info(!A_IsCompiled ? "APPLICATION IS RUNNING ON DEVELOPER MODE":'')
+        _LOG.Info(System.DEV_MODE ? "APPLICATION IS RUNNING ON DEVELOPER MODE":'')
         _LOG.Info("System: Process ID: " System.GetPID())
         _LOG.Info("System: Verbose logging is " (CF.MAIN.VERBOSE_LOG ? 'ON':'OFF'))
         _LOG.Info("System: Initializing core")
@@ -121,6 +124,17 @@ Class System {
             _LOG.Info("System: Presentation type setting is disabled")
             ; Errors.Presentation("NotInstalled")                                           ;; Disabled for fallback software tests
         }
+    }
+
+    static CheckDevMode() {
+        /*  Modifies system whenever the application detected a dev mode */
+        System.DEV_MODE := (!A_IsCompiled ? 1:0)
+
+        if System.DEV_MODE {
+            /*  <Insert dev mode code here> */
+            return
+        }
+        /*  <Insert non-dev mode code here> */
     }
 
     static CloseEvent(exitCode:=0, message:='Application exited due to an error') {
