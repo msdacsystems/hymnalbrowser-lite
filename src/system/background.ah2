@@ -31,7 +31,6 @@ class BackgroundThread {
         }
         
         /* Keybindings; might move to a separate class */
-        Hotkey("~RButton", ObjBindMethod(Events.ContextMenu, "Click", 'RButton'))
         Hotkey("~Enter", ObjBindMethod(Events.Launch, "Click", 'ReturnKey'))
         Hotkey("~NumpadEnter", ObjBindMethod(Events.Launch, "Click", 'NumpadEnter'))
     }
@@ -67,7 +66,7 @@ class BackgroundThread {
 
     static LaunchButton() {
         /*  Delayed setting of mode via keyboard time idle */
-        if SES.LAUNCH_READY and A_TimeIdleKeyboard > 1250 {                                 ;; Make a delay before setting the text back to ready mode
+        try if SES.LAUNCH_READY and A_TimeIdleKeyboard > 1250 {                                 ;; Make a delay before setting the text back to ready mode
                 UI.BTN.LaunchSetMode("Ready")
         }
         if UI.BTN.LAUNCH.Text == "Launching" and A_TimeIdleKeyboard > 750 {                 ;; Time allowance before concluding the launch/ready mode
