@@ -1,6 +1,6 @@
 /*
-    File Manager
-    ------------
+    Errors
+    -------
     System error class handler.
 
     Error list:
@@ -19,7 +19,11 @@ class Errors {
     }
     static BaseError(exc, mode) {
         System.STATE_CRASH := true                                                          ;; Initiate system crash
-        _LOG.Crit(Format("Errors: {1} | {2}", exc.Message, exc.Line, exc.File))
+        _LOG.Crit(Format(
+            "Errors: {1} | {2}.{3} {4} {5}",
+            exc.Message, StrUpper(SplitExt(PathSplit(exc.File)[-1])[1]), exc.Line,
+            exc.What, exc.Extra)
+        )
         try UI.Hide()
         Errors.Notify(
             "The application has encountered an error and needs to terminate."
