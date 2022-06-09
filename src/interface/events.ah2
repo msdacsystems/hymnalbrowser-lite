@@ -30,9 +30,6 @@ class Events {
     
     class ContextMenu {
         static Click(source, hk:='') {
-            if !System.IsActive() {
-                return
-            }
             UI.RCTX.ShowMenu()
         }
     }
