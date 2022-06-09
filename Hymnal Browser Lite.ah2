@@ -15,8 +15,8 @@
         the actual name of the variable (e.g: TYPE_NAME_NAME -> DIR_DOCS_PROGRAM)
 
     Code dependencies:
-        - KConfig
-        - AHK2ExtLib (KV)
+    - AHK2ExtLib (https://github.com/verdaderoken/AHK2ExtLib)
+    - KConfig
 
     Prerequisites:
         - Hymnal Database (.sda) file
@@ -29,12 +29,13 @@
     Limitations:
         - Since this application is written in AHKv2, interface design is limited
         to what's available resources.
-        - Although efforts have been made to maximize user interface, the
+        - Although efforts have been made to maximize user interface, the primary
+        focus is still towards better functionality and reliability.
 
     ------------------------------- Code architecture -----------------------------------
 
     Notes:
-        - Classes are broken down into different to keep the code organized
+        - Classes are broken down into different files to keep the code organized
         and maintainable.
 
 
@@ -56,6 +57,7 @@
 #Include ..\lib\ext\Maps.ah2
 #Include ..\lib\ext\Misc.ah2
 #Include ..\lib\ext\GUIx.ah2
+#Include ..\lib\ext\Object.ah2
 #Include ..\lib\ext\Window.ah2
 #Include ..\lib\TarZip.ah2
 #Include ..\lib\KConfig.ah2
@@ -88,14 +90,14 @@
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
 ;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
 ;@Ahk2Exe-SetDescription Hymnal Browser Lite
-;@Ahk2Exe-SetFileVersion 0.2.1.0
+;@Ahk2Exe-SetFileVersion 0.2.2.0
 ;@Ahk2Exe-SetInternalName Hymnal Browser Lite
 ;@Ahk2Exe-SetLanguage 0x3409
 ;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
 ;@Ahk2Exe-SetName Hymnal Browser Lite
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
-;@Ahk2Exe-SetProductName 0.2.1.0
-;@Ahk2Exe-SetVersion 0.2.1.0
+;@Ahk2Exe-SetProductName 0.2.2.0
+;@Ahk2Exe-SetVersion 0.2.2.0
 
 /* AHK Settings */
 #SingleInstance Force                                                                       ;; One (1) Hymnal Browser is only allowed.
@@ -103,7 +105,6 @@
 SetTitleMatchMode("RegEx")
 A_MaxHotkeysPerInterval := 5000
 TraySetIcon(A_IconFile)
-Thread("Interrupt", 0)
 
 ; Misc.HookReloadScript(1)                                                                    ;; NOTE: REMOVE OR COMMENT BEFORE COMPILING
 System.Exec()
