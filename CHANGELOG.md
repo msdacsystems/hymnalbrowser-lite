@@ -1,11 +1,23 @@
 # Hymnal Browser Lite Changelog
 
+For developer-related changes, view the changes [here](https://github.com/msdacsystems/hymnalbrowser-lite/commits/main).
+
+*This only logs significant changes in the application.
+
 ### Latest
+
+*Changes for* patch **v0.2.2.0** (2022-06-10)
+- Log files will now be retained, allowing a maximum of 1000 lines before the oldest line is removed.
+- Fixed temp folder for presentations not deleting after application exit.
+
+---
 
 *Changes for* patch **v0.2.1.0** (2022-06-08)
 - Added about option in context menu
 - Added tray icon
 - Rebranded application icon
+
+---
 
 *Changes for* update **v0.2.0.0** (2022-06-08)
 - Added Hymnal package verifier. Hymnal will now be scanned in several directories: (1) Same folder as app, (2) in Documents, and (3) ProgramData
@@ -18,12 +30,16 @@
 - Fixed a bug where scrolling through suggestion box will not behave accordingly
 - Last window position will now be remembered, including the monitor; Near-edge positions will reset the window's location to the center of primary monitor's screen on next launch.
 
+---
+
 *Changes for* patch **v0.1.1.0** (2022-06-07)
 - Improvements when searching
 - The "Launch" button wil now dynamically change the text according to the status. (i.e: Not Available, Insert Hymn, Launching and Launched)
 - The suggestions was rebranded to "matches" and will now show up in Launch button's text for a second.
 - Critical errors will now show a message box instead of the default runtime error.
 - Fixed a bug where clicking back on the app will clear the typed text in search bar.
+
+---
 
 *Changes for* build **v0.1.0.0** (2022-06-06)
 - Initial test build
