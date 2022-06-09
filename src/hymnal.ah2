@@ -82,7 +82,7 @@ Class HymnalDB {
                     CF.HYMNAL.PACKAGE, ArrayAsStr(SW.DIRS_HYMNAL_PACKAGE,, '.', false,,, '"')
                 )
             )
-            System.Errors.HymnsDB("AbsentFile")
+            Errors.HymnsDB("AbsentFile")
         }
 
         _LOG.Info("HymnsDB: Scanning hymnal from `"" CF.__FILE_HYMNALDB '"')
