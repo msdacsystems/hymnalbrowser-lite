@@ -21,7 +21,7 @@ Class Software {
     static TITLE := this.NAME
     static PARENT_NAME := this.PARENT ' ' this.NAME
     static EXE_NAME := "Hymnal Browser Lite.exe"
-    static VERSION := "0.2.1.0"
+    static VERSION := "0.2.2.0"
     static VERSION_SHORT := 'v' Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.')
     static VERSION_LABEL := "Beta"
     static VERSION_STRING := Format("v{1} {2}",
@@ -54,7 +54,7 @@ Class Software {
     )
     
     /*  Application settings */
-    static LOG_CLEAR_OLD := true
+    static LOG_MAX_LINES := 1000                                                            ;; Maximum lines allowed to be stored in application log
     static ERROR_HANDLING := true                                                           ;; Defines how errors are handled; 0 - by default, 1 - by the software
     static CPLTR_LIS_RATE := 50                                                             ;; Time interval of completer thread before updating the indexes
     static CPLTR_MAX_ITEMS := 6                                                             ;; Max number of items that are allowed to fit in ListBox (search completer)
