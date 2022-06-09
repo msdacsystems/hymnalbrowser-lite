@@ -97,7 +97,7 @@ class UI {
     }
     
     static RightMousePressEvent(args*) {
-        
+        Events.ContextMenu.Click("RMousePressEvent")
     }
 
     static Hide() {
