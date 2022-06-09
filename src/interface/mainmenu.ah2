@@ -28,9 +28,6 @@ class UIMainMenu {
         this.STATUS := this.GUI.AddText("YS+0 C818181", "")
         this.HYMN := this.GUI.AddText("XS +BackgroundTrans W300", "")
         this.DETAILS := this.GUI.AddText(Format("XP1 C{1} +BackgroundTrans", SW.TEXT_DISABLED), "")
-        ; this.GUI.BackColor := 0xBBBBBB
-        ; WinSetTransColor("f0f0f0", this.GUI)
-        ; ControlSetStyle("+BackgroundTrans", this.HYMN) 
 
         this.MOVING := false                                                                ;; Moving window indicator. See System.MoveMain and BackgroundThread.WindowListener
     }
