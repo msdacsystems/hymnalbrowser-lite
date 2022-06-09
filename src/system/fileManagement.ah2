@@ -60,7 +60,7 @@ class FileManagement {
             Even if the file is still open and the system needs to delete it,
             the system will wait until it finishes
         */
-        TEMP_LENGTH := System.FileManagement.GetTempAttrib().FN.Length
+        TEMP_LENGTH := FileManagement.GetTempAttrib().FN.Length
         REMOVED := 0
         _LOG.Info(
             Format(
@@ -70,8 +70,8 @@ class FileManagement {
             )
         )
 
-        while System.FileManagement.GetTempAttrib().FN.Length > CF.TEMP.MAX_RECENT {        ;; Loop until the .pptx files are equal to the max recent temp
-            TA := System.FileManagement.GetTempAttrib()
+        while FileManagement.GetTempAttrib().FN.Length > CF.TEMP.MAX_RECENT {               ;; Loop until the .pptx files are equal to the max recent temp
+            TA := FileManagement.GetTempAttrib()
             IDX := ArrayMinIndex(TA.TM)
             try {
                 FileDelete(TA.FN[IDX])                                                      ;; Delete the oldest file from array using ArrayMinIndex
@@ -83,7 +83,7 @@ class FileManagement {
             }
         }
         
-        if TEMP_LENGTH-1 == CF.TEMP.MAX_RECENT && REMOVED {
+        if FileManagement.GetTempAttrib().FN.Length == CF.TEMP.MAX_RECENT && REMOVED {
             _LOG.Info(Format(
                 "System: Temp file count is nominal; "
                 "removed {1} item{2}", REMOVED, (REMOVED == 1 ? '':'s'))
@@ -93,9 +93,9 @@ class FileManagement {
 
     static CloseTemp() {
         try {
-            DirDelete(SW.DIR_TEMP)
+            RunWaitOne(Format('{1} /c rmdir /s /q "{2}"', A_ComSpec, SW.DIR_TEMP))
             _LOG.Verbose("System: Temp folder was closed and deleted")
-        } catch {
+        } catch Error {
             _LOG.Warn("System: Unable to delete temp folder during exit")
         }
     }
