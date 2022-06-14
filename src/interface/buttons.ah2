@@ -11,10 +11,10 @@ class UIButtons {
     static _NAME := "BTN"
 
     __New() {
-        ICON_CLEAR := LoadPicture("shell32.dll", 'Icon-240 w' SysGet(2), &ImgType)
-        this.CLEAR := UI.MAIN.GUI.AddButton("0x40 0x300 0xC00 YP H25 W27")
+        ; ICON_CLEAR := LoadPicture("shell32.dll", 'Icon-240 w' SysGet(2), &ImgType)
+        this.CLEAR := UI.MAIN.GUI.AddButton("0x40 0x300 0xC00 YP H25 W27", '❌')
         this.LAUNCH := UI.MAIN.GUI.AddButton("0x300 0xC00 YP W100", " Launch")
-        SendMessage(0xF7, 1, ICON_CLEAR, this.CLEAR)                                        ;; Sets an icon to the clear button
+        ; SendMessage(0xF7, 1, ICON_CLEAR, this.CLEAR)                                        ;; Sets an icon to the clear button
     }
 
     Listener() {
