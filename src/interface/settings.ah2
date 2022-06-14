@@ -10,10 +10,6 @@
 Class UISettings {
     static _NAME := "SETTINGS"
 
-    static Setup() {
-        return UISettings()
-    }
-
     __New() {
         this.WIDTH := 280
         this.HEIGHT := 350
