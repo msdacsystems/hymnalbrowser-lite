@@ -15,7 +15,7 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 ## Features
 - Browse through 474 Hymns based on SDA Philippine Hymnal
 - Fast and responsive search
-- See what's most searched and launched hymns
+- Statistics for hymns
 
 ## Usage
 1. Open **Hymnal Browser Lite**
@@ -27,9 +27,7 @@ Suggestion box will appear when you type in the search bar. This helps to find w
 ## Build
 This application is written in Autohotkey v2 (Beta 3) for simplicity. Though it is not mainly for GUI development, this is a temporary implementation of much lighter version compared to the Python-based app.
 
-1. Download and install AutoHotkey and AutoHotkey v2 from [here](https://www.autohotkey.com/). Make sure to set the v2 as interpreter.
-2. Download the latest [~~external~~](https://github.com/verdaderoken/AHK2ExtLib) library for AHKv2.
-3. Compile the app using Ahk2Exe with AHKv2 as compiler.
+Building from source is unavailable for this project.
 
 ## Changelog
 View the latest changelog [here](CHANGELOG.md)
