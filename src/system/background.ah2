@@ -8,8 +8,7 @@
     Written 2022-06-04
 */
 
-class BackgroundThread {
-    static REFRESH_RATE := 20                                                               ;; Measured in milliseconds
+class BackgroundThread {                                                              ;; Measured in milliseconds
     static Setup() {
         /*
             Automatically connects all methods to a timer thread.
@@ -29,14 +28,11 @@ class BackgroundThread {
             }
             SetTimer(
                 ObjBindMethod(BackgroundThread, method),
-                BackgroundThread.REFRESH_RATE
+                SW.BG_REF_RATE
             )
         }
         
         SetTimer(ObjBindMethod(BackgroundThread, '__HymnStats'), 1000)                      ;; Hymn Statistics
-        /* Keybindings; might move to a separate class */
-        Hotkey("~Enter", ObjBindMethod(Events.Launch, "Click", 'ReturnKey'))
-        Hotkey("~NumpadEnter", ObjBindMethod(Events.Launch, "Click", 'NumpadEnter'))
     }
 
     static WindowListener() {

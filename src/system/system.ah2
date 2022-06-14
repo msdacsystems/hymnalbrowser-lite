@@ -37,7 +37,7 @@ class System {
         _LOG.Info("System: Initializing core")
 
         A_TrayMenu.Delete()                                                                 ;; Remove items in tray menu
-        A_TrayMenu.Add("Exit", Events.SystemExit)
+        A_TrayMenu.Add("Exit", Events.System.Exit)
 
         Errors.Setup()
         System.VerifyDirectories(false)
@@ -61,15 +61,8 @@ class System {
         */
         MISSING := 0
         RESOLVED := 0
-        DIRS := [                                                                           ;; Parent folders must be in forepart of the array
-            SW.DIR_PARENT,
-            SW.DIR_DOCS_PARENT,
-            SW.DIR_PROGRAM,
-            SW.DIR_DOCS_PROGRAM,
-            ; SW.DIR_TEMP,                                                                  ;; Not necessarily needed
-        ]
         
-        for dir in DIRS {
+        for dir in SW.DIRS {
             if !IsFolderExists(dir) {
                 MISSING++
                 _LOG.Warn(Format(

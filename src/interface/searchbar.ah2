@@ -17,36 +17,12 @@ class UISearchBar {
             this.WIDTH, this.HEIGHT), "")
     }
 
-    SetText(text:='') {
-        /*  Sets the text for the search bar */
-        if Type(text) != "String"
-            return
-        this.OBJ.Text := text
-    }
-
-    Text(raw:=false) {
-        /*  Returns the current value of the search bar */
-        return (raw ? this.OBJ.Text:Trim(this.OBJ.Text, ' `t`r`n'))
-    }
-
-    HasText() {
-        /*  Returns true if there's text in search bar except for whitespaces */
-        return (StrLen(this.Text()) ? 1:0)
-    }
-
-    Clear() {
-        /*  Clears the search bar */
-        this.OBJ.Text := ''
-    }
-
-    SetFocus() {
-        /*  Sets the focus to search bar */
-        ControlFocus(this.OBJ)
-    }
-
-    IsEnabled() {
-        return ControlGetEnabled(this.OBJ)
-    }
+    SetText(text:='') => this.OBJ.Text := text                                              ;; Sets the text for the search bar
+    Text(raw:=false) => (raw ? this.OBJ.Text:Trim(this.OBJ.Text, ' `t`r`n'))                ;; Returns the current value of the search bar */
+    HasText() => (StrLen(this.Text()) ? 1:0)                                                ;; Returns true if there's text in search bar except for whitespaces
+    Clear() => this.OBJ.Text := ''                                                          ;; Clears the search bar
+    SetFocus() => ControlFocus(this.OBJ)                                                    ;; Sets the focus to search bar
+    IsEnabled() => ControlGetEnabled(this.OBJ) 
 
     SelectAll() {
         this.SetFocus()
