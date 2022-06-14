@@ -1,5 +1,5 @@
 /*
-    Session data for HBL
+    * Session data for HBL
     ----------------------------
     Contains session data.
     Works similarly to Config class but this handles only the data in current session.
@@ -57,12 +57,7 @@ class Session {
         }
     }
 
-    ResetQueryTimeout() {
-        /*  Resets the query timeout */
-        this.TME_QUERY := CF.TME_QUERY
-    }
-
-    SendEndReport() {
+    _SendEndReport() {
         /*
             Sends a report to logger during application exit
         */
@@ -74,5 +69,16 @@ class Session {
             _LOG.Info(Format("Session: Queried {1} hymn(s) at end of session",
             this.COUNT_QUERY))
         }
+    }
+
+    ResetQueryTimeout() {
+        /*  Resets the query timeout */
+        this.TME_QUERY := CF.TME_QUERY
+    }
+
+    EndSession() {
+        /*  Executes several instructions about closing the session */
+        UI.UpdatePos()
+        this._SendEndReport()
     }
 }
