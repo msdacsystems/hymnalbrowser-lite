@@ -53,7 +53,7 @@ class UI {
             Events are forwarded to Events class.
         */
         _LOG.Verbose("UI: Connecting UI Events")
-        UI.MAIN.GUI.OnEvent("Close", Events.SystemExit)
+        UI.MAIN.GUI.OnEvent("Close", Events.System.Exit)
         UI.MAIN.HYMN.OnEvent("Click", Events.Hymn.Click)
         UI.MAIN.TITLE.OnEvent("Click", Events.Title.Click)
         UI.MAIN.DETAILS.OnEvent("Click", Events.Details.Click)
@@ -77,6 +77,8 @@ class UI {
         _LOG.Verbose("UI: Binding keys")
         Hotkey("~^BackSpace", ObjBindMethod(UI.SEARCH, "KeyPress"))
         Hotkey("~^A", ObjBindMethod(UI.SEARCH, "KeyPress"))
+        Hotkey("~Enter", ObjBindMethod(Events.Launch, "Click", 'ReturnKey'))
+        Hotkey("~NumpadEnter", ObjBindMethod(Events.Launch, "Click", 'NumpadEnter'))
     }
 
 
