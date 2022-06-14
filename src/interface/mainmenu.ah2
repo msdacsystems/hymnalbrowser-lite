@@ -10,10 +10,6 @@
 class UIMainMenu {
     static _NAME := "MAIN"
 
-    static Setup() {
-        return UIMainMenu()
-    }
-
     __New() {
         this.GUI := Gui(
             Format("+LastFound -Caption {1}AlwaysOnTop",
@@ -23,7 +19,7 @@ class UIMainMenu {
         this.GUI.SetFont('Q5 S' SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.TITLE := this.GUI.AddText("c0079a1 SECTION W130 H18", SW.NAME)
         this.TITLE.SetFont('S' SW.GLB_FONT_SIZE+1, "Segoe UI Bold Italic")
-        this.VERSION := this.GUI.AddText("X143 Y11 C555555", SW.VERSION_STRING)
+        this.VERSION := this.GUI.AddText("X143 Y11 C555555", SW.VERSION_STRING (System.DEV_MODE ? ' (Developer mode)':''))
         this.VERSION.SetFont('S' 7, SW.GLB_FONT_NAME)
         this.STATUS := this.GUI.AddText("YS+0 C818181", "")
         this.HYMN := this.GUI.AddText("XS +BackgroundTrans W300", "")
