@@ -64,7 +64,6 @@ class BackgroundThread {
                 "BackgroundThread: Main window was moved. "
                 "New window position: X:{1} Y:{2}", X, Y)
             )
-            UI.UpdatePos()
             UI.MAIN.SetMoving(0)
         } 
     }
