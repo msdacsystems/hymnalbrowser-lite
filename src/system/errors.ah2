@@ -29,8 +29,10 @@ class Errors {
             "The application has encountered an error and needs to terminate."
             " See " PathSplit(SW.FILE_LOG)[2] " for details."
         )
-        System.CloseEvent(13)
+        try FileManagement.CloseTemp()
+        Events.SystemExit(13)
     }
+
     static Notify(message, tray:=false) {
         /* Notifies the user about the error */
         MsgBox("Error: " message, SW.NAME, "Icon! 0x40000")
@@ -38,7 +40,7 @@ class Errors {
 
     static HymnsDB(errorType) {
         switch errorType {
-            case "AbsentFile":
+            case "AbsentPackage":
                 Errors.Notify(
                     "Hymnal package '" CF.HYMNAL.PACKAGE "' cannot be found.`n"
                     "Reinstalling the app may fix the problem."
@@ -47,14 +49,13 @@ class Errors {
         }
     }
 
-    static Presentation(errorType) {
+    static Launcher(errorType) {
         switch errorType {
-            case "NotInstalled":
+            case "AbsentBinary":
                 Errors.Notify(
-                    "System: Microsoft Office is not installed or detected in the system."
+                    Format("Cannot present {1} due to extraction failure.", SES.CURR_HYMN)
                 )
-                ;; <Insert fallback presentation software verification here>
-                System.CloseEvent(2, "Microsoft office was not installed or detected")
+                Events.SystemExit(3, "7z Binary cannot be found in " SW.BIN_ZIP)
         }
     }
 }
