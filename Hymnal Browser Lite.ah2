@@ -2,7 +2,7 @@
     -------------------------------------
     * MSDAC Systems Hymnal Browser Lite *
     -------------------------------------
-    A general hymn browser for Seventh-day Adventist Church, lightweight version.
+    A hymn browser and launcher for Seventh-day Adventist Church, lightweight version.
 
     * This file is the main executable file to run the whole application.
 
@@ -13,30 +13,8 @@
         - Code ruler is 90 units
         - Variable naming has type-value in which the type of the variable should precede
         the actual name of the variable (e.g: TYPE_NAME_NAME -> DIR_DOCS_PROGRAM)
-
-    Code dependencies:
-        - AHK2ExtLib (https://github.com/verdaderoken/AHK2ExtLib)
-        - KConfig
-
-    Prerequisites:
-        - Hymnal Database (.sda) file
-        - Microsoft Office PowerPoint or any .pptx-compatible software.
     
-    Known issues:
-        - None so far.    
-    
-    Limitations:
-        - Since this application is written in AHKv2, interface design is limited
-        to what's available resources.
-        - Although efforts have been made to maximize user interface, the primary
-        goal is focused towards better functionality and reliability.
-
-    * ------------------------------- Code architecture -------------------------------- *
-
-    Notes:
-        - Classes are broken down into different files to keep the code organized
-        and maintainable.
-
+    The rest of documentation can be found in DOCUMENTATION.md
 
     -------------------------------------------------------------------------------------
     (c) 2022 MSDAC Systems
@@ -53,7 +31,7 @@
     Rev 3. 2022-06-10 updated to AHKv2 Beta 4
 */
 
-__VERSION := "0.2.3.0"
+__VERSION := "0.2.3.1"
 
 /* AHK Settings */
 #SingleInstance Force                                                                     
@@ -104,13 +82,13 @@ TraySetIcon(A_IconFile)
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
 ;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
 ;@Ahk2Exe-SetDescription Hymnal Browser Lite
-;@Ahk2Exe-SetFileVersion 0.2.3.0
+;@Ahk2Exe-SetFileVersion 0.2.3.1
 ;@Ahk2Exe-SetInternalName Hymnal Browser Lite
 ;@Ahk2Exe-SetLanguage 0x3409
 ;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
 ;@Ahk2Exe-SetName Hymnal Browser Lite
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
-;@Ahk2Exe-SetProductName 0.2.3.0
-;@Ahk2Exe-SetVersion 0.2.3.0
+;@Ahk2Exe-SetProductName 0.2.3.1
+;@Ahk2Exe-SetVersion 0.2.3.1
 
 System.Exec()
