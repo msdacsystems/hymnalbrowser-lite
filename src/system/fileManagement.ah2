@@ -10,27 +10,6 @@
 */
 
 class FileManagement {
-    static RemoveTempSubdirs(args*) {
-        /* Deletes the temp subfolders: EN, TL, US after launching a presentation */
-        MAX_TRIES := 13
-        SUBDIRS := [
-            SW.DIR_TEMP "/EN",
-            SW.DIR_TEMP "/TL",
-            SW.DIR_TEMP "/US"
-        ]
-        while (DirExist(SUBDIRS[1]) or DirExist(SUBDIRS[2]) or DirExist(SUBDIRS[3])) {
-            if !MAX_TRIES
-                break
-            Sleep(10)
-            _LOG.Verbose("System: Deleting temp subfolders (Tries: " 14-MAX_TRIES ")")
-            for dir in SUBDIRS {
-                try DirDelete(dir, 1)
-            }
-            MAX_TRIES--
-        }
-        _LOG.Verbose("System: Temp subfolders were successfully deleted.")
-    }
-
     static GetTempAttrib() {
         /*
             Returns two arrays that has data.
@@ -92,11 +71,11 @@ class FileManagement {
     } 
 
     static CloseTemp() {
-        try {
-            RunWaitOne(Format('{1} /c rmdir /s /q "{2}"', A_ComSpec, SW.DIR_TEMP))
-            _LOG.Verbose("System: Temp folder was closed and deleted")
+        try if !System.DEV_MODE {
+            FileDelete(SW.BIN_ZIP)
+            _LOG.Info("System: Internal files were closed successfully")
         } catch Error {
-            _LOG.Warn("System: Unable to delete temp folder during exit")
+            _LOG.Warn("System: Unable to close internal files")
         }
     }
 }
