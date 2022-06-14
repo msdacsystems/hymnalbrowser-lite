@@ -25,6 +25,7 @@ Class Launcher {
             RESULT := ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
         } catch Error as e {
             Errors.Launcher("AbsentBinary")                                                 ;; Call system error if the binary is missing
+            return
         }
 
         if RESULT {
