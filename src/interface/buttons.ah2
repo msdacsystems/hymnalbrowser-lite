@@ -10,14 +10,11 @@
 class UIButtons {
     static _NAME := "BTN"
 
-    static Setup() {
-        return UIButtons()
-    }
-
     __New() {
-        this.CLEAR := UI.MAIN.GUI.AddButton("YP H25 W25", "❌")
-        this.LAUNCH := UI.MAIN.GUI.AddButton("YP W100", "Launch")
-        ; UI.MAIN.BG := UI.MAIN.GUI.AddPicture("X0 Y0 +0x4000000", SW.FILE_BG)              ;; Temporarily disabled until integration of files to compiled exe is fixed
+        ICON_CLEAR := LoadPicture("shell32.dll", 'Icon-240 w' SysGet(2), &ImgType)
+        this.CLEAR := UI.MAIN.GUI.AddButton("0x40 0x300 0xC00 YP H25 W27")
+        this.LAUNCH := UI.MAIN.GUI.AddButton("0x300 0xC00 YP W100", " Launch")
+        SendMessage(0xF7, 1, ICON_CLEAR, this.CLEAR)                                        ;; Sets an icon to the clear button
     }
 
     Listener() {
@@ -33,13 +30,8 @@ class UIButtons {
         ControlSetEnabled(mode, this.LAUNCH)
         SES.LAUNCH_READY := mode
     }
-    LaunchIsEnabled() {
-        return ControlGetEnabled(this.LAUNCH)
-    }
-
-    LaunchSetText(text) {
-        this.LAUNCH.Text := text
-    }
+    LaunchIsEnabled() => ControlGetEnabled(this.LAUNCH)
+    LaunchSetText(text) => this.LAUNCH.Text := text
 
     LaunchSetMode(mode, args*) {
         switch mode {
