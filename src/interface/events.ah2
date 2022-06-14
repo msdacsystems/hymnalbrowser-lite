@@ -8,9 +8,31 @@
 */
 
 class Events {
-    static CloseEvent(args*) {
-        /* System Exit */
-        System.CloseEvent()
+    static SystemExit(exitCode:=0, message:='Application exited due to an error') {
+        /*
+            System Exit
+            Handles events for application exit.
+        */
+        try RT := Round((A_TickCount-_RUNTIME)/1000, 3)                                     ;; Running time of the software
+        catch Error {
+            RT := Round((A_TickCount-_STARTUP)/1000, 3)
+        }
+
+        FileManagement.CloseTemp()
+        try SES.SendEndReport()
+
+        if !exitCode or exitCode == 2 {
+            _LOG.info("System: The user has closed the program")
+            _LOG.info("System: Application exited. Running time: " RT " second(s)")
+        } else {
+            _LOG.error(Format(
+                "System: Exit code {1}; Reason: {2}; Running time: {3} second(s)",
+                exitCode, message, RT)
+            )
+        }
+
+        _LOG.Close()                                                                        ;; Close the log
+        ExitApp(exitCode)
     }
     
     class Title {
@@ -52,9 +74,9 @@ class Events {
     }
     
     class Search {
-        static Changed(args*) {
+        static TextChanged(args*) {
             UI.CPLTR.ScanSearchBar()
-            UI.SEARCH.RetrieveDetails("ChangedEvent")
+            UI.SEARCH.RetrieveDetails("TextChangedEvent")
         }
         static Clear(args) {
             _LOG.Verbose("Events: Search bar was cleared")
