@@ -1,6 +1,6 @@
 /*
-    Configuration
-    --------------
+    * Configuration
+    ----------------
     Manages the configuration settings for Hymnal Browser Lite
 
     (c) 2022 MSDAC Systems
@@ -26,20 +26,17 @@ class Config {
     */
     static FILE := Software.FILE_CONFIG
     static HEAD_TEXT := Format(
-                "{1} Configuration`nThis file was generated automatically.`n`n{2}`nLast updated: {3}",
+                "{1} Configuration`nThis file was generated automatically."
+                "`n`n{2}`nLast updated: {3}",
                 Software.PARENT_NAME, Software.VERSION_STRING, Time.GetCurrentTime()
                 )
-
-    static Setup() {
-        return Config()
-    }
 
     __New() {
         if !FileExist(Config.FILE) {
             _LOG.warn("Config: Configuration is missing. Generating defaults.", true)
             this.GenerateDefaults()
         } else {
-            this.LoadDefaults()                                                             ;; Loads the default configuration
+            this.LoadDefaults(true)                                                         ;; Loads the default configuration
             this.Load()                                                                     ;; Loads the custom configuration; Conflicting keys will override the default.
         }
     }
@@ -55,7 +52,7 @@ class Config {
                 this.GenerateDefaults()
                 return
             }
-            this.__CFG := KConfig.Read(Config.FILE)                                         ;; this.__CFG is the copy of loaded configuration; used for recovery for reverting settings
+            this.__CFG := KConfig.Read(Config.FILE)                                         ;; this.__CFG is the copy of loaded configuration; used for recovery or reverting settings
             this.__CFG.DeleteProp("Capacity")
         } catch Error {
             _LOG.Error("Config: There was an error loading the configuration", true)
@@ -66,13 +63,21 @@ class Config {
         _LOG.Info("Config: Successfully loaded configuration", true)
     }
 
-    GetDefaults() {
+    GetDefaults(includeHidden:=false, hiddenOnly:=false) {
         /*
             Returns default configuration.
 
             This method contains all the keys and values to be inserted when:
                 (1) the configuration was missing
                 (2) the configuration was corrupted (i.e, there's missing pairs)
+
+            The HID object contatins the configuration that system needs
+            but not necessarily should be present in the configuration file.
+            This is useful for keys like VERBOSE_LOG as it's considered as an advanced
+            setting.
+
+            Configuration generator (Config.GenerateDefaults) should not include
+            the hidden keys, but they should be still defined in the system.
 
             Maintainer could add default values using object structure.
             This object will be converted to a configuration-readable file.
@@ -84,37 +89,49 @@ class Config {
             See KConfig documentation for more info.
         */
         DEF := Object()
-        DEF.MAIN := Object()
-        DEF.MAIN.VERBOSE_LOG := false                                                       ;; Extra details when logging
+        HID := Object()                                                                     ;; Hidden configuration that will not be present when generated. Still needed by the system
+        
+        HID.TME_QUERY := 1                                                                  ;; Time delay before a hymn query is considered a count
 
+        HID.MAIN := Object()
+        HID.MAIN.VERBOSE_LOG := false                                                       ;; Extra details when logging
+
+        DEF.WINDOW := Object()
         DEF.WINDOW := Object()
         DEF.WINDOW.ALWAYS_ON_TOP := true                                                    ;; Make the window always on top of other windows
         DEF.WINDOW.XPOS := 0                                                                ;; Window X position on startup
         DEF.WINDOW.YPOS := 0                                                                ;; Window Y position on startup
         DEF.WINDOW.MON := 1                                                                 ;; Monitor number the window will be displayed (default is 1/Primary)
 
-        DEF.TEMP := Object()
-        DEF.TEMP.MAX_RECENT := 10                                                           ;; Maximum Temporary files stored in temp folder of the application
+        HID.TEMP := Object()
+        HID.TEMP.MAX_RECENT := 20                                                           ;; Maximum Temporary files stored in temp folder of the application. Affects launch times
 
-        DEF.HYMNAL := Object()
-        DEF.HYMNAL.PACKAGE := 'hymns.sda'                                                   ;; Hymnal database filename
+        HID.HYMNAL := Object()
+        HID.HYMNAL.PACKAGE := 'hymns.sda'                                                   ;; Hymnal database filename
 
         DEF.LAUNCH := Object()
         DEF.LAUNCH.FOCUS_BACK := false                                                      ;; Focus back to the main window after launching a presentation
         DEF.LAUNCH.TYPE := 0                                                                ;; Presenter type; 1 - Open, 2 - Open in Slideshow
 
-        return DEF
+        DEF := (includeHidden ? ObjectMerge(DEF, HID):DEF)
+        return (hiddenOnly ? HID:DEF)
     }
 
-    LoadDefaults() {
-        /*  Applies the default configuration to the base instance */
-        this.ApplyData(this.GetDefaults())
-    }
+    LoadDefaults(includeHidden:=false) => this.ApplyData(this.GetDefaults(includeHidden))   ;; Applies the default configuration to the base instance
 
     ApplyData(configObject) {
-        /*  Inherits configObject to config instance */
+        /*  
+            Inherits configObject to config instance.
+            Keeps default keys that is absent in config.
+        */
         for name, val in configObject.OwnProps() {
-            if ArrayMatch(name, ['DATA', '__CFG']) {
+            if ArrayMatch(name, ['DATA', '__CFG']) {                                        ;; Exclude DATA map and __CFG
+                continue
+            }
+            if TypeMatch(val, "Object") {                                                   ;; Since object's properties will be fully replaced, we need to retain props that might be absent in the new data
+                C_CFG := this.GetDefaults(true)                                             ;; Copy of default configuration
+                DEF := C_CFG.GetOwnPropDesc(name).Value                                     ;; Retrieve default CFG.Object.Object value
+                this.DefineProp(name, {value: ObjectMerge(DEF, val)})                       ;; ! Merged object will be defined; e.g: In case ALWAYS_ON_TOP is removed from CFG, the default will still be present.
                 continue
             }
             this.DefineProp(name, {value: val})                                             ;; Transfer the loaded configuration data to the instance's properties
@@ -132,7 +149,7 @@ class Config {
             this.GenerateDefaults()
         } else {
             _LOG.Info("Config: Configuration was generated successfully.", true)
-            (autoReload ? this.LoadDefaults():0)
+            (autoReload ? this.LoadDefaults(true):0)
         }
     }
 
@@ -146,7 +163,8 @@ class Config {
                 continue
             }
             F_CFG.DefineProp(name, {value: val})
-            KConfig.Dump(F_CFG, Config.FILE, Config.HEAD_TEXT)
         }
+        F_CFG := ObjectSub(F_CFG, this.GetDefaults(, true))                                 ;; ! Needs review
+        KConfig.Dump(F_CFG, Config.FILE, Config.HEAD_TEXT)
     }
 }
