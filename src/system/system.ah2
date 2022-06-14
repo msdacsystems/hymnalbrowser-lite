@@ -1,41 +1,30 @@
 /*
-    System class for HBL
+    * System class for HBL
     ---------------------
     Main System class. Handles all process and system management.
-
-    Sub classes:
-        - Errors
-        - FileManagement
-        - BackgroundThread
 
     (c) 2022 MSDAC Systems
     Ken Verdadero, Reynald Ycong
 */
 
-Class System {
-    static WIN_ACTIVE := false ;; Maybe unused???
+class System {
     static DEV_MODE := false
     static STATE_CRASH := false
     static AHK_PID := "ahk_pid " System.GetPID()
     static AHK_EXE := "ahk_exe Hymnal Browser Lite.exe"
     static AHK_TITLE := "^Hymnal Browser Lite$"
 
-    static Errors := Errors                                                                 ;; Binds 'Errors' class within System class
-    static FileManagement := FileManagement                                                 ;; Binds 'FileManagement' class within System class
-    static Background := BackgroundThread                                                   ;; Binds 'BackgroundThread' class within System class
-
     static Exec() {
         /*
             Executes the main program
         */
         global _STARTUP := A_TickCount
-        global SW := Software                                                               ;; Software alias
         System.CheckDevMode()
         global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata())
         global CF := Config.Setup()
-        A_TrayMenu.Delete()
-        System.Errors.Setup()
-        _LOG.SetVerbose(CF.MAIN.VERBOSE_LOG)
+
+        /*  Log system launch */
+        _LOG.SetVerbose(System.DEV_MODE ? 1:CF.MAIN.VERBOSE_LOG)
         _LOG.SetMaxLines(SW.LOG_MAX_LINES)
         _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
         _LOG.Info(
@@ -46,19 +35,23 @@ Class System {
         _LOG.Info("System: Process ID: " System.GetPID())
         _LOG.Info("System: Verbose logging is " (CF.MAIN.VERBOSE_LOG ? 'ON':'OFF'))
         _LOG.Info("System: Initializing core")
-        System.VerifyDirectories(0)
+
+        A_TrayMenu.Delete()                                                                 ;; Remove items in tray menu
+        A_TrayMenu.Add("Exit", Events.SystemExit)
+
+        Errors.Setup()
+        System.VerifyDirectories(false)
         System.VerifyRequisites()
-        global HYMNAL := HymnalDB.ScanHymnal()
-        UI.Setup()
-        System.Background.Setup()
+        global ENV := Environments.Load(SW.FILE_ENV, !System.DEV_MODE)                      ;; Load and delete the environment file after loading
+        global HYMNAL := HymnalDB.ScanHymnal()                                              ;; Contains map of hymnal data
         global SES := Session.Setup()
+        UI.Setup()                                                                          ;; Initiate User Interface setup
+        BackgroundThread.Setup()
         _LOG.DumpPostphonedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
         
         UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
 
-        _LOG.Info(Format("Initialization completed in {1} s.", 
-            Round((A_TickCount-_STARTUP)/1000, 3)
-            ))
+        _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount-_STARTUP)))
         global _RUNTIME := A_TickCount
     }
 
@@ -91,8 +84,11 @@ Class System {
         }
 
         if MISSING {
-            _LOG.Info(Format("System: {1} item(s) were missing; resolved {2} of {3}.",
-                            MISSING, RESOLVED, MISSING), postphoneLog)
+            _LOG.Info(Format(
+                "System: {1} item(s) were missing; resolved {2} of {3}.",
+                MISSING, RESOLVED, MISSING),
+                postphoneLog
+            )
         } else {
             _LOG.Info("System: Directory verification sucessfully.", postphoneLog)
         }
@@ -121,69 +117,32 @@ Class System {
             SW.FILE_PRESENTER := ''
             _LOG.Warn("System: Microsoft Office PowerPoint is not installed or detected")
             _LOG.Info("System: Presentation files will be executed without PowerPoint")
-            _LOG.Info("System: Presentation type setting is disabled")
-            ; Errors.Presentation("NotInstalled")                                           ;; Disabled for fallback software tests
+            _LOG.Info("System: Presenter type setting will be ignored")
         }
     }
 
     static CheckDevMode() {
-        /*  Modifies system whenever the application detected a dev mode */
+        /*
+            Modifies system whenever the application detected a dev mode.
+        */
         System.DEV_MODE := (!A_IsCompiled ? 1:0)
 
-        if System.DEV_MODE {
-            /*  <Insert dev mode code here> */
-            return
+        switch System.DEV_MODE {
+            case 0:
+                FileInstall("bin\7z.exe", A_Temp "\7z.exe", true)
+                FileInstall("secrets.env", A_Temp "\secrets.env", true)
+            case 1:
+                Misc.HookReloadScript(1)
         }
-        /*  <Insert non-dev mode code here> */
     }
 
-    static CloseEvent(exitCode:=0, message:='Application exited due to an error') {
-        /* When the user closed the software */
-        try RT := Round((A_TickCount-_RUNTIME)/1000, 3)                                     ;; Running time of the software
-        catch Error {
-            RT := Round((A_TickCount-_STARTUP)/1000, 3)
-        }
-
-        FileManagement.CloseTemp()
-
-        try {
-            if SES.LAUNCH_COUNT {
-                _LOG.Info(
-                    Format("System: Launched {1} file(s) at end of session",
-                            SES.LAUNCH_COUNT)
-                )
-            }
-        }
-
-        if !exitCode or exitCode == 2 {
-            _LOG.info("System: The user has closed the program")
-            _LOG.info("System: Application exited. Running time: " RT " second(s)")
-        } else {
-            _LOG.error(Format(
-                "System: Exit code {1}; Reason: {2}; Running time: {3} second(s)",
-                exitCode, message, RT)
-            )
-        }
-
-        _LOG.Close()                                                                        ;; Close the log
-        ExitApp(exitCode)
-    }
-
-    static GetPID() {
-        return DllCall("GetCurrentProcessId")
-    }
+    static GetPID() => DllCall("GetCurrentProcessId")
+    static IsActive() => WinActive(System.AHK_PID)? 1:0
+    static HasCrashed() => System.STATE_CRASH
+    static IsOnModal() => WinActive("ahk_class #32770")? 1:0
     static SetActive() {
         WinActivate(WinExist("HBL Completer") ? System.AHK_TITLE: System.AHK_PID)
         UI.ACTIVE := true
-    }
-    static IsActive() {
-        return (WinActive(System.AHK_PID)? 1:0)
-    }
-    static HasCrashed() {
-        return System.STATE_CRASH
-    }
-    static IsOnModal() {
-        return (WinActive("ahk_class #32770")? 1:0)
     }
     static IsFocused() {
         MouseGetPos(&X, &Y, &W, &C)
