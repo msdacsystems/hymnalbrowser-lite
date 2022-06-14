@@ -19,7 +19,7 @@ class Events {
         }
 
         FileManagement.CloseTemp()
-        try SES.SendEndReport()
+        try SES.EndSession()
 
         if !exitCode or exitCode == 2 {
             _LOG.info("System: The user has closed the program")
