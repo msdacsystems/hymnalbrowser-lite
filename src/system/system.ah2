@@ -21,7 +21,7 @@ class System {
         global _STARTUP := A_TickCount
         System.CheckDevMode()
         global _LOG := KLogger(SW.FILE_LOG, SW.GenerateMetadata())
-        global CF := Config.Setup()
+        global CF := Config()
 
         /*  Log system launch */
         _LOG.SetVerbose(System.DEV_MODE ? 1:CF.MAIN.VERBOSE_LOG)
@@ -72,8 +72,10 @@ class System {
         for dir in DIRS {
             if !IsFolderExists(dir) {
                 MISSING++
-                _LOG.Warn(Format("System: Directory '{1}' was not found. "
-                "Creating new one.", dir), postphoneLog)
+                _LOG.Warn(Format(
+                    "System: Directory '{1}' was not found. "
+                    "Creating new one.", dir), postphoneLog
+                )
                 try DirCreate(dir)
                 catch Error as e {
                     _LOG.Error("System: Cannot create the directory: " dir, postphoneLog)
@@ -137,6 +139,7 @@ class System {
     }
 
     static GetPID() => DllCall("GetCurrentProcessId")
+    static GetWinMonitor() =>  Window.GetCurrentMonitor(System.AHK_PID)
     static IsActive() => WinActive(System.AHK_PID)? 1:0
     static HasCrashed() => System.STATE_CRASH
     static IsOnModal() => WinActive("ahk_class #32770")? 1:0

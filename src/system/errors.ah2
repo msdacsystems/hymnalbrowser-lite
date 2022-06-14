@@ -45,7 +45,7 @@ class Errors {
                     "Hymnal package '" CF.HYMNAL.PACKAGE "' cannot be found.`n"
                     "Reinstalling the app may fix the problem."
                 )
-                System.CloseEvent(1, "Hymnal database cannot be found.")
+                Events.SystemExit(1, "Hymnal database cannot be found.")
         }
     }
 

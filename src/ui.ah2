@@ -125,7 +125,7 @@ class UI {
         WinGetPos(&X, &Y,,, System.AHK_PID)
         CF.WINDOW.XPOS := X
         CF.WINDOW.YPOS := Y
-        CF.WINDOW.MON := Window.GetCurrentMonitor(System.AHK_PID)
+        CF.WINDOW.MON := System.GetWinMonitor()
         CF.Dump()
     }
 

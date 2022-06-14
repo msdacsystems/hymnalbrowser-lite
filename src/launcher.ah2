@@ -58,7 +58,7 @@ Class Launcher {
                 Run(PathJoin(SW.DIR_TEMP, SES.FILENAME))                                    ;; Run the file despite of PowerPoint's absence. If the .pptx's association is unset, the 'Open With' dialog with likely to show up
             }
 
-            _LOG.Info(Format("Launcher: Launched Hymn #{1} `"{2}`" ({3} ms)",
+            _LOG.Info(Format('Launcher: Launched Hymn "{1} {2}" ({3} ms)',
                     SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount-ST))
             )
             SES.COUNT_LAUNCH += 1
