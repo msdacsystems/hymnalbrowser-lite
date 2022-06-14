@@ -9,10 +9,6 @@
 Class UIContextMenu {
     static _NAME := "RCTX"
 
-    static Setup() {
-        return UIContextMenu()
-    }
-
     __New() {
         this.OBJ := Menu()
         /*  Items below are for development mode only */
@@ -31,7 +27,7 @@ Class UIContextMenu {
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add()
         this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
-        this.OBJ.Add("&Exit", System.CloseEvent)
+        this.OBJ.Add("&Exit", Events.SystemExit)
     }
 
     ShowMenu() {
