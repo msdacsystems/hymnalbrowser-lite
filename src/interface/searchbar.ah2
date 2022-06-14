@@ -9,10 +9,6 @@
 class UISearchBar {
     static _NAME := "SEARCH"
 
-    static Setup() {
-        return UISearchBar()
-    }
-
     __New() {
         this.WIDTH := SW.SIZE[1]/1.5
         this.HEIGHT := 20
@@ -141,6 +137,7 @@ class UISearchBar {
                 SES.HYMN_PATH := Format("{1}/{2}", CT, SES.FILENAME)
 
                 UI.BTN.LaunchSetEnabled(1)
+                SES.ResetQueryTimeout()
 
                 ; HYMNSIZE := StrLen(SES.CURR_HYMN)                                         ;; For hymn details
                 ; ControlMove(
