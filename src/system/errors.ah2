@@ -30,12 +30,12 @@ class Errors {
             " See " PathSplit(SW.FILE_LOG)[2] " for details."
         )
         try FileManagement.CloseTemp()
-        Events.SystemExit(13)
+        Events.System.Exit(13)
     }
 
-    static Notify(message, tray:=false) {
+    static Notify(message, tray:=false, timeout:=0) {
         /* Notifies the user about the error */
-        MsgBox("Error: " message, SW.NAME, "Icon! 0x40000")
+        MsgBox("Error: " message, SW.NAME, "Icon! 0x40000 T" timeout)
     }
 
     static HymnsDB(errorType) {
@@ -45,7 +45,7 @@ class Errors {
                     "Hymnal package '" CF.HYMNAL.PACKAGE "' cannot be found.`n"
                     "Reinstalling the app may fix the problem."
                 )
-                Events.SystemExit(1, "Hymnal database cannot be found.")
+                Events.System.Exit(1, "Hymnal database cannot be found.")
         }
     }
 
@@ -53,9 +53,13 @@ class Errors {
         switch errorType {
             case "AbsentBinary":
                 Errors.Notify(
-                    Format("Cannot present {1} due to extraction failure.", SES.CURR_HYMN)
+                    Format(
+                        "Cannot present '{1}' due to extraction failure.`n"
+                        "The application will restart now.", SES.CURR_HYMN
+                    ),, 3
                 )
-                Events.SystemExit(3, "7z Binary cannot be found in " SW.BIN_ZIP)
+                _LOG.Error("7z Binary cannot be found in " SW.BIN_ZIP)
+                Events.System.Reload()
         }
     }
 }

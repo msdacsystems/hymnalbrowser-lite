@@ -8,31 +8,42 @@
 */
 
 class Events {
-    static SystemExit(exitCode:=0, message:='Application exited due to an error') {
-        /*
-            System Exit
-            Handles events for application exit.
-        */
-        try RT := Round((A_TickCount-_RUNTIME)/1000, 3)                                     ;; Running time of the software
-        catch Error {
-            RT := Round((A_TickCount-_STARTUP)/1000, 3)
+    class System {
+        static Exit(exitCode:=0, message:='Application exited due to an error') {
+            /*
+                System Exit
+                Handles events for application exit.
+            */
+            try RT := Round((A_TickCount-_RUNTIME)/1000, 3)                                     ;; Running time of the software
+            catch Error {
+                RT := Round((A_TickCount-_STARTUP)/1000, 3)
+            }
+
+            FileManagement.CloseTemp()
+            try SES.EndSession()
+
+            if !exitCode or exitCode == 2 {
+                _LOG.info("System: The user has closed the program")
+                _LOG.info("System: Application exited. Running time: " RT " second(s)")
+            } else if exitCode == 10 {                                                      ;; Exit Code 10 - System reload
+                _LOG.info("System: System requested an application reload")
+                _LOG.info("System: Application will reload. Running time: " RT " second(s)")
+                _LOG.Close()
+                Reload()
+                return
+            } else {
+                _LOG.error(Format(
+                    "System: Exit code {1}; Reason: {2}; Running time: {3} second(s)",
+                    exitCode, message, RT)
+                )
+            }
+
+            _LOG.Close()                                                                        ;; Close the log
+            ExitApp(exitCode)
         }
-
-        FileManagement.CloseTemp()
-        try SES.EndSession()
-
-        if !exitCode or exitCode == 2 {
-            _LOG.info("System: The user has closed the program")
-            _LOG.info("System: Application exited. Running time: " RT " second(s)")
-        } else {
-            _LOG.error(Format(
-                "System: Exit code {1}; Reason: {2}; Running time: {3} second(s)",
-                exitCode, message, RT)
-            )
+        static Reload() {
+            Events.System.Exit(10)
         }
-
-        _LOG.Close()                                                                        ;; Close the log
-        ExitApp(exitCode)
     }
     
     class Title {
