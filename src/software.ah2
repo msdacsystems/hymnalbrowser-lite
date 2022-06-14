@@ -40,6 +40,13 @@ Class Software {
     static DIR_DOCS_PROGRAM := PathJoin(this.DIR_DOCS_PARENT, this.NAME)
     static DIR_TEMP := PathJoin(this.DIR_PROGRAM, "temp")
     static DIRS_HYMNAL_PACKAGE := [A_ScriptDir, this.DIR_PROGRAM, this.DIR_DOCS_PROGRAM]    ;; Scope of directories to be scanned for HymnalDB; In order of priority
+    static DIRS := [                                                                           ;; Parent folders must be in forepart of the array
+                this.DIR_PARENT,
+                this.DIR_DOCS_PARENT,
+                this.DIR_PROGRAM,
+                this.DIR_DOCS_PROGRAM,
+                ; SW.DIR_TEMP,                                                                  ;; Not necessarily needed
+    ]
     
     /*  Individual Files */
     static BIN_ZIP := A_IsCompiled ? PathJoin(A_Temp, '7z.exe'): 'bin\7z.exe'               ;; Binary file of 7z
@@ -56,6 +63,7 @@ Class Software {
     static ERROR_HANDLING := true                                                           ;; Defines how errors are handled; 0 - by default, 1 - by the software
     static CPLTR_LIS_RATE := 50                                                             ;; Time interval of completer thread before updating the indexes
     static CPLTR_MAX_ITEMS := 6                                                             ;; Max number of items that are allowed to fit in ListBox (search completer)
+    static BG_REF_RATE := 50                                                                ;; Refresh rate of a standard background thread. This does not affect a custom thread method.
     
     /*  GUI Settings */
     static SIZE := [300, 85]                                                                ;; Main GUI Size (W,H)
