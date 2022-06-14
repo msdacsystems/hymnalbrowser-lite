@@ -11,10 +11,6 @@
 Class UICompleter {
     static _NAME := "CPLTR"
 
-    static Setup() {
-        return UICompleter()
-    }
-
     __New() {
         this.WIDTH := UI.SEARCH.WIDTH
         this.HEIGHT := UI.SEARCH.HEIGHT
