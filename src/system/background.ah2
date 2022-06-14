@@ -24,12 +24,16 @@ class BackgroundThread {
             }
         }
         for method in methods {                                                             ;; Connect all methods to its background task
+            if SubStr(method, 1, 2) == '__' {                                               ;; Ignore methods that have '__' prefix because they have custom refresh time
+                continue
+            }
             SetTimer(
                 ObjBindMethod(BackgroundThread, method),
                 BackgroundThread.REFRESH_RATE
             )
         }
         
+        SetTimer(ObjBindMethod(BackgroundThread, '__HymnStats'), 1000)                      ;; Hymn Statistics
         /* Keybindings; might move to a separate class */
         Hotkey("~Enter", ObjBindMethod(Events.Launch, "Click", 'ReturnKey'))
         Hotkey("~NumpadEnter", ObjBindMethod(Events.Launch, "Click", 'NumpadEnter'))
@@ -55,7 +59,8 @@ class BackgroundThread {
 
         if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P') {
             WinGetPos(&X, &Y,,, System.AHK_TITLE)
-            _LOG.Verbose(Format(
+            if !System.IsOnModal()
+                _LOG.Verbose(Format(
                 "BackgroundThread: Main window was moved. "
                 "New window position: X:{1} Y:{2}", X, Y)
             )
@@ -66,11 +71,29 @@ class BackgroundThread {
 
     static LaunchButton() {
         /*  Delayed setting of mode via keyboard time idle */
-        try if SES.LAUNCH_READY and A_TimeIdleKeyboard > 1250 {                                 ;; Make a delay before setting the text back to ready mode
+        if SES.LAUNCH_READY and A_TimeIdleKeyboard > 1250 {                                 ;; Make a delay before setting the text back to ready mode
                 UI.BTN.LaunchSetMode("Ready")
         }
         if UI.BTN.LAUNCH.Text == "Launching" and A_TimeIdleKeyboard > 750 {                 ;; Time allowance before concluding the launch/ready mode
                 UI.BTN.LaunchSetMode("Launched")
         }
+    }
+
+    static __HymnStats() {
+        /* 
+            Handles session hymn stats such as queries
+        */
+        if !SES.TME_QUERY {
+            if UI.SEARCH.HasText() and SES.LAST_QUERIED != SES.CURR_HYMN {
+                SES.COUNT_QUERY++
+                SES.LAST_QUERIED := SES.CURR_HYMN
+                _LOG.Verbose(
+                    Format("Background: Query was incremented: {1} | Hymn: {2}",
+                    SES.COUNT_QUERY, SES.CURR_HYMN)
+                )
+            }
+            SES.TME_QUERY := CF.TME_QUERY
+        }
+        SES.TME_QUERY--
     }
 }
