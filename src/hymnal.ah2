@@ -29,8 +29,8 @@ Class HymnalDB {
             Default is 'hymns.sda'. A custom file may be specified in HYMNAL.PACKAGE.
             The directories are retrieved from /SW.DIRS_HYMNAL_PACKAGE which are:
                 (1) A_ScriptDir
-                (2) DIR_PROGRAM; and
-                (3) DIR_DOCS_PROGRAM
+                (2) SW.DIR_PROGRAM; and
+                (3) SW.DIR_DOCS_PROGRAM
             
             Failure to find the package in these directories will result
             to AbsentPackage error in Errors.HymnsDB.
