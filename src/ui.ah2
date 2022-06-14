@@ -1,5 +1,5 @@
 /*
-    Base Interface class for HBL
+    * Base Interface class for HBL
     ----------------------------
     This class handles all instance objects of the interface controls
     such as buttons, search bar, and completer.
@@ -34,12 +34,8 @@ class UI {
                 - UI.ClassName.Method (ex: UI.MENU.Show())
 
             Every UI object should have:
-                - a "Setup()" method.
                 - "_NAME" property
                 - "__new" method containing all the setup variables
-
-            The setup method should return an instance of the class.
-            
         */
         ST := A_TickCount
         for classObj in UI.UIs {
@@ -57,14 +53,14 @@ class UI {
             Events are forwarded to Events class.
         */
         _LOG.Verbose("UI: Connecting UI Events")
-        UI.MAIN.GUI.OnEvent("Close", Events.CloseEvent)
+        UI.MAIN.GUI.OnEvent("Close", Events.SystemExit)
         UI.MAIN.HYMN.OnEvent("Click", Events.Hymn.Click)
         UI.MAIN.TITLE.OnEvent("Click", Events.Title.Click)
         UI.MAIN.DETAILS.OnEvent("Click", Events.Details.Click)
         UI.BTN.LAUNCH.OnEvent("Click", Events.Launch.Click)
         
         UI.BTN.CLEAR.OnEvent("Click", Events.Search.Clear)
-        UI.SEARCH.OBJ.OnEvent("Change", Events.Search.Changed)        
+        UI.SEARCH.OBJ.OnEvent("Change", Events.Search.TextChanged)        
 
         OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
         OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
@@ -88,7 +84,7 @@ class UI {
         MouseGetPos(&X, &Y, &W, &C)
         if WinExist(System.AHK_PID) == W {
             if !UI.ACTIVE {
-                _LOG.Verbose('UI: Window is activated from LMouse')
+                _LOG.Verbose('UI: Window is activated from MouseClick')
                 UI.SetActive()
             }
             UI.CPLTR.Close()                                                                ;; Close the completer if the window is starting to move
@@ -152,7 +148,8 @@ class UI {
 
     static About(args*) {
         /* Shows the about notification */
-        TrayTip(Format("{1}`n{2}, {3}", SW.COPYRIGHT, SW.AUTHORS[1], SW.AUTHORS[2]),
-            "About", "0x24")
+        TrayTip(Format("{1}`n{2}, {3}",
+            SW.COPYRIGHT, SW.AUTHORS[1],
+            SW.AUTHORS[2]), "About v" SW.VERSION, "0x24")
     }
 }
