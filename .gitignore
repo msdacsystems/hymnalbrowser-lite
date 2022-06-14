@@ -1,5 +1,7 @@
-*.log
+*.bak
+*.env
 *.exe
+*.log
 *.sda
 *.code-workspace
 assets/
