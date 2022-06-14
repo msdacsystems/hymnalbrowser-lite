@@ -27,7 +27,7 @@ Class UIContextMenu {
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add()
         this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
-        this.OBJ.Add("&Exit", Events.SystemExit)
+        this.OBJ.Add("&Exit", Events.System.Exit)
     }
 
     ShowMenu() {
