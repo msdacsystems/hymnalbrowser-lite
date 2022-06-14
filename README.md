@@ -1,15 +1,12 @@
 <p align="center">
-    <img alt="Hymnal Browser Lite Logo" src="res/logo.png" width="100px" />
+    <img alt="Hymnal Browser Lite Logo" src="res/logo.png" width="100px"/>
     <h1 align="center">Hymnal Browser Lite</h1>
     <p align="center">A hymn browser and launcher for Seventh-day Adventist Church, lightweight version.</p>
+    <br>
+    <h2 align="center">What is Hymnal Browser?</h2>
+    <p align="center">Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.</p>
+    <center><img alt="Hymnal Browser Lite Main Menu Window" src="res/mainmenu.png"/></center>
 </p>
-<br>
-<h2 align="center">What is Hymnal Browser?</h2>
-<p align="center">
-Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.
-</p>
-
-<center><img alight="center"src="res/mainmenu.png"/></center>
 
 
 ## Features
