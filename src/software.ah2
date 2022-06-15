@@ -69,6 +69,8 @@ Class Software {
     static SIZE := [300, 85]                                                                ;; Main GUI Size (W,H)
     static GLB_FONT_SIZE := 9                                                               ;; Global font size
     static GLB_FONT_NAME := "Segoe UI"                                                      ;; Global font name
+    static CL_PRIMARY := "008dc9"
+    static CL_SECONDARY := "0079c5"
     static TEXT_DISABLED := "505050"
     static TEXT := "000000"
 
