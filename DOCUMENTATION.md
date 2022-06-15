@@ -10,7 +10,7 @@
   - [Known Limitations](#known-limitations)
   - [Localization](#localization)
   - [Code Architecture](#code-architecture)
-      - [Syntax and Terminologies](#syntax-and-terminologies)
+      - [Syntax and Terminology](#syntax-and-terminology)
       - [List of Classes](#list-of-classes)
         - [Core Classes](#core-classes)
         - [Interface Classes](#interface-classes)
@@ -27,15 +27,32 @@
         - [10. User Interface](#10-user-interface)
         - [11. Background Thread](#11-background-thread)
         - [12. Initialization Complete](#12-initialization-complete)
-      - [Program Flow](#program-flow)
-      - [Error Handling](#error-handling)
-      - [Relation of Config and Software](#relation-of-config-and-software)
+    - [User Interface](#user-interface)
+      - [Main Window Elements](#main-window-elements)
+      - [Settings Window Elements](#settings-window-elements)
+    - [Program Flow](#program-flow)
+    - [Error Handling](#error-handling)
+      - [List of Exit Codes](#list-of-exit-codes)
+      - [List of Error Names](#list-of-error-names)
+    - [Events](#events)
+      - [System](#system)
+        - [Exit](#exit)
+        - [Reload](#reload)
+      - [Launch](#launch)
+        - [Click](#click)
+      - [Settings](#settings)
+        - [Click](#click-1)
+      - [Search](#search)
+        - [TextChanged](#textchanged)
+        - [Clear](#clear)
+    - [List of variables](#list-of-variables)
+    - [Relation of Config and Software](#relation-of-config-and-software)
   - [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
 This file contains both developer and user documentation for the application.
-This documentation is last updated on **June 15, 2022**.
+This documentation is last updated on **June 16, 2022**.
 
 > Changes may or may not be made without prior notice.
 
@@ -44,7 +61,7 @@ This documentation is last updated on **June 15, 2022**.
 
 Autohotkey may not be the best language to develop this app, but this is just an experimental project to temporarily fix the slow runtime issue in the Python-based Hymnal Browser.
 
-It is programmed in C++ and its source code is open source. Though it's made for task automation which doesn't fit much in our application, the speed it offers makes it easier to run faster that is why we decided to create an application using this language.
+It is programmed in C++ and its source code is open source. Though it's made for task automation which doesn't fit much in our application, the speed it offers makes it easier to run faster which is why we decided to create an application using this language.
 
 
 ## Code Dependencies
@@ -63,23 +80,23 @@ It is programmed in C++ and its source code is open source. Though it's made for
 ## Known Limitations
 
 - Since this application is written in AHKv2, interface design is limited to what's available resources.
-- Although efforts have been made to maximize user interface, the primary goal is focused towards better functionality and reliability.
+- Although efforts have been made to maximize user interface, the primary goal is focused on better functionality and reliability.
 
 
 ## Localization
 
-Unfortunately, Hymnal Browser Lite only offers English and Tagalog presentations. We currently don't have plans of other languages as it will need to recreate the hymn files.
+Unfortunately, Hymnal Browser Lite only offers English and Tagalog presentations. We currently don't have plans for other languages as it will need to recreate the hymn files.
 
   
 ## Code Architecture
 
 Classes are broken down into different files to keep the code organized and maintainable. The code structure relies on object-oriented programming.
 
-The program consists of several classes in which every class has different purposes. (See list of classes below)
+The program consists of several classes in which every class has a different purpose. (See the list of classes below)
 
 Since an [external library](#code-dependencies) is needed to make the program run properly, most of the functions are custom and may not be explained very well. Many custom codes are implemented and inspired by Python's syntax and terminology like the use of leading underscores ( _ ) to indicate a method that should only be used internally.
 
-#### Syntax and Terminologies
+#### Syntax and Terminology
 
 (No content yet.)
 
@@ -87,16 +104,16 @@ Since an [external library](#code-dependencies) is needed to make the program ru
 
 ##### Core Classes
 1. [System](src/system/system.ah2) - This handles system-related info of the application such as checking if the required folders are present, executing the main program, and getting the monitor number where the application is visible.
-2. [UI](src/ui.ah2) - Handles user-interface behavior, threads, and connections between every control (or widgets) such as Search bar, Launch button, Suggestion box, and Hymn detais text. It also handles for every control.
-3. [Config](src/config.ah2) - Handles and processes the user-specified configuration. This also covers application-related configuration like `TME_QUERY` (Time before the search considers the count).
+2. [UI](src/ui.ah2) - Handles user-interface behavior, threads, and connections between every control (or widgets) such as Search bar, Launch button, Suggestion box, and Hymn detail text. It also handles every control.
+3. [Config](src/config.ah2) - Handles and processes the user-specified configuration. This also covers application-related configurations like `TME_QUERY` (Time before the search considers the count).
 4. [Hymnal](src/hymnal.ah2) - Works with the hymnal package's content such as parsing and generating a map of the parsed data.
-5. [Session](src/session.ah2) - Works similarly to Config class but this handles only the data in current session.
+5. [Session](src/session.ah2) - Works similarly to the Config class but this handles only the data in the current session.
 6. [Background](src/system/background.ah2) - Acts like the background thread/listener for the application. It covers events like detecting if the app is currently active or the window is moved. 
 7. [Events](src/system/events.ah2) - Handle events forwarded by signals from controls or the system. This contains methods like `Events.System.Exit()` where the system will request a proper close event for the application.
 8. [Errors](src/system/errors.ah2) - Handle errors properly for the system.
 9. [Launcher](src/launcher.ah2) - Handles extraction and presentation launch for the application.
-10. [File Management](src/system/fileManagement.ah2) - Manages the external files that is in scope of the program such as removing temp files.
-11. [SW/Software](src/softwaer.ah2) - Contains metadata about the software such as `SW.TITLE` to retrieve the title of the application.
+10. [File Management](src/system/fileManagement.ah2) - Manages the external files that are within the scope of the program such as removing temp files.
+11. [SW/Software](src/software.ah2) - Contains metadata about the software such as `SW.TITLE` to retrieve the title of the application.
 
 ##### Interface Classes
 12. [Buttons](src/interface/buttons.ah2) - Interface for buttons like **Clear** and **Launch** button.
@@ -106,7 +123,7 @@ Since an [external library](#code-dependencies) is needed to make the program ru
 16. [Main Menu](src/interface/mainmenu.ah2) - Interface for texts like the **Hymnal Browser Lite** title, the app version, and the hymn details.
 17. [Settings](src/interface/settings.ah2) - **[Not implemented yet]** a GUI version of configuration where user can change settings via this window.
 
-> There are several classes that are not implemented as file in the program. For example, the `_LOG` object from `KLogger` class handles the logging for the app. This helps the developer to identify bugs easily. This also acts as replacement for the default exception message box from AHK
+> Several classes are not implemented as a file in the program. For example, the `_LOG` object from `KLogger` class handles the logging for the app. This helps the developer to identify bugs easily. This also acts as a replacement for the default exception message box from AHK
 
 #### Initialization Flow
 
@@ -120,7 +137,7 @@ The following statements are under the `System.Exec()` method.
 `_STARTUP` - This variable starts the startup counter to measure how long the initialization will take time.
 
 ##### 2. Developer Mode
-`System.CheckDevMode()` will check if the application is being run in script mode or the compiled mode. The differences are minimal but noticeable. These includes: (1) additional menu items in the context menu as well as (2) the indicator besides the version text. But more importantly, the `FileInstall` command will be only executed if the system detects a compiled mode.
+`System.CheckDevMode()` will check if the application is being run in script mode or the compiled mode. The differences are minimal but noticeable. These include (1) additional menu items in the context menu as well as (2) the indicator beside the version text. But more importantly, the `FileInstall` command will be only executed if the system detects a compiled mode.
 
 ##### 3. Configuration and Logger
 Global variables like `_LOG` (KLogger) and `CF` (Config) are also initiated at this point. These are now the instance of their class, where `_LOG` handles logging and `CF` handles the configuration data of the application.
@@ -147,7 +164,7 @@ Menu tray items are deleted and replaced with an **Exit** item. You can see this
 `Error.Setup()` will rebind the error messages to `Error.BaseError()` method if the `SW.ERROR_HANDLING` is set to True
 
 ##### 5. Directory Verification
-System will now verify each required directories. Directories are retrieved from `SW.DIRS`. Every absent directory will be created. After this, the system logs the report, including `MISSING` and `RESOLVED` directories if available.
+The system will now verify each required directory. Directories are retrieved from `SW.DIRS`. Every absent directory will be created. After this, the system logs the report, including `MISSING` and `RESOLVED` directories if available.
 
 ##### 6. Requisites Verification (Presentation)
 After directory verification, the system will now verify the presentation software that will be used later for launching.
@@ -160,21 +177,23 @@ There are two (2) situations that the program may encounter:
 System environments are loaded and stored in an `ENV` object. This contains the sensitive keys for the program.
 
 ##### 8. Hymnal
-This part will now scan the hymnal package and retrieves its parsed content. Hymn package is specified in `CF.__FILE_HYMNALDB`. If the user changes the `[HYMNAL] PACKAGE = <name>` in settings.cfg (`SW.FILE_CONFIG`), the specified package will be used.
+This part will now scan the hymnal package and retrieves its parsed content. The hymn package is specified in `CF.__FILE_HYMNALDB`. If the user changes the `[HYMNAL] PACKAGE = <name>` in settings.cfg (`SW.FILE_CONFIG`), the specified package will be used.
 
-**HymnalDB._VerifyDatabase()**
+**HymnalDB._VerifyDatabase()** 
+
 There are several directories for the package search. This includes:
 1. `A_ScriptDir` or the directory where the .exe is located.
 2. `SW.DIR_PROGRAM` or the program's directory in `A_CommonAppdata` (ProgramData)
 3. `SW.DIR_DOCS_PROGRAM` or the program's directory in `Documents\MSDAC Systems`
 
-Failure to find the package in these directories will result to `AbsentPackage` error in `Errors.HymnsDB`.
+Failure to find the package in these directories will result in `AbsentPackage` error in `Errors.HymnsDB`.
 
 The package path is stored in `CF.__FILE_HYMNALDB` which will be used
 later in Launcher class.
 
 **HymnalDB.ScanHymnal()**
-The method will return a map of all hymnal data such as number of hymns in English, Tagalog, User, or both, the hymn titles, and hymn numbers.
+
+The method will return a map of all hymnal data such as the number of hymns in English, Tagalog, User, or both, the hymn titles, and hymn numbers.
 
 The method uses `SevenZip` to read the contents inside the package.
 
@@ -186,55 +205,212 @@ The Session data will start. The object is stored in global `SES` and all proper
 ##### 10. User Interface
 The user interface or [UI](src/ui.ah2) will execute several instructions for its `UI.Setup()` method, in which the individual controls are initialized.
 
-It basically calls every UI elements specified in `UI.UIs` array and hold its object to bind all objects together in a UI's property.
+It calls every UI element specified in `UI.UIs` array and holds its object to bind all objects together in a UI's property.
 
-> Class names are differrent from provided class names in static variable `_NAME`. (e.g: ContextMenu class is referenced as UI.RCTX)
+> Class names are different from provided class names in static variable `_NAME`. (e.g: ContextMenu class is referenced as UI.RCTX, not UI.ContextMenu)
 
-For example, the `UI.CPLTR` is referencing to the Completer object that is instantiated in setup method.
+For example, the `UI.CPLTR` is referencing the Completer object that is instantiated in the setup method.
 
 **UI.ConnectEvents()**
+
 After instantiating all UI elements, their events will now connect to `Events` class where Events will handle their function
 
 **UI.StartThreads()**
-The setup will now invoke the `UI.StartThreads()` to start the background listeners of some UI elements like Search bar.
+
+The setup will now invoke the `UI.StartThreads()` to start the background listeners of some UI elements like the search bar.
 
 **UI.Keybinds**
-The UI will now bind certain keys to it's function. One of examples is the <kbd>Ctrl</kbd> + <kbd>Backspace</kbd> which is connected to `UI.SEARCH.Keypress` to emulate a regular key combination in search bar (because it's apparently not working in AHK).
+
+The UI will now bind certain keys to its function. One of examples is the <kbd>Ctrl</kbd> + <kbd>Backspace</kbd> which is connected to `UI.SEARCH.Keypress` to emulate a regular key combination in search bar (because it's apparently not working in AHK).
 
 ##### 11. Background Thread
-After setting up the UI, the `BackgroundThread` class will now initalized. This class contains methods that are in a [timer](https://lexikos.github.io/v2/docs/commands/SetTimer.htm) with a specific period defined by `SW.BG_REF_RATE`
+After setting up the UI, the `BackgroundThread` class will now be initialized. This class contains methods that are in a [timer](https://lexikos.github.io/v2/docs/commands/SetTimer.htm) with a specific period defined by `SW.BG_REF_RATE`
 
-One of the method it contains is the `BackgroundThread.WindowListener()` that detect and listens to the activity of the main window if it's active or not, or whether the main window was moved.
+One of the methods it contains is the `BackgroundThread.WindowListener()` that detects and listens to the activity of the main window if it's active or not, or whether the main window was moved.
 
-The hymn stats can be also found here which listens at different period (custom listener) and logs a query and launch for a particular hymn.
+The hymn stats can be also found here which listens at different periods (custom listener) and logs a query and launch for a particular hymn.
 
 ##### 12. Initialization Complete
+Before the initialization is complete, the `_LOG` will dump all postponed logs to the log file.
 
-Before the intialization is complete, the `_LOG` will dump all postphoned logs to the log file.
+After that, the main window will now show the saved coordinates (if available) provided by `CF.WINDOW.XPOS` and `CF.WINDOW.YPOS`
 
-After that, the main window will now show at the saved coordinates (if available) provided by `CF.WINDOW.XPOS` and `CF.WINDOW.YPOS`
-
-A completion log will be sent to logger along with the startup time that was declared [here](#1-system-execution).
+A completion log will be sent to the logger along with the startup time that was declared [here](#1-system-execution).
 
 `_RUNTIME` will now start to mark the runtime of the program.
 
 At this point, the program is now ready for usage, assuming that there was no error encountered by the system as discussed in [Error handling](#error-handling).
 
-#### Program Flow
+### User Interface
 
-#### Error Handling
+This section contains all the details about the controls of the UI.
 
-#### Relation of Config and Software
+The application utilizes 3 GUI interfaces:
+1. Main Window
+2. Completer Window
+3. Settings Window
 
-The configuration and software shares similar purpose like storing a variable's value. However, there is a difference that makes these two comparable.
+Two context menus are found in the main window and the tray menu icon.
 
-| Config                                                           | Software                                              |
-| ---------------------------------------------------------------- | ----------------------------------------------------- |
-| Variables can be modified by user once specified a custom value. | Variables are fixed and cannot be changed by the user |
+There are seven (7) elements that can be found in the main window (from left to right, top to bottom):
+1. Title Text (Hymnal Browser Lite)
+2. Version Text
+3. Detail Text
+4. Last launched **[Not implemented yet]**
+5. Search Bar
+6. Clear Button
+7. Launch Button
+
+In the completer window or the suggestion box, the only element is the **ListBox** where the hymns are shown. The secondary window is transparent.
+
+
+#### Main Window Elements
+|     Name      | Control Type | Description                                                                      |
+| :-----------: | :----------: | -------------------------------------------------------------------------------- |
+|  Title Text   |     Text     | Displays "Hymnal Browser Lite" with a primary color                              |
+| Version Text  |     Text     | Displays the current version of the running app                                  |
+|  Detail Text  |     Text     | Displays the details of the hymn: Base hymn and Equivalent hymn                  |
+| Last Launched |     Text     | Dynamic text that displays the last launched time of the current hymn relatively |
+|  Search Bar   |     Edit     | A single-line edit that acts as an input for search query                        |
+| Clear Button  |    Button    | Clears the current search text                                                   |
+| Launch Button |    Button    | Launches the hymn. Also displays how many hymns are matching during the search   |
+
+#### Settings Window Elements
+> Not implemented yet.
+
+|      Name      | Control Type | Description |
+| :------------: | :----------: | ----------- |
+| Confirm Button |    Button    |             |
+
+
+### Program Flow
+
+### Error Handling
+
+#### List of Exit Codes
+These are the known exit codes covered by the program.
+| Code  |      Name       |  Scope   | Description                       |
+| :---: | :-------------: | :------: | --------------------------------- |
+|   0   |    `ExitApp`    |  System  | Normal application exit           |
+|   1   | `AbsentPackage` | HymnalDB | Hymnal package cannot be found    |
+|   2   |    `ExitApp`    |  System  | Normal application exit           |
+|  10   |   `ReloadApp`   |  System  | System reload request             |
+|  13   |   `BaseError`   |   Base   | A standard error if not specified |
+
+#### List of Error Names
+- `AbsentPackage` - Hymnal package cannot be found
+- `AbsentBinary`  - Binary 7z.exe cannot be found in `A_Temp`
+
+
+### Events
+This event class consists of nested classes.
+#### System
+##### Exit
+This event handles the proper exit of the application. Critical errors are also forwarded to this method to safely terminate the program.
+
+The exit code defines the severity of the application exit. (See [list of exit codes](#list-of-exit-codes)) An exit code of 0 or 2 is normal.
+##### Reload
+Reloads the program. Also invokes `Events.System.Exit()` with an error code of `10` which requests for a program restart. This doesn't save the session data and does not take parameters to execute in the next launch.
+
+#### Launch
+##### Click
+#### Settings
+##### Click
+#### Search
+##### TextChanged
+##### Clear
+
+
+### List of variables
+Below is the list of all variables declared in the program
+
+**Class** - Class where the variable belongs to
+**Function** - Function or method where the variable belongs to
+**Name** - Name of the variable
+**Type** (`[G/L/P]: [Type]`) - Data type of the variable. 'G' stands for Global, 'L' for Local, and 'P' for Property
+**Value** - Expected value of the variable
+**Description** - Information about the variable
+
+|  Class   | Func/Method       | Name                       | Type           | Value                                                | Description                                                      |
+| :------: | ----------------- | -------------------------- | -------------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
+|  Global  |                   | `__VERSION`                | G: Str         |                                                      | 4 digit version string (e.g: 1.2.3.4)                            |
+|  Global  |                   | `A_MaxHotkeysPerInterval`  | G: Int         | 5000                                                 | Controls the rate of hotkey activation                           |
+|  Global  |                   | `A_TrayMenu`               | G: Menu        | ObjectType                                           | Object **contains** tray menu items                              |
+| Software |                   | `PARENT`                   | P: Str         | MSDAC Systems                                        | Parent name of the software                                      |
+| Software |                   | `AUTHORS`                  | P: Array       | Ken Verdadero, Reynald Ycong                         | Author names                                                     |
+| Software |                   | `NAME`                     | P: Str         | Hymnal Browser Lite                                  | Name of the software                                             |
+| Software |                   | `TITLE`                    | P: Str         | Hymnal Browser Lite                                  | Same as `SW.NAME`                                                |
+| Software |                   | `COPYRIGHT_NAME`           | P: Str         | © 2022 MSDAC Systems                                 | Copyright symbol and the parent name                             |
+| Software |                   | `PARENT_NAME`              | P: Str         | MSDAC Systems Hymnal Browser Lite                    | Parent name and the name of the software                         |
+| Software |                   | `EXE_NAME`                 | P: Str         | Hymnal Browser Lite.exe                              | Name of the executable                                           |
+| Software |                   | `VERSION`                  | P: Str         |                                                      | retrieved from `__VERSION`                                       |
+| Software |                   | `VERSION_SHORT`            | P: Str         |                                                      | Version with leading 'v' and without the 4th digit               |
+| Software |                   | `VERSION_LABEL`            | P: Str         |                                                      | Version stage (Alpha, Beta, Release)                             |
+| Software |                   | `VERSION_STRING`           | P: Str         |                                                      | `SW.VERSION_SHORT` with `SW.VERSION_LABEL`                       |
+| Software |                   | `NAME_VERSION`             | P: Str         |                                                      | `SW.NAME` with `SW.VERSION`                                      |
+| Software |                   | `FULLNAME_VERSION`         | P: Str         |                                                      | `SW.PARENT` with `SW.NAME` and with `SW.VERSION`                 |
+| Software |                   | `FULLNAME_VERSION_LABEL`   | P: Str         |                                                      | `SW.PARENT`, `SW.NAME`, `SW.VERSION`, and `SW.VERSION_LABEL`     |
+| Software |                   | `DIR_PARENT`               | P: Str         | ProgramData/MSDAC Systems                            | Parent directory in common AppData                               |
+| Software |                   | `DIR_PROGRAM`              | P: Str         | ProgramData/MSDAC Systems/Hymnal Browser Lite        | Program directory in common AppData                              |
+| Software |                   | `DIR_DOCS_PARENT`          | P: Str         | Documents/MSDAC Systems                              | Parent directory in user Documents                               |
+| Software |                   | `DIR_DOCS_PROGRAM`         | P: Str         | Documents/MSDAC Systems/Hymnal Browser Lite          | Program directory in user Documents                              |
+| Software |                   | `DIR_TEMP`                 | P: Str         | `SW.DIR_PROGRAM`\temp                                | Temporary directory of cached presentations                      |
+| Software |                   | `DIRS_HYMNAL_PACKAGE`      | P: Array       | A_ScriptDir, `SW.DIR_PROGRAM`, `SW_DIR_DOCS_PROGRAM` | Directories where the hymnal package is expected to be found     |
+| Software |                   | `DIRS`                     | P: Array       | *Previous directories*                               | Array of directories to be used by `System.VerifyDirectories`    |
+| Software |                   | `BIN_ZIP`                  | P: Str         | 7z.exe or %temp%\7z.exe                              | Path of the 7zip binary                                          |
+| Software |                   | `FILE_ENV`                 | P: Str         | secrets.env                                          | Environment file                                                 |
+| Software |                   | `FILE_ICON`                | P: Str         | res\app_icon.ico                                     | Icon file                                                        |
+| Software |                   | `FILE_CONFIG`              | P: Str         | `SW.DIR_PROGRAM`\settings.cfg                        | Path of the configuration file                                   |
+| Software |                   | `FILE_POWERPOINT`          | P: Str         | *Usually in C:\Program Files\Microsoft Office*       | Path of POWERPNT.exe                                             |
+| Software |                   | `FILE_PRESENTER`           | P: Str         | `SW.FILE_POWERPOINT` if present, otherwise           | Path of the accepted presentation software                       |
+| Software |                   | `FILE_LOG`                 | P: Str         | app.log or dev.log                                   | Path of the log file                                             |
+| Software |                   | `LOG_MAX_LINES`            | P: Int         | 1000                                                 | Maximum lines the log is allowed to store                        |
+| Software |                   | `ERROR_HANDLING`           | P: Bool        | 0 or 1                                               | Error messages rebinding switch                                  |
+| Software |                   | `CPLTR_LIS_RATE`           | P: Int         | 50 (ms)                                              | Refresh rate of completer's listener thread (in milliseconds)    |
+| Software |                   | `CPLTR_MAX_ITEMS`          | P: Int         | 6                                                    | Maximum items to be displayed in the completer window            |
+| Software |                   | `BG_REF_RATE`              | P: Int         | 50 (ms)                                              | `BackgroundThread`'s common default refresh rate                 |
+| Software |                   | `SIZE`                     | P: Array       | 300, 85                                              | Main window's width and height                                   |
+| Software |                   | `GLB_FONT_SIZE`            | P: Int         | 9                                                    | Global font size of the application                              |
+| Software |                   | `GLB_FONT_NAME`            | P: Str         | Segoe UI                                             | Global font name of the application                              |
+| Software |                   | `CL_PRIMARY`               | P: Str         | 008DC9                                               | Primary color of the application                                 |
+| Software |                   | `CL_SECONDARY`             | P: Str         | 0079C5                                               | Secondary color of the application                               |
+| Software |                   | `TEXT_DISABLED`            | P: Str         | 505050                                               | Foreground disabled text color                                   |
+| Software |                   | `TEXT`                     | P: Str         | 000000                                               | Foreground text color                                            |
+|  System  | System            | `DEV_MODE`                 | P: Bool        | 0 or 1                                               | Developer mode switch                                            |
+|  System  | System            | `STATE_CRASH`              | P: Bool        | 0 or 1                                               | Crash state of the application                                   |
+|  System  | System            | `AHK_ID`                   | P: Int         |                                                      | ID of the main window handle (HWND) from `UI.MAIN.GUI.Hwnd`      |
+|  System  | System            | `AHK_PID`                  | P: Int         |                                                      | Process ID of the application                                    |
+|  System  | System            | `AHK_EXE`                  | P: Str         | ahk_exe Hymnal Browser Lite.exe                      | AHK Executable name of the application                           |
+|  System  | System            | `AHK_TITLE`                | P: Str         | ahk_exe Hymnal Browser Lite.exe                      | AHK Executable name of the application                           |
+|  System  | Setup             | `_STARTUP`                 | G: Int         | `A_TickCount`                                        | Startup time (initial)                                           |
+|  System  | Setup             | `_LOG`                     | G: KLogger     | ObjectType                                           | `KLogger` instance for app logs                                  |
+|  System  | Setup             | `CF`                       | G: Config      | ObjectType                                           | `Config` instance for app configuration                          |
+|  System  | Setup             | `ENV`                      | G: Environment | ObjectType                                           | Environment object                                               |
+|  System  | Setup             | `HYMNAL`                   | G: Map         |                                                      | Nested map containing all parsed hymnal data                     |
+|  System  | Setup             | `SES`                      | G: Session     | ObjectType                                           | Application session instance                                     |
+|  System  | Setup             | `_RUNTIME`                 | G: Int         |                                                      | Application runtime timestamp                                    |
+|  System  | VerifyDirectories | `MISSING`                  | L: Int         |                                                      | Missing directory count                                          |
+|  System  | VerifyDirectories | `RESOLVED`                 | L: Int         |                                                      | Resolved/created directory count                                 |
+|  Config  |                   | `FILE`                     | P: Str         | Same as `SW.FILE_CONFIG`                             | `SW.DIR_PROGRAM`\settings.cfg                                    |
+|  Config  |                   | `HEAD_TEXT`                | P: Str         |                                                      | aHeader text in configuration                                    |
+|  Config  |                   | `__CFG`                    | P: Object      | ObjectType                                           | Copy of the original loaded configuration                        |
+|  Config  | GetDefaults       | `DEF`                      | L: Object      | ObjectType                                           | Default object in configuration                                  |
+|  Config  | GetDefaults       | `HID`                      | L: Object      | ObjectType                                           | Hidden and excluded from configuration unless explicitly defined |
+|  Config  | GetDefaults       | `HID.TME_QUERY`            | L: Int         | 1                                                    | Time delay before a hymn query is considered a count             |
+|  Config  | GetDefaults       | `HID.MAIN.VERBOSE_LOG`     | L: Bool        | 0 or 1                                               | Extra details for logging                                        |
+|  Config  | GetDefaults       | `HID.WINDOW.ALWAYS_ON_TOP` | L: Bool        | 0 or 1                                               | Window's ability to stay on top                                  |
+|  Config  | Dump              | `F_CFG`                    | L: Object      | ObjectType                                           | Filtered configuration                                           |
+
+
+### Relation of Config and Software
+
+The configuration and software share a similar purpose like storing a variable's value. However, there is a difference that makes these two comparable.
+
+In the Config class, variables can be modified by the user once specified a custom value. On the other hand, the Software class variables are fixed and cannot be changed by the user.
 
 
 
 ## Acknowledgements
-Special thanks to AutoHotkey team and Lexikos for making this possible with AHK. 
+Special thanks to the AutoHotkey team and Lexikos for making this possible with AHK. 
 
 Copyright © 2022 MSDAC Systems
