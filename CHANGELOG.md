@@ -9,13 +9,13 @@ For developer-related changes, view the changes [here](https://github.com/msdacs
 *Changes for* patch **v0.2.3** (2022-06-15)
 - New icon
 - Initialization code is restructured
-- Several code refactors for interface (removed Setup method)
+- Code refactors for interface (removed Setup method)
 - Better error handling (missing binary and presentation failure)
 - Lower package size (.sda package is now using better compression; from 98 MB down to 28 MB)
 - Added query count and launch count for hymns. (Statistics are to be followed)
-- Fixed a bug where the application behaves abnormal when a same window name 'Hymnal Browser Lite' is present in processes.
-- The window's position will now dump at the end of session compared to occassionally
-- Temp folder will now be retained at the end of session.
+- Fixed a bug where the application behaves abnormally when the same window name 'Hymnal Browser Lite' is present in processes.
+- The window's position will now dump at the end of the session compared to occasionally
+- The temp folder will now be retained at the end of the session.
 
 ---
 
