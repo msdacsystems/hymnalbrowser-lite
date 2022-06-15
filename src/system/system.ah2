@@ -12,7 +12,7 @@ class System {
     static STATE_CRASH := false
     static AHK_ID := ""                                                                     ;; To be set by UI.MAIN.GUI's HWND
     static AHK_PID := "ahk_pid " System.GetPID()
-    static AHK_EXE := "ahk_exe Hymnal Browser Lite.exe"
+    static AHK_EXE := "ahk_exe " SW.EXE_NAME
     static AHK_TITLE := "^Hymnal Browser Lite$"
 
     static Exec() {
@@ -48,7 +48,7 @@ class System {
         global SES := Session.Setup()
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
-        _LOG.DumpPostphonedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
+        _LOG.DumpPostponedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
         
         UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
 
@@ -56,7 +56,7 @@ class System {
         global _RUNTIME := A_TickCount
     }
 
-    static VerifyDirectories(postphoneLog:=0) {
+    static VerifyDirectories(postponeLog:=0) {
         /* 
             Checks every directory. Creates new one if not present.
         */
@@ -68,11 +68,11 @@ class System {
                 MISSING++
                 _LOG.Warn(Format(
                     "System: Directory '{1}' was not found. "
-                    "Creating new one.", dir), postphoneLog
+                    "Creating new one.", dir), postponeLog
                 )
                 try DirCreate(dir)
                 catch Error as e {
-                    _LOG.Error("System: Cannot create the directory: " dir, postphoneLog)
+                    _LOG.Error("System: Cannot create the directory: " dir, postponeLog)
                     continue
                 }
                 RESOLVED++
@@ -83,10 +83,10 @@ class System {
             _LOG.Info(Format(
                 "System: {1} item(s) were missing; resolved {2} of {3}.",
                 MISSING, RESOLVED, MISSING),
-                postphoneLog
+                postponeLog
             )
         } else {
-            _LOG.Info("System: Directory verification sucessfully.", postphoneLog)
+            _LOG.Info("System: Directory verification sucessfully.", postponeLog)
         }
 
     }

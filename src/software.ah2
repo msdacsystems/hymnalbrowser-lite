@@ -15,11 +15,11 @@ Class Software {
     static PARENT := "MSDAC Systems"
     static AUTHORS := ["Ken Verdadero", "Reynald Ycong"]
     static NAME := "Hymnal Browser Lite"
+    static TITLE := this.NAME
     static COPYRIGHT := "© 2022 MSDAC Systems"
     static COPYRIGHT_NAME := this.NAME " © 2022 MSDAC Systems"
-    static TITLE := this.NAME
     static PARENT_NAME := this.PARENT ' ' this.NAME
-    static EXE_NAME := "Hymnal Browser Lite.exe"
+    static EXE_NAME := this.NAME '.exe'
     static VERSION := __VERSION
     static VERSION_SHORT := 'v' Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.')
     static VERSION_LABEL := "Beta"
@@ -29,8 +29,8 @@ Class Software {
     static NAME_VERSION := Format("{1} v{2}", this.NAME, this.VERSION)
     static FULLNAME_VERSION := Format("{1} {2} v{3}", this.PARENT, this.NAME, this.VERSION)
     static FULLNAME_VERSION_LABEL := Format(
-        "{1} {2} v{3} {4}",
-        this.PARENT, this.NAME, this.VERSION, this.VERSION_LABEL
+        "{1} v{2} {3}",
+        this.PARENT_NAME, this.VERSION, this.VERSION_LABEL
     )
     
     /*  Directories */
@@ -53,7 +53,6 @@ Class Software {
     static FILE_ENV := (A_IsCompiled ? PathJoin(A_Temp, 'secrets.env'):'secrets.env')
     static FILE_ICON := "res\app_icon.ico"
     static FILE_CONFIG := PathJoin(this.DIR_PROGRAM, "settings.cfg")
-    static FILE_HYMNALDB := PathJoin(this.DIR_PROGRAM, "hymns.sda")
     static FILE_POWERPOINT := ''                                                            ;; Placeholder; to be filled by System.VerifyRequisites.
     static FILE_PRESENTER := ''                                                             ;; Placeholder; to be filled by System.VerifyRequisites.
     static FILE_LOG := (A_IsCompiled ? PathJoin(this.DIR_PROGRAM, "app.log"):"dev.log")
