@@ -10,6 +10,7 @@
 class System {
     static DEV_MODE := false
     static STATE_CRASH := false
+    static AHK_ID := ""                                                                     ;; To be set by UI.MAIN.GUI's HWND
     static AHK_PID := "ahk_pid " System.GetPID()
     static AHK_EXE := "ahk_exe Hymnal Browser Lite.exe"
     static AHK_TITLE := "^Hymnal Browser Lite$"
@@ -127,7 +128,7 @@ class System {
                 FileInstall("bin\7z.exe", A_Temp "\7z.exe", true)
                 FileInstall("secrets.env", A_Temp "\secrets.env", true)
             case 1:
-                Misc.HookReloadScript(1)
+                Misc.HookReloadScript(1,, Events.System.Reload)
         }
     }
 
@@ -137,7 +138,7 @@ class System {
     static HasCrashed() => System.STATE_CRASH
     static IsOnModal() => WinActive("ahk_class #32770")? 1:0
     static SetActive() {
-        WinActivate(WinExist("HBL Completer") ? System.AHK_TITLE: System.AHK_PID)
+        WinActivate(System.AHK_ID)
         UI.ACTIVE := true
     }
     static IsFocused() {

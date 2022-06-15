@@ -84,7 +84,7 @@ class UI {
 
     static LeftMousePressEvent(args*) {
         MouseGetPos(&X, &Y, &W, &C)
-        if WinExist(System.AHK_PID) == W {
+        if WinExist(System.AHK_ID) == W {
             if !UI.ACTIVE {
                 _LOG.Verbose('UI: Window is activated from MouseClick')
                 UI.SetActive()
@@ -128,7 +128,6 @@ class UI {
         CF.WINDOW.XPOS := X
         CF.WINDOW.YPOS := Y
         CF.WINDOW.MON := System.GetWinMonitor()
-        CF.Dump()
     }
 
     static Minimize(args*) {

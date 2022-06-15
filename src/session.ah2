@@ -79,6 +79,7 @@ class Session {
     EndSession() {
         /*  Executes several instructions about closing the session */
         UI.UpdatePos()
+        CF.Dump()
         this._SendEndReport()
     }
 }
