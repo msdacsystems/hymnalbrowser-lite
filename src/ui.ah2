@@ -60,7 +60,16 @@ class UI {
         UI.BTN.LAUNCH.OnEvent("Click", Events.Launch.Click)
         
         UI.BTN.CLEAR.OnEvent("Click", Events.Search.Clear)
-        UI.SEARCH.OBJ.OnEvent("Change", Events.Search.TextChanged)        
+        UI.SEARCH.OBJ.OnEvent("Change", Events.Search.TextChanged)
+
+        UI.SETTINGS.OBJ.OnEvent("Close", Events.Settings.CloseEvent)
+        UI.SETTINGS.BTN_OK.OnEvent("Click", Events.Settings.Ok)
+        UI.SETTINGS.CHK_AOT.OnEvent("Click",
+            ObjBindMethod(Events.Settings,"ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
+        UI.SETTINGS.CHK_FOCUS_BACK.OnEvent("Click",
+            ObjBindMethod(Events.Settings, "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))
+        UI.SETTINGS.CHK_SLIDESHOW.OnEvent("Click",
+            ObjBindMethod(Events.Settings, "ToggleCheck", UI.SETTINGS.CHK_SLIDESHOW, 'SLD'))
 
         OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
         OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
@@ -71,6 +80,7 @@ class UI {
         SetTimer(ObjBindMethod(UI.SEARCH, "Listener"), 50)
         SetTimer(ObjBindMethod(UI.BTN, "Listener"), 50)
         SetTimer(ObjBindMethod(UI.CPLTR, "Listener"), SW.CPLTR_LIS_RATE)
+        SetTimer(ObjBindMethod(UI.SETTINGS, "Listener"), 50)
     }
     
     static Keybinds() {
@@ -89,8 +99,10 @@ class UI {
                 _LOG.Verbose('UI: Window is activated from MouseClick')
                 UI.SetActive()
             }
+            if !UI.SETTINGS.IsOpened() {
+                System.MoveMain()                                                           ;; Allows the user to click-hold on the window to move
+            }
             UI.CPLTR.Close()                                                                ;; Close the completer if the window is starting to move
-            System.MoveMain()                                                               ;; Allows the user to click-hold on the window to move
         }
     }
     

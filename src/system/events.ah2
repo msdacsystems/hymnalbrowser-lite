@@ -80,7 +80,27 @@ class Events {
 
     class Settings {
         static Click(args*) {
+            _LOG.Debug("Settings window was opened")
             UI.SETTINGS.Show()
+        }
+        static CloseEvent(args*) {
+            _LOG.Debug("Settings window was closed")
+        }
+
+        static ToggleCheck(chkObj, cfgKey, args*) {
+            chkObj.SetChecked(chkObj.CheckState() ? 1:0)
+            switch cfgKey {
+                case 'FBK': CF.LAUNCH.FOCUS_BACK := chkObj.CheckState()
+                case 'SLD': CF.LAUNCH.TYPE := chkObj.CheckState()
+                case 'AOT': 
+                    CF.WINDOW.ALWAYS_ON_TOP := chkObj.CheckState()
+                    UI.MAIN.GUI.Opt((chkObj.CheckState() ? '+':'-') "AlwaysOnTop")
+            }
+            CF.Dump()
+        }
+
+        static Ok(args*) {
+            UI.SETTINGS.Hide()
         }
     }
     

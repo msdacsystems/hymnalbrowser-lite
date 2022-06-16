@@ -55,7 +55,6 @@ class BackgroundThread {                                                        
 
         if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P') {
             WinGetPos(&X, &Y,,, System.AHK_TITLE)
-            if !System.IsOnModal()
                 _LOG.Verbose(Format(
                 "BackgroundThread: Main window was moved. "
                 "New window position: X:{1} Y:{2}", X, Y)
@@ -91,5 +90,17 @@ class BackgroundThread {                                                        
             SES.TME_QUERY := CF.TME_QUERY
         }
         SES.TME_QUERY--
+    }
+
+    static SettingsModal() {
+        switch UI.SETTINGS.IsOpened() {
+            case 0:
+                UI.SEARCH.OBJ.Opt("-ReadOnly")
+                UI.BTN.CLEAR.SetEnabled(1)
+            case 1:
+                UI.BTN.LAUNCH.SetEnabled(0)
+                UI.BTN.CLEAR.SetEnabled(0)
+                UI.SEARCH.OBJ.Opt("+ReadOnly")
+        }
     }
 }
