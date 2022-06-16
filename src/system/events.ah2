@@ -81,11 +81,8 @@ class Events {
     }
 
     class Settings {
-        static Click(args*) {
-            UI.SETTINGS.Show()
-        }
-        static CloseEvent(args*) {
-        }
+        static Click(args*) => UI.SETTINGS.Show()
+        static CloseEvent(args*) => UI.SETTINGS.Hide() 
 
         static ToggleCheck(chkObj, cfgKey, args*) {
             chkObj.SetChecked(chkObj.CheckState() ? 1:0)
@@ -100,7 +97,7 @@ class Events {
         }
 
         static Ok(args*) {
-            UI.SETTINGS.Hide()
+            Events.Settings.CloseEvent()
         }
     }
     

@@ -17,6 +17,12 @@ class UIButtons {
         this.LAUNCH := GUIx.Button.Extend(
             UI.MAIN.GUI.AddButton("0x300 0xC00 YP W100", " Launch")
         )
+
+        this.LAUNCH.LAST_STATE := 0
+
+        /*  Extended methods */
+        this.LAUNCH.SetLastState := SetLastState(obj) => this.LaunchSetLastState()
+        this.LAUNCH.SetMode := SetMode(obj, mode) => this.LaunchSetMode(mode)
     }
 
     Listener() {
@@ -27,6 +33,8 @@ class UIButtons {
             this.LaunchSetMode("NotAvailable")
         }
     }
+
+    LaunchSetLastState() => this.LAUNCH.LAST_STATE := ControlGetEnabled(this.LAUNCH)
 
     LaunchSetMode(mode, args*) {
         switch mode {

@@ -64,12 +64,16 @@ class UI {
 
         UI.SETTINGS.OBJ.OnEvent("Close", Events.Settings.CloseEvent)
         UI.SETTINGS.BTN_OK.OnEvent("Click", Events.Settings.Ok)
-        UI.SETTINGS.CHK_AOT.OnEvent("Click",
-            ObjBindMethod(Events.Settings,"ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
-        UI.SETTINGS.CHK_FOCUS_BACK.OnEvent("Click",
-            ObjBindMethod(Events.Settings, "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))
-        UI.SETTINGS.CHK_SLIDESHOW.OnEvent("Click",
-            ObjBindMethod(Events.Settings, "ToggleCheck", UI.SETTINGS.CHK_SLIDESHOW, 'SLD'))
+
+        UI.SETTINGS.CHK_AOT.OnEvent(
+            "Click", ObjBindMethod(Events.Settings, 
+            "ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
+        UI.SETTINGS.CHK_FOCUS_BACK.OnEvent(
+            "Click", ObjBindMethod(Events.Settings,
+            "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))
+        UI.SETTINGS.CHK_SLIDESHOW.OnEvent(
+            "Click", ObjBindMethod(Events.Settings,
+            "ToggleCheck", UI.SETTINGS.CHK_SLIDESHOW, 'SLD'))
 
         OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
         OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
@@ -162,5 +166,21 @@ class UI {
         TrayTip(Format("{1}`n{2}, {3}",
             SW.COPYRIGHT, SW.AUTHORS[1],
             SW.AUTHORS[2]), "About v" SW.VERSION, "0x24")
+    }
+
+    static SetSettingsModal(mode) {
+        /*  Controls main window elements when settings modal is present */
+        switch mode {
+            case 0:
+                UI.BTN.LAUNCH.SetLastState()                                                ;; Remembers the last state of the Launch Button
+                (UI.BTN.LAUNCH.IsEnabled() ? UI.BTN.LAUNCH.SetMode("Ready"):0)
+                UI.BTN.LAUNCH.SetEnabled(0)
+                UI.BTN.CLEAR.SetEnabled(0)
+                UI.SEARCH.OBJ.Opt("+ReadOnly")
+            case 1:
+                UI.SEARCH.OBJ.Opt("-ReadOnly")
+                UI.BTN.CLEAR.SetEnabled(1)
+                UI.BTN.LAUNCH.SetEnabled(UI.BTN.LAUNCH.LAST_STATE)                          ;; Depends on the last state
+        }
     }
 }

@@ -91,16 +91,4 @@ class BackgroundThread {                                                        
         }
         SES.TME_QUERY--
     }
-
-    static SettingsModal() {
-        switch UI.SETTINGS.IsOpened() {
-            case 0:
-                UI.SEARCH.OBJ.Opt("-ReadOnly")
-                UI.BTN.CLEAR.SetEnabled(1)
-            case 1:
-                UI.BTN.LAUNCH.SetEnabled(0)
-                UI.BTN.CLEAR.SetEnabled(0)
-                UI.SEARCH.OBJ.Opt("+ReadOnly")
-        }
-    }
 }

@@ -19,10 +19,19 @@ Class UISettings {
         this.OBJ.AddGroupBox(Format("SECTION W{1} R1", this.WIDTH-20), "General")
         this.CHK_AOT := GUIx.CheckBox.Extend(this.OBJ.AddCheckbox("XP15 YP20", "Always on top"))
         this.OBJ.AddGroupBox(Format("XS SECTION W{1} R2", this.WIDTH-20), "Presentation")
-        this.CHK_FOCUS_BACK := GUIx.CheckBox.Extend(this.OBJ.AddCheckbox("XP15 YP20", "Focus back after launching"))
-        this.CHK_SLIDESHOW := GUIx.CheckBox.Extend(this.OBJ.AddCheckbox("XP", "Start in slideshow"))
-        ; this.BTN_RESET := GUIx.Button.Extend(this.OBJ.AddButton(Format("X{1} Y{2}", this.WIDTH-200, this.HEIGHT-38), "Reset to defaults"))
-        this.BTN_OK := GUIx.Button.Extend(this.OBJ.AddButton(Format("X{1} Y{2} W75", this.WIDTH-90, this.HEIGHT-38), "OK"))
+        this.CHK_FOCUS_BACK := GUIx.CheckBox.Extend(
+            this.OBJ.AddCheckbox("XP15 YP20", "Focus back after launching")
+        )
+        this.CHK_SLIDESHOW := GUIx.CheckBox.Extend(
+            this.OBJ.AddCheckbox("XP", "Start in slideshow")
+        )
+        ; this.BTN_RESET := GUIx.Button.Extend(
+        ;     this.OBJ.AddButton(Format("X{1} Y{2}", this.WIDTH-200, this.HEIGHT-38),
+        ;     "Reset to defaults")
+        ; )
+        this.BTN_OK := GUIx.Button.Extend(
+            this.OBJ.AddButton(Format("X{1} Y{2} W75", this.WIDTH-90, this.HEIGHT-38), "OK")
+        )
         this.OBJ.AddText(
             Format("Y{1} X17 C{2}", this.HEIGHT-30, SW.TEXT_DISABLED), SW.VERSION_STRING
         )
@@ -30,12 +39,19 @@ Class UISettings {
         this.SetStates()
     }
 
-    Show() => this.OBJ.Show(Format("W{1} H{2}", this.WIDTH, this.HEIGHT))
-    Hide() => this.OBJ.Hide()
+    Show() {
+        this.OBJ.Show(Format("W{1} H{2}", this.WIDTH, this.HEIGHT))
+        UI.SetSettingsModal(0)
+    }
+    Hide() {
+        this.OBJ.Hide()
+        UI.SetSettingsModal(1)
+    }
+        
 
     Listener() {
         if GetKeyState("Esc", 'P') {
-            this.Hide()
+            Events.Settings.CloseEvent()
         }
     }
 
