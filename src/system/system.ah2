@@ -135,9 +135,9 @@ class System {
 
     static GetPID() => DllCall("GetCurrentProcessId")
     static GetWinMonitor() =>  Window.GetCurrentMonitor(System.AHK_PID)
-    static IsActive() => WinActive(System.AHK_PID)? 1:0
+    static IsActive() => (WinActive(System.AHK_PID) ? 1:0)
     static HasCrashed() => System.STATE_CRASH
-    static IsOnModal() => WinActive("ahk_class #32770")? 1:0
+    static IsOnModal() => (WinExist(System.AHK_PID) && WinExist("ahk_class #32770") ? 1:0)
     static SetActive() {
         WinActivate(System.AHK_ID)
         UI.ACTIVE := true

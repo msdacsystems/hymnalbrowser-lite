@@ -30,7 +30,7 @@ class UISearchBar {
     }
 
     Listener() {
-        if !this.HasText() && UI.BTN.LAUNCH.IsEnabled() {                                       ;; Clears the Hymn text when there's no input in search
+        if !this.HasText() && UI.BTN.LAUNCH.IsEnabled() && !System.IsOnModal() {            ;; Clears the Hymn text when there's no input in search
             _LOG.Verbose("Query: No text detected in search bar")
         }
     }
