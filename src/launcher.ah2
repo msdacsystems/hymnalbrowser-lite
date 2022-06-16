@@ -63,8 +63,11 @@ Class Launcher {
                     SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount-ST))
             )
             SES.COUNT_LAUNCH += 1
-                    
-            (CF.LAUNCH.FOCUS_BACK ? System.SetActive():0)                                   ;; Focus back to main window if configuration is set to true, also selects all the text
+            
+            if CF.LAUNCH.FOCUS_BACK {                                                       ;; Focus back to main window if configuration is set to true, also selects all the text
+                UI.SetActive()
+                System.SetActive()
+            }
         } catch Error as e {
             _LOG.Error("Launcher: Error occured while launching Hymn #"
                         SES.CURR_NUM "; " e.Message)
