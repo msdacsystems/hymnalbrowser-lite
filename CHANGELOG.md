@@ -3,10 +3,10 @@
 For developer-related changes, view the changes [here](https://github.com/msdacsystems/hymnalbrowser-lite/commits/main).
 
 *This only logs significant changes in the application. Hotfix are not included.
-
+*Changelog was ended on v0.2.4 for v0.2.x
 ### Latest
 
-*Changes for* patch **v0.3.0** (2022-06-16)
+*Changes for* patch **v0.2.4** (2022-06-16)
 - Added a settings window (context menu -> Settings)
 - Fixed a bug where focus back on application after launching a presentation will not work
 
