@@ -82,11 +82,9 @@ class Events {
 
     class Settings {
         static Click(args*) {
-            _LOG.Debug("Settings window was opened")
             UI.SETTINGS.Show()
         }
         static CloseEvent(args*) {
-            _LOG.Debug("Settings window was closed")
         }
 
         static ToggleCheck(chkObj, cfgKey, args*) {
