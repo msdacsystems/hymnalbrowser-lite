@@ -52,7 +52,7 @@ class UIMainMenu {
     WasMoved() {
         /*  Returns the state of window if it's moving or not */
         try {
-            WinGetClientPos(&X, &Y,,, System.AHK_TITLE)
+            WinGetClientPos(&X, &Y,,, System.AHK_ID)
             if X != CF.WINDOW.XPOS && Y != CF.WINDOW.YPOS {
                 return 1
             }
