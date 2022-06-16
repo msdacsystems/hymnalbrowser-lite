@@ -63,7 +63,9 @@ class Events {
     
     class ContextMenu {
         static Click(source, hk:='') {
-            UI.RCTX.ShowMenu()
+            if !UI.SETTINGS.IsOpened() {
+                UI.RCTX.ShowMenu()
+            }
         }
     }
 
