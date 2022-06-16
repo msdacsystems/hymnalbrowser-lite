@@ -30,7 +30,7 @@ class UISearchBar {
     }
 
     Listener() {
-        if !this.HasText() && UI.BTN.LaunchIsEnabled() {                                       ;; Clears the Hymn text when there's no input in search
+        if !this.HasText() && UI.BTN.LAUNCH.IsEnabled() {                                       ;; Clears the Hymn text when there's no input in search
             _LOG.Verbose("Query: No text detected in search bar")
         }
     }
@@ -112,7 +112,7 @@ class UISearchBar {
                 SES.FILENAME := Format("{1} {2}.pptx", NUM, TTL)
                 SES.HYMN_PATH := Format("{1}/{2}", CT, SES.FILENAME)
 
-                UI.BTN.LaunchSetEnabled(1)
+                UI.BTN.LAUNCH.SetEnabled(1)
                 SES.ResetQueryTimeout()
 
                 ; HYMNSIZE := StrLen(SES.CURR_HYMN)                                         ;; For hymn details
