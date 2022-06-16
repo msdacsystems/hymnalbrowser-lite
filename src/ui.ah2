@@ -142,9 +142,7 @@ class UI {
         CF.WINDOW.MON := System.GetWinMonitor()
     }
 
-    static Minimize(args*) {
-        WinMinimize(System.AHK_PID)
-    }
+    static Minimize(args*) => WinMinimize(System.AHK_ID)
 
     static SetInactive() {
         /*  Sets the UI to inactive state */

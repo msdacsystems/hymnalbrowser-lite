@@ -126,6 +126,7 @@ class System {
         switch System.DEV_MODE {
             case 0:
                 FileInstall("bin\7z.exe", A_Temp "\7z.exe", true)
+                FileInstall("bin\7z.dll", A_Temp "\7z.dll", true)
                 FileInstall("secrets.env", A_Temp "\secrets.env", true)
             case 1:
                 Misc.HookReloadScript(1,, Events.System.Reload)

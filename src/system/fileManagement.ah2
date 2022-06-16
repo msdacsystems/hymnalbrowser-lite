@@ -73,9 +73,10 @@ class FileManagement {
     static CloseTemp() {
         try if !System.DEV_MODE {
             FileDelete(SW.BIN_ZIP)
+            FileDelete(SW.FILE_ZIPDLL)
             _LOG.Info("System: Internal files were closed successfully")
-        } catch Error {
-            _LOG.Warn("System: Unable to close internal files")
+        } catch Error as e {
+            _LOG.Warn("System: Unable to close internal file(s): " e.Message)
         }
     }
 }

@@ -107,13 +107,18 @@ Class HymnalDB {
         
         HymnalDB._VerifyDatabase()
         _LOG.Info("HymnsDB: Scanning hymnal from `"" CF.__FILE_HYMNALDB '"')
-        HymnZip := SevenZip(CF.__FILE_HYMNALDB, ENV.PW_HYMNS, SW.BIN_ZIP)
+        global HYMN_ZIP := SevenZip(
+            CF.__FILE_HYMNALDB,
+            ENV.PW_HYMNS,
+            SW.BIN_ZIP,
+            SW.FILE_ZIPDLL
+        )
         _HYMNAL := [[[], []], [[], []], [[], []], -1, -1, -1]
         CATS := ["EN", "TL", "US"]
         HNUMS := []
         INVALID_ITEMS := []
         
-        for FILE in HymnZip.PATHS {
+        for FILE in HYMN_ZIP.PATHS {
             spH := HymnalDB.SplitHymn(FILE)
             if (!ArrayMatch(spH.Ext, ['pptx', 'sda']) and
                 !ArrayMatch(FILE, CATS)) and StrLen(FILE) {

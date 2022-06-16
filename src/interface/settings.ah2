@@ -21,7 +21,7 @@ Class UISettings {
         this.OBJ.AddGroupBox(Format("XS SECTION W{1} R2", this.WIDTH-20), "Presentation")
         this.CHK_FOCUS_BACK := GUIx.CheckBox.Extend(this.OBJ.AddCheckbox("XP15 YP20", "Focus back after launching"))
         this.CHK_SLIDESHOW := GUIx.CheckBox.Extend(this.OBJ.AddCheckbox("XP", "Start in slideshow"))
-        this.BTN_RESET := GUIx.Button.Extend(this.OBJ.AddButton(Format("X{1} Y{2}", this.WIDTH-200, this.HEIGHT-38), "Reset to defaults"))
+        ; this.BTN_RESET := GUIx.Button.Extend(this.OBJ.AddButton(Format("X{1} Y{2}", this.WIDTH-200, this.HEIGHT-38), "Reset to defaults"))
         this.BTN_OK := GUIx.Button.Extend(this.OBJ.AddButton(Format("X{1} Y{2} W75", this.WIDTH-90, this.HEIGHT-38), "OK"))
         this.OBJ.AddText(
             Format("Y{1} X17 C{2}", this.HEIGHT-30, SW.TEXT_DISABLED), SW.VERSION_STRING
@@ -46,7 +46,7 @@ Class UISettings {
         this.CHK_SLIDESHOW.SetChecked(CF.LAUNCH.TYPE && SW.FILE_PRESENTER ? 1:0)
         this.CHK_SLIDESHOW.SetEnabled(SW.FILE_PRESENTER ? 1:0)
 
-        this.BTN_RESET.SetEnabled(0)                                                        ;; Temporarily disabled due to under development
+        ; this.BTN_RESET.SetEnabled(0)                                                        ;; Temporarily disabled due to under development
     }
     
     IsOpened() =>  (WinExist("ahk_id " this.OBJ.Hwnd) ? 1:0)

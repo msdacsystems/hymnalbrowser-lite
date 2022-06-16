@@ -50,6 +50,7 @@ Class Software {
     
     /*  Individual Files */
     static BIN_ZIP := A_IsCompiled ? PathJoin(A_Temp, '7z.exe'): 'bin\7z.exe'               ;; Binary file of 7z
+    static FILE_ZIPDLL := (A_IsCompiled ? PathJoin(A_Temp, '7z.dll'):'bin\7z.dll')
     static FILE_ENV := (A_IsCompiled ? PathJoin(A_Temp, 'secrets.env'):'secrets.env')
     static FILE_ICON := "res\app_icon.ico"
     static FILE_CONFIG := PathJoin(this.DIR_PROGRAM, "settings.cfg")

@@ -21,10 +21,13 @@ Class Launcher {
         
         System.SetActive()                                                                  ;; Weird. Prevents windows sound from playing when a hotkey (Return/Enter) was pressed.
         try {
-            ZIP := SevenZip(CF.__FILE_HYMNALDB, ENV.PW_HYMNS, SW.BIN_ZIP)
-            RESULT := ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
+            RESULT := HYMN_ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
         } catch Error as e {
-            Errors.Launcher("AbsentBinary")                                                 ;; Call system error if the binary is missing
+            switch e.Extra {
+                case 'Binary': Errors.Launcher("AbsentBinary")                              ;; Call system error if the binary is missing
+                case 'Library': Errors.Launcher("AbsentLibrary")                            ;; Call system error if the 7z library is missing
+                default: Errors.BaseError(e)
+            }
             return
         }
 
