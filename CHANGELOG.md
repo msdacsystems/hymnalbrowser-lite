@@ -8,7 +8,7 @@ For developer-related changes, view the changes [here](https://github.com/msdacs
 
 *Changes for* update **v0.3.0** (2022-06-16)
 - Added a settings window (context menu -> Settings)
-- Fixed a bug where focus back on application after launching a presentation will not work
+- Fixed a bug where focusing back on the application after launching a presentation will not work
 
 ---
 
