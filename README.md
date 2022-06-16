@@ -19,13 +19,11 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 - Statistics for hymns
 
 ## Usage
-1. Open <span class=title>Hymnal Browser Lite</span>
+1. Open **Hymnal Browser Lite**
 2. Type the number or the title of the hymn
 3. Click <Kbd>Launch</Kbd> or press <Kbd>Enter</Kbd> to launch the presentation.
 
-Suggestion box will appear when you type in the search bar. This helps to find what hymn matches the keyword.
-
-## [Download from SourceForge](https://sourceforge.net/projects/hymnalbrowser-lite/files/latest/download)
+## [Download Hymnal Browser Lite](https://sourceforge.net/projects/hymnalbrowser-lite/files/latest/download)
 
 ## Screenshots
 ![](res/screenshot.png)

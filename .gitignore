@@ -4,5 +4,6 @@
 *.log
 *.sda
 *.code-workspace
+VARIABLES.md
 assets/
 archive/
