@@ -112,6 +112,7 @@ class UISearchBar {
                 SES.FILENAME := Format("{1} {2}.pptx", NUM, TTL)
                 SES.HYMN_PATH := Format("{1}/{2}", CT, SES.FILENAME)
 
+                SES.LAUNCH_READY := true
                 UI.BTN.LAUNCH.SetEnabled(1)
                 SES.ResetQueryTimeout()
 

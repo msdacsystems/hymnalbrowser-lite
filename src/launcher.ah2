@@ -66,6 +66,7 @@ Class Launcher {
                     SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount-ST))
             )
             SES.COUNT_LAUNCH += 1
+            UI.BTN.LaunchSetMode("Launched")
             
             if CF.LAUNCH.FOCUS_BACK {                                                       ;; Focus back to main window if configuration is set to true, also selects all the text
                 UI.SetActive()

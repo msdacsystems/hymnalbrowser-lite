@@ -39,6 +39,7 @@ class UIButtons {
     LaunchSetMode(mode, args*) {
         switch mode {
             case "InsertHymn":
+                SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
                 this.LAUNCH.SetText("Insert Hymn")
                 UI.MAIN.ClearHymnText()
@@ -49,6 +50,7 @@ class UIButtons {
                 this.LAUNCH.SetText("Launch")
                 
             case "NotAvailable":
+                SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
                 this.LAUNCH.SetText("Not Available")
                 UI.MAIN.DETAILS.Text := ''
@@ -63,6 +65,7 @@ class UIButtons {
                 this.LAUNCH.SetText("Launching")
                 
             case "Launched":
+                SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
                 this.LAUNCH.SetText("Launched")
         }

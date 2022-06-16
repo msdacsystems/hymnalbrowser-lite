@@ -173,7 +173,6 @@ class UI {
         switch mode {
             case 0:
                 UI.BTN.LAUNCH.SetLastState()                                                ;; Remembers the last state of the Launch Button
-                (UI.BTN.LAUNCH.IsEnabled() ? UI.BTN.LAUNCH.SetMode("Ready"):0)
                 UI.BTN.LAUNCH.SetEnabled(0)
                 UI.BTN.CLEAR.SetEnabled(0)
                 UI.SEARCH.OBJ.Opt("+ReadOnly")
