@@ -31,6 +31,9 @@ class Events {
                 _LOG.Close()
                 Reload()
                 return
+            } else if exitCode == 12 {                                                      ;; Exit Code 12 - System Update
+                _LOG.info("System: System requested a package update")
+                _LOG.info("System: Application will terminate. Running time: " RT " second(s)")
             } else {
                 _LOG.error(Format(
                     "System: Exit code {1}; Reason: {2}; Running time: {3} second(s)",
@@ -63,7 +66,7 @@ class Events {
     
     class ContextMenu {
         static Click(source, hk:='') {
-            if !UI.SETTINGS.IsOpened() {
+            if !UI.SETTINGS.IsOpened() and !UPT.IsDownloading() {
                 UI.RCTX.ShowMenu()
             }
         }

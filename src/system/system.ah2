@@ -10,6 +10,7 @@
 class System {
     static DEV_MODE := false
     static STATE_CRASH := false
+    static STATE_INITIALIZED := false
     static AHK_ID := ""                                                                     ;; To be set by UI.MAIN.GUI's HWND
     static AHK_PID := "ahk_pid " System.GetPID()
     static AHK_EXE := "ahk_exe " SW.EXE_NAME
@@ -28,6 +29,7 @@ class System {
         _LOG.SetVerbose(System.DEV_MODE ? 1:CF.MAIN.VERBOSE_LOG)
         _LOG.SetMaxLines(SW.LOG_MAX_LINES)
         _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
+        _LOG.Info("File Location: '" A_ScriptFullPath "'")
         _LOG.Info(
             Format("System Info: Windows {1} {2}; User: {3} {4}",
             A_OSVersion, GetOSBit(1), A_ComputerName, A_UserName)
@@ -46,14 +48,17 @@ class System {
         global ENV := Environments.Load(SW.FILE_ENV, !System.DEV_MODE)                      ;; Load and delete the environment file after loading
         global HYMNAL := HymnalDB.ScanHymnal()                                              ;; Contains map of hymnal data
         global SES := Session.Setup()
+        global UPT := Updater.Setup()
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
         _LOG.DumpPostponedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
         
         UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
-
+        System.HandleArgs()
+        
         _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount-_STARTUP)))
         global _RUNTIME := A_TickCount
+        System.STATE_INITIALIZED := true
     }
 
     static VerifyDirectories(postponeLog:=0) {
@@ -130,6 +135,27 @@ class System {
                 FileInstall("secrets.env", A_Temp "\secrets.env", true)
             case 1:
                 Misc.HookReloadScript(1,, Events.System.Reload)
+        }
+    }
+
+    static HandleArgs() {
+        /*
+            Handles arguments executable.
+
+            Used for detecting a new update.
+            Arguments should be 2 or more.
+            
+            1st arg is the CODE_NAME_OF_REQUEST.
+            2nd arg is the value data of the request
+
+        */
+        if A_Args.Length < 2 {
+            return
+        }
+        _LOG.Info(Format("System: Argument(s) found: {1}", A_Args.Length))
+        
+        switch A_Args[1] {
+            case 'CODE_NEW_UPDATE': _LOG.Info("System: Application was updated.")
         }
     }
 

@@ -26,13 +26,16 @@ Class Software {
     static VERSION_STRING := Format("v{1} {2}",
         Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.'), this.VERSION_LABEL
     )
+    static VERSION_TAG := Format("v{1}{2}",
+        this.VERSION, (this.VERSION_LABEL != "Release" ? '-' this.VERSION_LABEL:''))
     static NAME_VERSION := Format("{1} v{2}", this.NAME, this.VERSION)
     static FULLNAME_VERSION := Format("{1} {2} v{3}", this.PARENT, this.NAME, this.VERSION)
     static FULLNAME_VERSION_LABEL := Format(
         "{1} v{2} {3}",
         this.PARENT_NAME, this.VERSION, this.VERSION_LABEL
     )
-    
+    static GITHUB_REPO := 'msdacsystems/hymnalbrowser-lite'
+
     /*  Directories */
     static DIR_PARENT := PathJoin(A_AppDataCommon, this.PARENT)
     static DIR_PROGRAM := PathJoin(this.DIR_PARENT, this.NAME)
@@ -52,6 +55,7 @@ Class Software {
     static BIN_ZIP := A_IsCompiled ? PathJoin(A_Temp, '7z.exe'): 'bin\7z.exe'               ;; Binary file of 7z
     static FILE_ZIPDLL := (A_IsCompiled ? PathJoin(A_Temp, '7z.dll'):'bin\7z.dll')
     static FILE_ENV := (A_IsCompiled ? PathJoin(A_Temp, 'secrets.env'):'secrets.env')
+    static FILE_PKG_UPT := (A_IsCompiled ? PathJoin(A_Temp, 'Hymnal Browser Lite Updater.exe'):'bin\Hymnal Browser Lite Updater.exe')
     static FILE_ICON := "res\app_icon.ico"
     static FILE_CONFIG := PathJoin(this.DIR_PROGRAM, "settings.cfg")
     static FILE_POWERPOINT := ''                                                            ;; Placeholder; to be filled by System.VerifyRequisites.
@@ -82,6 +86,7 @@ Class Software {
         meta := Object()
         meta.DefineProp("SOFTWARE", {value: Software.FULLNAME_VERSION_LABEL})
         meta.DefineProp("AUTHORS", {value: Software.AUTHORS})
+        meta.DefineProp("DEV_MODE", {value: System.DEV_MODE})
         return meta
     }
 }
