@@ -53,14 +53,18 @@ class BackgroundThread {                                                        
             UI.SetActive()
         }
 
-        if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P') {
-            WinGetPos(&X, &Y,,, System.AHK_TITLE)
+        if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P')
+            && System.STATE_INITIALIZED {
+                try WinGetPos(&X, &Y,,, System.AHK_TITLE)
+                catch Error {
+                    return
+                }
                 _LOG.Verbose(Format(
-                "BackgroundThread: Main window was moved. "
-                "New window position: X:{1} Y:{2}", X, Y)
-            )
-            UI.UpdatePos()
-            UI.MAIN.SetMoving(0)
+                    "BackgroundThread: Main window was moved. "
+                    "New window position: X:{1} Y:{2}", X, Y)
+                )
+                UI.UpdatePos()
+                UI.MAIN.SetMoving(0)
         } 
     }
 
