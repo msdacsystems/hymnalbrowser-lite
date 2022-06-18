@@ -31,7 +31,7 @@
     Rev 3. 2022-06-10 updated to AHKv2 Beta 4
 */
 
-__VERSION := "0.3.0.4"
+__VERSION := "0.3.1.0"
 
 /* AHK Settings */
 #SingleInstance Force                                                                     
@@ -53,6 +53,7 @@ TraySetIcon(A_IconFile)
 #Include ..\lib\7Zip.ah2
 #Include ..\lib\KConfig.ah2
 #Include ..\lib\KLogger.ah2
+#Include ..\lib\GitHub.ah2
 
 /*  External classes */
 #Include src\system\system.ah2
@@ -60,6 +61,7 @@ TraySetIcon(A_IconFile)
 #Include src\system\fileManagement.ah2
 #Include src\system\background.ah2
 #Include src\system\events.ah2
+#Include src\system\updater.ah2
 #Include src\software.ah2 
 #Include src\ui.ah2
 #Include src\config.ah2
@@ -81,13 +83,13 @@ TraySetIcon(A_IconFile)
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
 ;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
 ;@Ahk2Exe-SetDescription Hymnal Browser Lite
-;@Ahk2Exe-SetFileVersion 0.3.0.4
+;@Ahk2Exe-SetFileVersion 0.3.1.0
 ;@Ahk2Exe-SetInternalName Hymnal Browser Lite
 ;@Ahk2Exe-SetLanguage 0x3409
 ;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
 ;@Ahk2Exe-SetName Hymnal Browser Lite
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
 ;@Ahk2Exe-SetProductName Hymnal Browser Lite
-;@Ahk2Exe-SetVersion 0.3.0.4
+;@Ahk2Exe-SetVersion 0.3.1.0
 
 System.Exec()
