@@ -31,7 +31,7 @@ Class Launcher {
             return
         }
 
-        if RESULT {
+        if RESULT == 2 {                                                                    ;; 2 means the file is already existing
             _LOG.Verbose(
                 'Launcher: Hymn "' SES.FILENAME
                 '" already exists in temp folder'
