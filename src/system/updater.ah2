@@ -207,8 +207,6 @@ class Updater {
             this.PKG_NAME,                                                                  ;; Arg 7 - Asset package name
             this.VERSION                                                                    ;; Arg 8 - App Version
         )
-        _LOG.Debug(COMMAND)
-
 
         Run(COMMAND)                                                                        ;; Forwards the operation to installer
         Events.System.Exit(12)                                                              ;; Exit the system with code 12 to let the installer remove this old one.
