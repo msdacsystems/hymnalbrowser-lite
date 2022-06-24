@@ -47,11 +47,12 @@ class Updater {
             if !FileExist(file) {
                 continue
             }
-            try FileDelete(file)
-            catch Error {
+            try {
+                FileDelete(file)
+                _LOG.Info("Updater: Cleaned '" file "'")
+            } catch Error {
                 _LOG.Error("Updater: Cannot delete temporary file: '" file "'")
             }
-            _LOG.Info("Updater: Cleaned '" file "'")
         }
     }
 
@@ -78,9 +79,11 @@ class Updater {
                 _LOG.Info("Updater: Application is newer than release version " VERSION)
             case 0:
                 _LOG.Info("Updater: Application is up-to-date.")
-            case 1: 
+            case 1:
                 _LOG.Info("Updater: New update available: " VERSION)
                 _LOG.Verbose(Format('Updater: AssetURL: "{1}"', this.URL))
+                this.GetUpdateSize()
+                UI.Hide()
                 this.AskNewUpdate()
         }
     }
@@ -90,22 +93,28 @@ class Updater {
             Prompts the user to update
         */
         RESP := MsgBox(Format(
-            "A newer version is available. Update now?`n`n"
-            "Your version: {1}`nNewer version: {2}",
-            SW.VERSION_TAG, this.VERSION), SW.TITLE, "0x40044"
+            "A newer version is available. Update now? ({1} MB)`n`n"
+            "Your version: {2}`nNewer version: {3}",
+            Round(this.PKG_SIZE/(1024*1024)), SW.VERSION_TAG, this.VERSION),
+            SW.TITLE, "0x40024"
         )
         switch RESP {
             case "Yes": this.RequestDownload()
-            case "No": _LOG.Info("Updater: Update was declined")
+            case "No":
+                _LOG.Info("Updater: Update was declined")
+                UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)
         }
     }
-    
-    RequestDownload() {
+
+    GetUpdateSize() {
         REQ := ComObject("WinHttp.WinHttpRequest.5.1")                                      ;; Create request for download
         REQ.Open("HEAD", this.URL)
         REQ.Send()
-        this.DL_TMS := A_TickCount                                                          ;; Mark download start timestmap
+        this.DL_TMS := A_TickCount                                                          ;; Mark download start timestamp
         this.PKG_SIZE := REQ.GetResponseHeader("Content-Length")                            ;; Update package size in bytes
+    }
+    
+    RequestDownload() {
         _LOG.Verbose("Updater: Package size: " this.PKG_SIZE " bytes")
 
         this.GUI := Gui("+AlwaysOnTop +LastFound -Caption", SW.TITLE ' Updater')            ;; Initiate the GUI
@@ -153,7 +162,8 @@ class Updater {
                 4. Path of the new database (usually in temp folder)
                 5. Directory of the current application
                 6. Directory of the application's folder in Documents
-                7. Package name of the asset.
+                7. Package name of the asset
+                8. Version of the updated app
 
             The process deletes the old version and replacing it with the new asset
             The downloaded package will be also deleted after downloading.
@@ -168,10 +178,14 @@ class Updater {
         _LOG.Info(Format('Updater: Installing new package from "{1}"', this.PKG_NAME))
         ZIP := SevenZip(this.PKG_NAME,, SW.BIN_ZIP, SW.FILE_ZIPDLL)                         ;; Create a ZIP object
         DB := CF.GetDefaults(true, true).HYMNAL.PACKAGE                                     ;; Hymnal database
-        RES1 := ZIP.Extract(SW.NAME '/' SW.EXE_NAME, A_Temp)                                ;; Extract base .exe file
-        RES2 := ZIP.Extract(SW.NAME '/' DB, A_Temp)                                         ;; Extract hymnal
+        try {
+            RES1 := ZIP.Extract(SW.NAME '/' SW.EXE_NAME, A_Temp, true)                      ;; Extract base .exe file, overwrites existing
+            RES2 := ZIP.Extract(SW.NAME '/' DB, A_Temp, true)                               ;; Extract hymnal, overwrites existing
+        } catch Error as e {
+            _LOG.Error("Updater: " e.Message)
+        }
         
-        switch (!RES1 + !RES2) {
+        switch (RES1 + RES2) {
             case 0: _LOG.Info("Updater: Extraction successful")
             case 1: _LOG.Warn(Format("Updater: Failed to extract package. Status: {1} {2}",
                     RES1, RES2))
@@ -180,9 +194,9 @@ class Updater {
         if !System.DEV_MODE {
             FileInstall("bin\Hymnal Browser Lite Updater.exe", SW.FILE_PKG_UPT, true)       ;; Extract the package installer
         }
-
+        
         COMMAND := Format(
-            '"{1}" "{2}" "{3}" "{4}" "{5}" "{6}" "{7}" "{8}"',
+            '"{1}" "{2}" "{3}" "{4}" "{5}" "{6}" "{7}" "{8}" "{9}"',
             SW.FILE_PKG_UPT,                                                                ;; Installer file
             (System.DEV_MODE ? PathJoin(A_ScriptDir, SW.EXE_NAME):A_ScriptFullPath),        ;; Arg 1 - Target EXE
             PathJoin(A_Temp, SW.EXE_NAME),                                                  ;; Arg 2 - New EXE
@@ -190,8 +204,11 @@ class Updater {
             PathJoin(A_Temp, DB),                                                           ;; Arg 4 - New DB
             A_ScriptDir,                                                                    ;; Arg 5 - Directory of Target EXE
             SW.DIR_DOCS_PROGRAM,                                                            ;; Arg 6 - Directory of App Docs
-            this.PKG_NAME                                                                   ;; Arg 7 - Asset package name
+            this.PKG_NAME,                                                                  ;; Arg 7 - Asset package name
+            this.VERSION                                                                    ;; Arg 8 - App Version
         )
+        _LOG.Debug(COMMAND)
+
 
         Run(COMMAND)                                                                        ;; Forwards the operation to installer
         Events.System.Exit(12)                                                              ;; Exit the system with code 12 to let the installer remove this old one.
