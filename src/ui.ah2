@@ -140,10 +140,12 @@ class UI {
 
     static UpdatePos() {
         /*  Dumps the new window coordinates to the settings */
-        WinGetPos(&X, &Y,,, System.AHK_PID)
-        CF.WINDOW.XPOS := X
-        CF.WINDOW.YPOS := Y
-        CF.WINDOW.MON := System.GetWinMonitor()
+        try {
+            WinGetPos(&X, &Y,,, System.AHK_PID)
+            CF.WINDOW.XPOS := X
+            CF.WINDOW.YPOS := Y
+            CF.WINDOW.MON := System.GetWinMonitor()
+        }
     }
 
     static Minimize(args*) => WinMinimize(System.AHK_ID)

@@ -48,16 +48,15 @@ class System {
         global ENV := Environments.Load(SW.FILE_ENV, !System.DEV_MODE)                      ;; Load and delete the environment file after loading
         global HYMNAL := HymnalDB.ScanHymnal()                                              ;; Contains map of hymnal data
         global SES := Session.Setup()
-        global UPT := Updater.Setup()
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
         _LOG.DumpPostponedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
         
-        UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
-        System.HandleArgs()
-        
         _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount-_STARTUP)))
+        global UPT := Updater.Setup()
         global _RUNTIME := A_TickCount
+        
+        UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
         System.STATE_INITIALIZED := true
     }
 
@@ -127,7 +126,6 @@ class System {
             Modifies system whenever the application detected a dev mode.
         */
         System.DEV_MODE := (!A_IsCompiled ? 1:0)
-
         switch System.DEV_MODE {
             case 0:
                 FileInstall("bin\7z.exe", A_Temp "\7z.exe", true)
@@ -135,27 +133,6 @@ class System {
                 FileInstall("secrets.env", A_Temp "\secrets.env", true)
             case 1:
                 Misc.HookReloadScript(1,, Events.System.Reload)
-        }
-    }
-
-    static HandleArgs() {
-        /*
-            Handles arguments executable.
-
-            Used for detecting a new update.
-            Arguments should be 2 or more.
-            
-            1st arg is the CODE_NAME_OF_REQUEST.
-            2nd arg is the value data of the request
-
-        */
-        if A_Args.Length < 2 {
-            return
-        }
-        _LOG.Info(Format("System: Argument(s) found: {1}", A_Args.Length))
-        
-        switch A_Args[1] {
-            case 'CODE_NEW_UPDATE': _LOG.Info("System: Application was updated.")
         }
     }
 

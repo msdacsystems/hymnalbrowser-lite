@@ -54,7 +54,7 @@ class BackgroundThread {                                                        
         }
 
         if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P')
-            && System.STATE_INITIALIZED {
+            && !System.IsOnModal() {
                 try WinGetPos(&X, &Y,,, System.AHK_TITLE)
                 catch Error {
                     return
