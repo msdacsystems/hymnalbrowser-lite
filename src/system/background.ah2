@@ -8,7 +8,7 @@
     Written 2022-06-04
 */
 
-class BackgroundThread {                                                              ;; Measured in milliseconds
+class BackgroundThread {
     static Setup() {
         /*
             Automatically connects all methods to a timer thread.
@@ -87,7 +87,7 @@ class BackgroundThread {                                                        
                 SES.COUNT_QUERY++
                 SES.LAST_QUERIED := SES.CURR_HYMN
                 _LOG.Verbose(
-                    Format("Background: Query was incremented: {1} | Hymn: {2}",
+                    Format("Background: Query was incremented: {1} | Hymn: '{2}'",
                     SES.COUNT_QUERY, SES.CURR_HYMN)
                 )
             }

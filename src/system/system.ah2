@@ -18,7 +18,7 @@ class System {
 
     static Exec() {
         /*
-            Executes the main program
+            Initializes and executes the main program
         */
         global _STARTUP := A_TickCount
         System.CheckDevMode()
@@ -28,6 +28,7 @@ class System {
         /*  Log system launch */
         _LOG.SetVerbose(System.DEV_MODE ? 1:CF.MAIN.VERBOSE_LOG)
         _LOG.SetMaxLines(SW.LOG_MAX_LINES)
+        _LOG.SetStdOut(System.DEV_MODE ? 1:0)
         _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
         _LOG.Info("File Location: '" A_ScriptFullPath "'")
         _LOG.Info(
@@ -50,7 +51,7 @@ class System {
         global SES := Session.Setup()
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
-        _LOG.DumpPostponedLogs()                                                           ;; Releases all deferred logs that wasn't supposed to dump early
+        _LOG.DumpPostponedLogs()                                                            ;; Releases all deferred logs that wasn't supposed to dump early
         
         _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount-_STARTUP)))
         global UPT := Updater.Setup()

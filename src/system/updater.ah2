@@ -39,7 +39,7 @@ class Updater {
             and it should be deleted.
         */
         if System.DEV_MODE {
-            _LOG.Info("Updater: Ignored cleaning of old temp")
+            _LOG.Info("Updater: Ignored cleaning of old temp due to dev mode")
             return
         }
         TEMPFILES := [this.PKG_NAME, SW.FILE_PKG_UPT]

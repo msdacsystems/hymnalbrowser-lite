@@ -35,7 +35,7 @@ class UI {
 
             Every UI object should have:
                 - "_NAME" property
-                - "__new" method containing all the setup variables
+                - "__New" method containing all the setup variables
         */
         ST := A_TickCount
         for classObj in UI.UIs {

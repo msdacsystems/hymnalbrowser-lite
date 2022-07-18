@@ -2,8 +2,9 @@
     * Package Updater
     ---------------------
     This was created due to the limitation that we cannot move the old version while
-    that is still running. This is the solution to that problem where the main app will
-    call this file and let it handle file operations while the app is closed.
+    that is still running. This is the current workaround to that problem where
+    the main app will call this file and let it handle file operations
+    while the app is closed.
 
     * Should be compiled because it needs to accept arguments
 

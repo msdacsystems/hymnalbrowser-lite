@@ -41,7 +41,7 @@ class Events {
                 )
             }
 
-            _LOG.Close()                                                                        ;; Close the log
+            _LOG.Close()                                                                    ;; Close the log
             ExitApp(exitCode)
         }
         static Reload() {
