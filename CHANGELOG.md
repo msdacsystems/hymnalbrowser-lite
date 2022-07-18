@@ -2,9 +2,14 @@
 
 For developer-related changes, view the changes [here](https://github.com/msdacsystems/hymnalbrowser-lite/commits/main).
 
-*This only logs significant changes in the application. Hotfix are not included.
+*This only logs significant changes in the application. Hotfixes are not included.
 
 ### Latest
+
+*Changes for* update **v0.3.1** (2022-07-18)
+- Auto-updater testing
+
+---
 
 *Changes for* update **v0.3.0** (2022-06-16)
 - Added a settings window (context menu -> Settings)
