@@ -27,7 +27,7 @@ Class Software {
         Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.'), this.VERSION_LABEL
     )
     static VERSION_TAG := Format("v{1}{2}",
-        this.VERSION, (this.VERSION_LABEL != "Release" ? '-' this.VERSION_LABEL:''))
+        this.VERSION, (this.VERSION_LABEL != "Release" ? '-' StrLower(this.VERSION_LABEL):''))
     static NAME_VERSION := Format("{1} v{2}", this.NAME, this.VERSION)
     static FULLNAME_VERSION := Format("{1} {2} v{3}", this.PARENT, this.NAME, this.VERSION)
     static FULLNAME_VERSION_LABEL := Format(

@@ -72,7 +72,7 @@ class Updater {
         )
         VERSION.RemoveAt(-1)
         VERSION := Join(VERSION, '.')
-        this.VERSION := VERSION
+        this.VERSION := StrLower(VERSION)
         
         switch VerCompare(VERSION, SW.VERSION_TAG) {
             case -1:
