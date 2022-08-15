@@ -15,6 +15,7 @@ class UISearchBar {
         this.OBJ := UI.MAIN.GUI.AddEdit(
             Format("XS R1 W{1} H{2} +WantReturn",
             this.WIDTH, this.HEIGHT), "")
+        GUIx.SetPlaceholder(this.OBJ, "Search")
     }
 
     SetText(text:='') => this.OBJ.Text := text                                              ;; Sets the text for the search bar
