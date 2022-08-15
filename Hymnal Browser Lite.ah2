@@ -31,7 +31,7 @@
     Rev 3. 2022-06-10 updated to AHKv2 Beta 4
 */
 
-__VERSION := "0.3.1.2"
+__VERSION := "0.3.2.0"
 
 /* AHK Settings */
 #SingleInstance Force                                                                     
@@ -41,19 +41,19 @@ A_MaxHotkeysPerInterval := 5000
 TraySetIcon(A_IconFile)
 
 /* External libraries */
-#Include ..\lib\ext\Basic.ah2
-#Include ..\lib\ext\GUIx.ah2
-#Include ..\lib\ext\Maps.ah2
-#Include ..\lib\ext\Misc.ah2
-#Include ..\lib\ext\Object.ah2
-#Include ..\lib\ext\Path.ah2
-#Include ..\lib\ext\Types.ah2
-#Include ..\lib\ext\Window.ah2
-#Include ..\lib\Env.ah2
-#Include ..\lib\7Zip.ah2
-#Include ..\lib\KConfig.ah2
-#Include ..\lib\KLogger.ah2
-#Include ..\lib\GitHub.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Basic.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\GUIx.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Maps.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Misc.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Object.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Path.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Types.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\ext\Window.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\Env.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\7Zip.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\KConfig.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\KLogger.ah2
+#Include %A_MyDocuments%\AutoHotkey\Lib\GitHub.ah2
 
 /*  External classes */
 #Include src\system\system.ah2
@@ -88,8 +88,8 @@ TraySetIcon(A_IconFile)
 ;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
 ;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
 ;@Ahk2Exe-SetMainIcon res/app_icon.ico
-;@Ahk2Exe-SetFileVersion 0.3.1.2
+;@Ahk2Exe-SetFileVersion 0.3.2.0
 ;@Ahk2Exe-SetLanguage 0x3409
-;@Ahk2Exe-SetVersion 0.3.1.2
+;@Ahk2Exe-SetVersion 0.3.2.0
 
 System.Exec()

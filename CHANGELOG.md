@@ -6,6 +6,10 @@ For developer-related changes, view the changes [here](https://github.com/msdacs
 
 ### Latest
 
+*Changes for* update **v0.3.2** (2022-07-18)
+- Added placeholder for search bar
+- Changed version detection for case-sensitive names
+
 *Changes for* update **v0.3.1** (2022-07-18)
 - Auto-updater testing
 

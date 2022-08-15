@@ -21,7 +21,7 @@ class Config {
         as private properties, these will not be included in dumping configurations.
 
         Improvements:
-            - Place the generatedDefaults config to A_Temp before moving to ProgramData
+            TODO: Place the generatedDefaults config to A_Temp before moving to ProgramData
             in case the parent directories are also absent.
     */
     static FILE := Software.FILE_CONFIG
@@ -71,7 +71,7 @@ class Config {
                 (1) the configuration was missing
                 (2) the configuration was corrupted (i.e, there's missing pairs)
 
-            The HID object contatins the configuration that system needs
+            The HID object contains the configuration that system needs
             but not necessarily should be present in the configuration file.
             This is useful for keys like VERBOSE_LOG as it's considered as an advanced
             setting.
@@ -136,7 +136,7 @@ class Config {
             }
             this.DefineProp(name, {value: val})                                             ;; Transfer the loaded configuration data to the instance's properties
         }
-        this.__CFG := configObject
+        this.__CFG := configObject                                                          ;; Backup of the original data
     }
 
     GenerateDefaults(autoReload:=true) {
