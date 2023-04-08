@@ -15,7 +15,7 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 
 ## Features
 - Browse through 474 Hymns based on SDA Philippine Hymnal
-- Fast and responsive search
+- Supports English and Tagalog hymns
 
 ## Usage
 1. Open **Hymnal Browser Lite**
@@ -32,4 +32,4 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 - [Changelog](CHANGELOG.md)
 - [Documentation](DOCUMENTATION.md)
 
-Hymnal Browser Lite © 2022 MSDAC Systems
+Hymnal Browser Lite © 2023 MSDAC Systems
