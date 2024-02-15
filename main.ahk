@@ -13,7 +13,7 @@
         - Code ruler is 90 units
         - Variable naming has type-value in which the type of the variable should precede
         the actual name of the variable (e.g: TYPE_NAME_NAME -> DIR_DOCS_PROGRAM)
-    
+
     The rest of documentation can be found in DOCUMENTATION.md
 
     -------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
     Authors:
         Ken Verdadero - @verdaderoken, Github
         Reynald Ycong - @4raiven, Github
-    
+
     Written in AutoHotKey v2 Beta 4
 
     Orig. 2022-04-22 prototype
@@ -31,14 +31,14 @@
     Rev 3. 2022-06-10 updated to AHKv2 Beta 4
 */
 
-__VERSION := "0.3.2.0"
+__VERSION := "0.3.2.1"
 
 /* AHK Settings */
-#SingleInstance Force                                                                     
+#SingleInstance Force
 #MaxThreads 100
 SetTitleMatchMode("RegEx")
 A_MaxHotkeysPerInterval := 5000
-TraySetIcon(A_IconFile)
+TraySetIcon("res/app_icon.ico")
 
 /* External libraries */
 #Include %A_MyDocuments%\AutoHotkey\Lib\ext\Basic.ah2
@@ -56,26 +56,26 @@ TraySetIcon(A_IconFile)
 #Include %A_MyDocuments%\AutoHotkey\Lib\GitHub.ah2
 
 /*  External classes */
-#Include src\system\system.ah2
-#Include src\system\errors.ah2
-#Include src\system\fileManagement.ah2
-#Include src\system\background.ah2
-#Include src\system\events.ah2
-#Include src\system\updater.ah2
-#Include src\software.ah2 
-#Include src\ui.ah2
-#Include src\config.ah2
-#Include src\hymnal.ah2
-#Include src\launcher.ah2
-#Include src\session.ah2
+#Include src/system\system.ahk
+#Include src/system\errors.ahk
+#Include src/system\fileManagement.ahk
+#Include src/system\background.ahk
+#Include src/system\events.ahk
+#Include src/system\updater.ahk
+#Include src/software.ahk
+#Include src/ui.ahk
+#Include src/config.ahk
+#Include src/hymnal.ahk
+#Include src/launcher.ahk
+#Include src/session.ahk
 
 /*  Interface classes */
-#Include src\interface\mainmenu.ah2
-#Include src\interface\searchbar.ah2
-#Include src\interface\buttons.ah2
-#Include src\interface\completer.ah2
-#Include src\interface\contextMenu.ah2
-#Include src\interface\settings.ah2
+#Include src/interface\mainmenu.ahk
+#Include src/interface\searchbar.ahk
+#Include src/interface\buttons.ahk
+#Include src/interface\completer.ahk
+#Include src/interface\contextMenu.ahk
+#Include src/interface\settings.ahk
 
 /*  System Props */
 ;@Ahk2Exe-ExeName Hymnal Browser Lite
@@ -85,11 +85,11 @@ TraySetIcon(A_IconFile)
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
 ;@Ahk2Exe-SetProductName Hymnal Browser Lite
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
-;@Ahk2Exe-SetCopyright (c) 2022 MSDAC Systems`, Verdadero`, Ycong
-;@Ahk2Exe-SetLegalTrademarks (c) 2022 MSDAC Systems
+;@Ahk2Exe-SetCopyright (c) 2024 MSDAC Systems`, Verdadero`, Ycong
+;@Ahk2Exe-SetLegalTrademarks (c) 2024 MSDAC Systems
 ;@Ahk2Exe-SetMainIcon res/app_icon.ico
-;@Ahk2Exe-SetFileVersion 0.3.2.0
+;@Ahk2Exe-SetFileVersion 0.3.2.1
 ;@Ahk2Exe-SetLanguage 0x3409
-;@Ahk2Exe-SetVersion 0.3.2.0
+;@Ahk2Exe-SetVersion 0.3.2.1
 
 System.Exec()

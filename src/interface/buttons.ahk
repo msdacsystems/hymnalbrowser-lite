@@ -3,7 +3,7 @@
     -----------------------
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-03
 */
 
@@ -44,11 +44,11 @@ class UIButtons {
                 this.LAUNCH.SetText("Insert Hymn")
                 UI.MAIN.ClearHymnText()
                 UI.MAIN.DETAILS.Text := ""
-                (UI.CPLTR.ACTIVE ? UI.CPLTR.Close():0)
+                (UI.CPLTR.ACTIVE ? UI.CPLTR.Close() : 0)
 
             case "Ready":
                 this.LAUNCH.SetText("Launch")
-                
+
             case "NotAvailable":
                 SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
@@ -58,17 +58,17 @@ class UIButtons {
                 UI.MAIN.HYMN.Opt('C' SW.TEXT_DISABLED)
 
             case "ShowSuggestions":
-                this.LAUNCH.SetText(SES.SUGGESTIONS " Match" (SES.SUGGESTIONS=1?'':'es'))
+                this.LAUNCH.SetText(SES.SUGGESTIONS " Match" (SES.SUGGESTIONS = 1 ? '' : 'es'))
 
             case "Launching":
                 this.LAUNCH.SetEnabled(0)
                 this.LAUNCH.SetText("Launching")
-                
+
             case "Launched":
                 SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
                 this.LAUNCH.SetText("Launched")
         }
-        
+
     }
 }

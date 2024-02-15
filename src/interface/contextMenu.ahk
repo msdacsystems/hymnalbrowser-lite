@@ -2,7 +2,8 @@
     Right-click Context menu for HBL
     --------------------------------
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Author: Ken Verdadero
     Written 2022-06-05
 */
 
@@ -22,7 +23,7 @@ Class UIContextMenu {
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add()
         this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
-        this.OBJ.Add("&Exit", Events.System.Exit)
+        this.OBJ.Add("&Exit", ObjBindMethod(Events.System, "Exit", 0, "Hi"))
     }
 
     ShowMenu() {

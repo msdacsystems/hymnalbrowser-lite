@@ -4,7 +4,7 @@
     Manages and parses the hymnal database
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
 */
 
 Class HymnalDB {
@@ -15,26 +15,26 @@ Class HymnalDB {
             Returns an object.
         */
         OUT := Object()
-        OUT.DefineProp("CAT", {value: SubStr(file, 1, 2)})
-        OUT.DefineProp("NUM", {value: (isDigit(SubStr(file, 4, 3)) ? SubStr(file, 4, 3):0)})
-        OUT.DefineProp("TTL", {value: SubStr(file, 8, -5)})
-        OUT.DefineProp("EXT", {value: (StrSplit(file, ".").length > 1 ? StrReplace(StrSplit(file, ".")[-1], "`r"):"")})
+        OUT.DefineProp("CAT", { value: SubStr(file, 1, 2) })
+        OUT.DefineProp("NUM", { value: (isDigit(SubStr(file, 4, 3)) ? SubStr(file, 4, 3) : 0) })
+        OUT.DefineProp("TTL", { value: SubStr(file, 8, -5) })
+        OUT.DefineProp("EXT", { value: (StrSplit(file, ".").length > 1 ? StrReplace(StrSplit(file, ".")[-1], "`r") : "") })
         return OUT
     }
 
     static _VerifyDatabase() {
         /*
             Checks for hymnal package specified in configuration.
-
+        
             Default is 'hymns.sda'. A custom file may be specified in HYMNAL.PACKAGE.
             The directories are retrieved from /SW.DIRS_HYMNAL_PACKAGE which are:
                 (1) A_ScriptDir
                 (2) SW.DIR_PROGRAM; and
                 (3) SW.DIR_DOCS_PROGRAM
-            
+        
             Failure to find the package in these directories will result
             to AbsentPackage error in Errors.HymnsDB.
-
+        
             The package path is stored in CF.__FILE_HYMNALDB which will be used
             later in Launcher class.
         */
@@ -55,7 +55,7 @@ Class HymnalDB {
                 Format(
                     "HymnsDB: Hymnal package '{1}' cannot be found "
                     "in any of scanned directories: {2}",
-                    CF.HYMNAL.PACKAGE, ArrayAsStr(SW.DIRS_HYMNAL_PACKAGE,, '.', false,,, '"')
+                    CF.HYMNAL.PACKAGE, ArrayAsStr(SW.DIRS_HYMNAL_PACKAGE, , '.', false, , , '"')
                 )
             )
             Errors.HymnsDB("AbsentPackage")
@@ -64,24 +64,24 @@ Class HymnalDB {
 
     static ToHymnNumber(text) {
         /*
-            Stringify the hymn to digits with 3 leading zeros 
+            Stringify the hymn to digits with 3 leading zeros
         */
-        return ZFill(SubStr(StrSplit(text, ' ')[1], 1, 3), 3) 
+        return ZFill(SubStr(StrSplit(text, ' ')[1], 1, 3), 3)
     }
 
     static IsValidHymn(hymn) {
         /*
             Verifies if the hymn text is valid.
-
+        
             The way this works is the hymn-var will be trimmed to first 3 characters
             and will be zero-filled (3 digits).
-
+        
             The RegEx matcher will verify if the first 3 characters were digits.
             If so, the number number will search for matching hymn number.
-
+        
         */
         NUMSTR := HymnalDB.ToHymnNumber(hymn)
-        
+
         if !RegExMatch(NUMSTR, '[0-9]{3}') {                                                ;; When the first 3 characters are not a digit & the 4th character is not a space
             return 0
         }
@@ -95,7 +95,7 @@ Class HymnalDB {
     static ScanHymnal() {
         /*
             Returns a map of all hymnal data extracted from the .sda file zip.
-
+        
                 Index       Content
                 -------    --------
                 [1]     - English (# and Title)
@@ -104,7 +104,7 @@ Class HymnalDB {
                 [4]     - All in one Hymn Titles
                 [5]     - Total number of hymns
         */
-        
+
         HymnalDB._VerifyDatabase()
         _LOG.Info("HymnsDB: Scanning hymnal from `"" CF.__FILE_HYMNALDB '"')
         global HYMN_ZIP := SevenZip(
@@ -117,7 +117,7 @@ Class HymnalDB {
         CATS := ["EN", "TL", "US"]
         HNUMS := []
         INVALID_ITEMS := []
-        
+
         for FILE in HYMN_ZIP.PATHS {
             spH := HymnalDB.SplitHymn(FILE)
             if (!ArrayMatch(spH.Ext, ['pptx', 'sda']) and
@@ -126,7 +126,7 @@ Class HymnalDB {
                         Format("HymnsDB: Unnecessary file `"{1}`""
                             " detected inside the database.",
                             FILE)
-                        )
+                    )
                     INVALID_ITEMS.Push(FILE)
             }
 
@@ -150,7 +150,7 @@ Class HymnalDB {
                 )
             }
         }
-        
+
         _HYMNAL[4] := ArraySort(_HYMNAL[4])
         _HYMNAL[5] := Map(
             "EN", _HYMNAL[1][1].length,
@@ -172,7 +172,7 @@ Class HymnalDB {
         }
         _LOG.Info(
             'HymnsDB: Successfully scanned hymnal. Entries: '
-            MapAsStr(_BOOK["TOTAL"],,': ', false)
+            MapAsStr(_BOOK["TOTAL"], , ': ', false)
         )
         return _BOOK
     }

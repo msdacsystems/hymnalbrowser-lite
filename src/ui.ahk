@@ -10,7 +10,7 @@
         - UI.SEARCH.OBJ.Show()
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-03
 */
 
@@ -24,31 +24,31 @@ class UI {
     ]
 
     static Setup() {
-        /* 
+        /*
             This method defines and all available class object in interface.
             All interface objects will be a property of this UI class.
-
+        
             Objects are retrieved from UI.UIs property.
-
+        
             To access an interface class:
                 - UI.ClassName.Method (ex: UI.MENU.Show())
-
+        
             Every UI object should have:
                 - "_NAME" property
                 - "__New" method containing all the setup variables
         */
         ST := A_TickCount
         for classObj in UI.UIs {
-            UI.DefineProp(StrUpper(classObj._NAME), {value: classObj.Call()})               ;; Initiate GUI Setup for the class; Store the class instance
+            UI.DefineProp(StrUpper(classObj._NAME), { value: classObj.Call() })               ;; Initiate GUI Setup for the class; Store the class instance
         }
         UI.ConnectEvents()
         UI.StartThreads()
         UI.Keybinds()
-        _LOG.Info(Format("UI: Setup finished ({1} ms)", A_TickCount-ST))
+        _LOG.Info(Format("UI: Setup finished ({1} ms)", A_TickCount - ST))
     }
 
     static ConnectEvents() {
-        /* 
+        /*
             Connects all events for every control.
             Events are forwarded to Events class.
         */
@@ -58,7 +58,7 @@ class UI {
         UI.MAIN.TITLE.OnEvent("Click", Events.Title.Click)
         UI.MAIN.DETAILS.OnEvent("Click", Events.Details.Click)
         UI.BTN.LAUNCH.OnEvent("Click", Events.Launch.Click)
-        
+
         UI.BTN.CLEAR.OnEvent("Click", Events.Search.Clear)
         UI.SEARCH.OBJ.OnEvent("Change", Events.Search.TextChanged)
 
@@ -66,19 +66,19 @@ class UI {
         UI.SETTINGS.BTN_OK.OnEvent("Click", Events.Settings.Ok)
 
         UI.SETTINGS.CHK_AOT.OnEvent(
-            "Click", ObjBindMethod(Events.Settings, 
-            "ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
+            "Click", ObjBindMethod(Events.Settings,
+                "ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
         UI.SETTINGS.CHK_FOCUS_BACK.OnEvent(
             "Click", ObjBindMethod(Events.Settings,
-            "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))
+                "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))
         UI.SETTINGS.CHK_SLIDESHOW.OnEvent(
             "Click", ObjBindMethod(Events.Settings,
-            "ToggleCheck", UI.SETTINGS.CHK_SLIDESHOW, 'SLD'))
+                "ToggleCheck", UI.SETTINGS.CHK_SLIDESHOW, 'SLD'))
 
         OnMessage(0x0201, ObjBindMethod(UI, "LeftMousePressEvent"))
         OnMessage(0x0204, ObjBindMethod(UI, "RightMousePressEvent"))
     }
-    
+
     static StartThreads() {
         _LOG.Verbose("UI: Starting UI Listener Threads")
         SetTimer(ObjBindMethod(UI.SEARCH, "Listener"), 50)
@@ -86,7 +86,7 @@ class UI {
         SetTimer(ObjBindMethod(UI.CPLTR, "Listener"), SW.CPLTR_LIS_RATE)
         SetTimer(ObjBindMethod(UI.SETTINGS, "Listener"), 50)
     }
-    
+
     static Keybinds() {
         _LOG.Verbose("UI: Binding keys")
         Hotkey("~^BackSpace", ObjBindMethod(UI.SEARCH, "KeyPress"))
@@ -109,7 +109,7 @@ class UI {
             UI.CPLTR.Close()                                                                ;; Close the completer if the window is starting to move
         }
     }
-    
+
     static RightMousePressEvent(args*) {
         Events.ContextMenu.Click("RMousePressEvent")
     }
@@ -120,7 +120,7 @@ class UI {
         UI.CPLTR.Close()
     }
 
-    static Show(x:='', y:='') {
+    static Show(x := '', y := '') {
         /*
             Shows the main window.
             Automaticaly adjust the window's position if it's near edge.
@@ -141,7 +141,7 @@ class UI {
     static UpdatePos() {
         /*  Dumps the new window coordinates to the settings */
         try {
-            WinGetPos(&X, &Y,,, System.AHK_PID)
+            WinGetPos(&X, &Y, , , System.AHK_PID)
             CF.WINDOW.XPOS := X
             CF.WINDOW.YPOS := Y
             CF.WINDOW.MON := System.GetWinMonitor()
@@ -155,7 +155,7 @@ class UI {
         UI.ACTIVE := false
         UI.CPLTR.Close()
     }
-    
+
     static SetActive() {
         /*  Sets the UI to an active state */
         UI.ACTIVE := true

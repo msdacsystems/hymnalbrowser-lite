@@ -4,7 +4,7 @@
     Extracts the presentation from the database and launches the file.
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-06
 */
 
@@ -16,9 +16,9 @@ Class Launcher {
         */
         ST := A_TickCount
         UI.BTN.LaunchSetMode("Launching")
-        
-        (!IsFolderExists(SW.DIR_TEMP) ? DirCreate(SW.DIR_TEMP):0)                           ;; Check for temp directory
-        
+
+        (!IsFolderExists(SW.DIR_TEMP) ? DirCreate(SW.DIR_TEMP) : 0)                           ;; Check for temp directory
+
         System.SetActive()                                                                  ;; Weird. Prevents windows sound from playing when a hotkey (Return/Enter) was pressed.
         try {
             RESULT := HYMN_ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
@@ -37,8 +37,9 @@ Class Launcher {
                 '" already exists in temp folder'
             )
         }
-        
-        SetTimer(ObjBindMethod(FileManagement, "RemoveTempSubdirs"), -2000)
+
+        ; ! Missing `RemoveTempSubdirs` method (2024-02-16)
+        ; SetTimer(ObjBindMethod(FileManagement, "RemoveTempSubdirs"), -2000)
         SetTimer(ObjBindMethod(FileManagement, "RemoveOldest"), -3000)
 
         if !FileExist(PathJoin(SW.DIR_TEMP, SES.FILENAME)) {                                ;; If the extracted file was not found, notify the user about the error
@@ -54,8 +55,8 @@ Class Launcher {
             if SW.FILE_PRESENTER {
                 Run(Format('{1} {2} "{3}"',                                                 ;; Run the actual presentation file
                     SW.FILE_POWERPOINT,                                                     ;; MS Office PowerPoint exe
-                    (!CF.LAUNCH.TYPE ? '/C':'/S'),                                          ;; C - Open, S - Start in slideshow (Only works in powerpoint; made for powerpoint); Default is '/C'
-                    PathJoin(SW.DIR_TEMP, SES.FILENAME))                                            
+                    (!CF.LAUNCH.TYPE ? '/C' : '/S'),                                          ;; C - Open, S - Start in slideshow (Only works in powerpoint; made for powerpoint); Default is '/C'
+                    PathJoin(SW.DIR_TEMP, SES.FILENAME))
                 )
             } else {
                 _LOG.Verbose("Launcher: Running presentation without PowerPoint")
@@ -63,18 +64,18 @@ Class Launcher {
             }
 
             _LOG.Info(Format('Launcher: Launched Hymn "{1} {2}" ({3} ms)',
-                    SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount-ST))
+                SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount - ST))
             )
             SES.COUNT_LAUNCH += 1
             UI.BTN.LaunchSetMode("Launched")
-            
+
             if CF.LAUNCH.FOCUS_BACK {                                                       ;; Focus back to main window if configuration is set to true, also selects all the text
                 UI.SetActive()
                 System.SetActive()
             }
         } catch Error as e {
             _LOG.Error("Launcher: Error occured while launching Hymn #"
-                        SES.CURR_NUM "; " e.Message)
+                SES.CURR_NUM "; " e.Message)
         }
 
     }

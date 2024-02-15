@@ -3,20 +3,20 @@
     -------------------------------------------
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-03
 */
 
 class Events {
     class System {
-        static Exit(exitCode:=0, message:='Application exited due to an error') {
+        static Exit(exitCode := 0, message := 'Application exited due to an error', args*) {
             /*
                 System Exit
                 Handles events for application exit.
             */
-            try RT := Round((A_TickCount-_RUNTIME)/1000, 3)                                     ;; Running time of the software
+            try RT := Round((A_TickCount - _RUNTIME) / 1000, 3)                                     ;; Running time of the software
             catch Error {
-                RT := Round((A_TickCount-_STARTUP)/1000, 3)
+                RT := Round((A_TickCount - _STARTUP) / 1000, 3)
             }
 
             FileManagement.CloseTemp()
@@ -48,7 +48,7 @@ class Events {
             Events.System.Exit(10)
         }
     }
-    
+
     class Title {
         static Click(args*) {
         }
@@ -63,9 +63,9 @@ class Events {
         static Click(args*) {
         }
     }
-    
+
     class ContextMenu {
-        static Click(source, hk:='') {
+        static Click(source, hk := '') {
             if !UI.SETTINGS.IsOpened() and !UPT.IsDownloading() {
                 UI.RCTX.ShowMenu()
             }
@@ -73,11 +73,11 @@ class Events {
     }
 
     class Launch {
-        static Click(source, hk:='') {
+        static Click(source, hk := '') {
             if !System.IsActive() or !ControlGetEnabled(UI.BTN.LAUNCH) {
                 return
             }
-            source := (!source ? 'MouseReleaseEvent':source)
+            source := (!source ? 'MouseReleaseEvent' : source)
             _LOG.Verbose("Events: Launch button was pressed. | Source: " source)
             Launcher.Launch()
         }
@@ -85,16 +85,16 @@ class Events {
 
     class Settings {
         static Click(args*) => UI.SETTINGS.Show()
-        static CloseEvent(args*) => UI.SETTINGS.Hide() 
+        static CloseEvent(args*) => UI.SETTINGS.Hide()
 
         static ToggleCheck(chkObj, cfgKey, args*) {
-            chkObj.SetChecked(chkObj.CheckState() ? 1:0)
+            chkObj.SetChecked(chkObj.CheckState() ? 1 : 0)
             switch cfgKey {
                 case 'FBK': CF.LAUNCH.FOCUS_BACK := chkObj.CheckState()
                 case 'SLD': CF.LAUNCH.TYPE := chkObj.CheckState()
-                case 'AOT': 
+                case 'AOT':
                     CF.WINDOW.ALWAYS_ON_TOP := chkObj.CheckState()
-                    UI.MAIN.GUI.Opt((chkObj.CheckState() ? '+':'-') "AlwaysOnTop")
+                    UI.MAIN.GUI.Opt((chkObj.CheckState() ? '+' : '-') "AlwaysOnTop")
             }
             CF.Dump()
         }
@@ -103,7 +103,7 @@ class Events {
             Events.Settings.CloseEvent()
         }
     }
-    
+
     class Search {
         static TextChanged(args*) {
             UI.CPLTR.ScanSearchBar()

@@ -4,7 +4,7 @@
     Main System class. Handles all process and system management.
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
 */
 
 class System {
@@ -26,18 +26,18 @@ class System {
         global CF := Config()
 
         /*  Log system launch */
-        _LOG.SetVerbose(System.DEV_MODE ? 1:CF.MAIN.VERBOSE_LOG)
+        _LOG.SetVerbose(System.DEV_MODE ? 1 : CF.MAIN.VERBOSE_LOG)
         _LOG.SetMaxLines(SW.LOG_MAX_LINES)
-        _LOG.SetStdOut(System.DEV_MODE ? 1:0)
-        _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode":''))
+        _LOG.SetStdOut(System.DEV_MODE ? 1 : 0)
+        _LOG.Info("Application has started" (A_IsAdmin ? " in Administrator mode" : ''))
         _LOG.Info("File Location: '" A_ScriptFullPath "'")
         _LOG.Info(
             Format("System Info: Windows {1} {2}; User: {3} {4}",
-            A_OSVersion, GetOSBit(1), A_ComputerName, A_UserName)
+                A_OSVersion, GetOSBit(1), A_ComputerName, A_UserName)
         )
-        _LOG.Info(System.DEV_MODE ? "APPLICATION IS RUNNING ON DEVELOPER MODE":'')
+        _LOG.Info(System.DEV_MODE ? "APPLICATION IS RUNNING ON DEVELOPER MODE" : '')
         _LOG.Info("System: Process ID: " System.GetPID())
-        _LOG.Info("System: Verbose logging is " (CF.MAIN.VERBOSE_LOG ? 'ON':'OFF'))
+        _LOG.Info("System: Verbose logging is " (CF.MAIN.VERBOSE_LOG ? 'ON' : 'OFF'))
         _LOG.Info("System: Initializing core")
 
         A_TrayMenu.Delete()                                                                 ;; Remove items in tray menu
@@ -52,22 +52,22 @@ class System {
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
         _LOG.DumpPostponedLogs()                                                            ;; Releases all deferred logs that wasn't supposed to dump early
-        
-        _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount-_STARTUP)))
+
+        _LOG.Info(Format("Initialization completed. ({1} ms)", Round(A_TickCount - _STARTUP)))
         global UPT := Updater.Setup()
         global _RUNTIME := A_TickCount
-        
+
         UI.Show(CF.WINDOW.XPOS, CF.WINDOW.YPOS)                                             ;; Show at last saved coordinates
         System.STATE_INITIALIZED := true
     }
 
-    static VerifyDirectories(postponeLog:=0) {
-        /* 
+    static VerifyDirectories(postponeLog := 0) {
+        /*
             Checks every directory. Creates new one if not present.
         */
         MISSING := 0
         RESOLVED := 0
-        
+
         for dir in SW.DIRS {
             if !IsFolderExists(dir) {
                 MISSING++
@@ -99,7 +99,7 @@ class System {
     static VerifyRequisites() {
         /*
             Checks whether a presentation software exists.
-
+        
             Microsoft Office PowerPoint is the first software to be checked.
             If that fails, the default software that runs '.pptx' files will be executed.
         */
@@ -111,7 +111,7 @@ class System {
             SW.FILE_PRESENTER := SW.FILE_POWERPOINT
             _LOG.Info(Format(
                 "System: Using Microsoft Office {1}-bit from `"{2}`"",
-                (InStr(SW.FILE_POWERPOINT, ("x86")) ? "32":"64"),                           ;; Determine if the PowerPoint version is 32-bit or 64-bit
+                (InStr(SW.FILE_POWERPOINT, ("x86")) ? "32" : "64"),                           ;; Determine if the PowerPoint version is 32-bit or 64-bit
                 SW.FILE_POWERPOINT)
             )
         } catch Error {
@@ -126,22 +126,22 @@ class System {
         /*
             Modifies system whenever the application detected a dev mode.
         */
-        System.DEV_MODE := (!A_IsCompiled ? 1:0)
+        System.DEV_MODE := (!A_IsCompiled ? 1 : 0)
         switch System.DEV_MODE {
             case 0:
                 FileInstall("bin\7z.exe", A_Temp "\7z.exe", true)
                 FileInstall("bin\7z.dll", A_Temp "\7z.dll", true)
                 FileInstall("secrets.env", A_Temp "\secrets.env", true)
             case 1:
-                Misc.HookReloadScript(1,, Events.System.Reload)
+                Misc.HookReloadScript(1, , Events.System.Reload)
         }
     }
 
     static GetPID() => DllCall("GetCurrentProcessId")
-    static GetWinMonitor() =>  Window.GetCurrentMonitor(System.AHK_PID)
-    static IsActive() => (WinActive(System.AHK_PID) ? 1:0)
+    static GetWinMonitor() => Window.GetCurrentMonitor(System.AHK_PID)
+    static IsActive() => (WinActive(System.AHK_PID) ? 1 : 0)
     static HasCrashed() => System.STATE_CRASH
-    static IsOnModal() => (WinExist(System.AHK_PID) && WinExist("ahk_class #32770") ? 1:0)
+    static IsOnModal() => (WinExist(System.AHK_PID) && WinExist("ahk_class #32770") ? 1 : 0)
     static SetActive() {
         WinActivate(System.AHK_ID)
         UI.ACTIVE := true
@@ -155,7 +155,7 @@ class System {
     }
     static MoveMain() {                                                                     ;; Sends window move message to the application
         try {
-            PostMessage(0xA1, 2,,, System.AHK_PID)
+            PostMessage(0xA1, 2, , , System.AHK_PID)
         } catch Error as e {
             _LOG.Error("System: Unable to move window. " e.Message)
         }
