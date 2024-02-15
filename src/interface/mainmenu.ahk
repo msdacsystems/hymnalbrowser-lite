@@ -3,7 +3,7 @@
     ------------------------
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-03
 */
 
@@ -13,13 +13,13 @@ class UIMainMenu {
     __New() {
         this.GUI := Gui(
             Format("+LastFound -Caption {1}AlwaysOnTop",
-            (CF.WINDOW.ALWAYS_ON_TOP ? '+':'-')),
+                (CF.WINDOW.ALWAYS_ON_TOP ? '+' : '-')),
             SW.TITLE
         )
         this.GUI.SetFont('Q5 S' SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.TITLE := this.GUI.AddText(Format("C{1} SECTION W130 H18", SW.CL_PRIMARY), SW.NAME)
-        this.TITLE.SetFont('S' SW.GLB_FONT_SIZE+1, "Segoe UI Bold Italic")
-        this.VERSION := this.GUI.AddText("X143 Y11 C555555", SW.VERSION_STRING (System.DEV_MODE ? ' (Developer mode)':''))
+        this.TITLE.SetFont('S' SW.GLB_FONT_SIZE + 1, "Segoe UI Bold Italic")
+        this.VERSION := this.GUI.AddText("X143 Y11 C555555", SW.VERSION_STRING (System.DEV_MODE ? ' (Developer mode)' : ''))
         this.VERSION.SetFont('S' 7, SW.GLB_FONT_NAME)
         this.STATUS := this.GUI.AddText("YS+0 C818181", "")
         this.HYMN := this.GUI.AddText("XS +BackgroundTrans W300", "")
@@ -32,10 +32,10 @@ class UIMainMenu {
     SetHymnText(text) => this.HYMN.Text := text
     ClearHymnText() => this.HYMN.Text := ''
     HymnText() => this.HYMN.Text
-    SetMoving(mode) => this.MOVING := (mode ? 1:0)
+    SetMoving(mode) => this.MOVING := (mode ? 1 : 0)
 
-    ShowStatus(message, timeout:=2) {
-        /* 
+    ShowStatus(message, timeout := 2) {
+        /*
             Displays the status for few seconds
         */
         this.STATUS.Text := message
@@ -44,7 +44,7 @@ class UIMainMenu {
         }
 
         _Timeout() {
-            Sleep(timeout*1000)
+            Sleep(timeout * 1000)
             this.STATUS.Text := ''
         }
     }
@@ -52,7 +52,7 @@ class UIMainMenu {
     WasMoved() {
         /*  Returns the state of window if it's moving or not */
         try {
-            WinGetClientPos(&X, &Y,,, System.AHK_ID)
+            WinGetClientPos(&X, &Y, , , System.AHK_ID)
             if X != CF.WINDOW.XPOS && Y != CF.WINDOW.YPOS {
                 return 1
             }

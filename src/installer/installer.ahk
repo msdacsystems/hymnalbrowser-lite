@@ -2,9 +2,9 @@
     * HBL Installer
     ---------------------
     Application installer for Hymnal Browser Lite
-    
+
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written: 2022-06-21
 */
 
@@ -62,17 +62,15 @@ class Installer {
         this.UI.Install()
         ; FileInstall()
     }
-    
+
     Cancel() {
         ExitApp(0)
     }
 }
 
 
-
-
 class UI {
-    /* 
+    /*
         Handles GUI elements and behaviors
     */
     static SZ := [500, 350]                                                                 ;; Interface size of the installer
@@ -85,7 +83,7 @@ class UI {
     }
 
     InitGUI() {
-        /*  Initializes GUI elements/controls */        
+        /*  Initializes GUI elements/controls */
         this.GUI := Gui("+LastFound -MaximizeBox -Resize", Installer.APP_NAME)
         this.GUI.AddPicture("X0 Y0", UI.IMAGE_BG)
         this.TITLE := this.GUI.AddText("X160 Y20 H75 W300 +BackgroundTrans", Installer.APP_NAME)
@@ -95,13 +93,13 @@ class UI {
         this.AGREEMENT := this.GUI.AddText("YP+50 W280 +BackgroundTrans ", Installer.AGREEMENT)
 
         this.COPYRIGHT := this.GUI.AddText(
-            Format("X25 Y{1} W280 +BackgroundTrans", UI.SZ[2]-30), Installer.COPYRIGHT
+            Format("X25 Y{1} W280 +BackgroundTrans", UI.SZ[2] - 30), Installer.COPYRIGHT
         )
         this.BTN_INSTALL := this.GUI.AddButton(Format("X{1} Y{2} W{3}",
-            UI.SZ[1]-180, UI.SZ[2]-50, UI.BTN_WIDTH), "Install"
+            UI.SZ[1] - 180, UI.SZ[2] - 50, UI.BTN_WIDTH), "Install"
         )
         this.BTN_CANCEL := this.GUI.AddButton(Format("X{1} Y{2} W{3}",
-            UI.SZ[1]-100, UI.SZ[2]-50, UI.BTN_WIDTH), "Cancel"
+            UI.SZ[1] - 100, UI.SZ[2] - 50, UI.BTN_WIDTH), "Cancel"
         )
 
         this.BTN_INSTALL.OnEvent("Click", ObjBindMethod(this, "EventHandler", "Install"))
@@ -128,7 +126,7 @@ class UI {
         for obj in COMMON {
             obj.SetFont("S10", "Segoe UI")
         }
-        
+
     }
 
     Install() {
@@ -138,7 +136,7 @@ class UI {
         PROGRESS.AddProgress("W150", "Test")
         PROGRESS.Show()
     }
-    
+
     Show() => this.GUI.Show(Format("W{1} H{2}", UI.SZ[1], UI.SZ[2]))
     Hide() => this.GUI.Hide()
 }

@@ -2,7 +2,8 @@
     Interface for Search Bar
     ------------------------
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+    (c) 2022 MSDAC Systems
+    Author: Ken Verdadero
     Written 2022-06-03
 */
 
@@ -10,19 +11,20 @@ class UISearchBar {
     static _NAME := "SEARCH"
 
     __New() {
-        this.WIDTH := SW.SIZE[1]/1.5
+        this.WIDTH := SW.SIZE[1] / 1.5
         this.HEIGHT := 20
         this.OBJ := UI.MAIN.GUI.AddEdit(
             Format("XS R1 W{1} H{2} +WantReturn",
-            this.WIDTH, this.HEIGHT), "")
+                this.WIDTH, this.HEIGHT), "")
+        GUIx.SetPlaceholder(this.OBJ, "Search")
     }
 
-    SetText(text:='') => this.OBJ.Text := text                                              ;; Sets the text for the search bar
-    Text(raw:=false) => (raw ? this.OBJ.Text:Trim(this.OBJ.Text, ' `t`r`n'))                ;; Returns the current value of the search bar */
-    HasText() => (StrLen(this.Text()) ? 1:0)                                                ;; Returns true if there's text in search bar except for whitespaces
+    SetText(text := '') => this.OBJ.Text := text                                              ;; Sets the text for the search bar
+    Text(raw := false) => (raw ? this.OBJ.Text : Trim(this.OBJ.Text, ' `t`r`n'))                ;; Returns the current value of the search bar */
+    HasText() => (StrLen(this.Text()) ? 1 : 0)                                                ;; Returns true if there's text in search bar except for whitespaces
     Clear() => this.OBJ.Text := ''                                                          ;; Clears the search bar
     SetFocus() => ControlFocus(this.OBJ)                                                    ;; Sets the focus to search bar
-    IsEnabled() => ControlGetEnabled(this.OBJ) 
+    IsEnabled() => ControlGetEnabled(this.OBJ)
 
     SelectAll() {
         this.SetFocus()
@@ -56,27 +58,27 @@ class UISearchBar {
         }
     }
 
-    RetrieveDetails(source:='') {
+    RetrieveDetails(source := '') {
         if !StrLen(this.Text())
             return
         ST := A_TickCount
         REF := HymnalDB.ToHymnNumber(this.Text())                                           ;; Set a reference hymn number (000)
-        
+
         if !HymnalDB.isValidHymn(this.Text(true)) {
             try REF := HymnalDB.ToHymnNumber(UI.CPLTR.GetCurrentCompletion())               ;; Substitute the first reference if text is understandable
             catch Error as e {                                                              ;; Invalid index
                 UI.MAIN.ClearHymnText()
             }
         }
-        
+
         /*
             Scan for Base Hymn and its equivalent hymn
-
+        
             CT = Category (i.e: EN, TL)
         */
         CTS := ['EN', 'TL']
         for i, CT in CTS {
-            EQ_CT := CTS[i=1?2:1]
+            EQ_CT := CTS[i = 1 ? 2 : 1]
             if ArrayMatch(REF, HYMNAL[CT][1]) {
                 IDX := ArrayFind(HYMNAL[CT][1], REF)
                 NUM := HYMNAL[CT][1][IDX]
@@ -90,7 +92,7 @@ class UISearchBar {
                     EQ_NUM := 000
                     EQ_TTL := "N/A"
                 }
-                
+
                 if this.text() = NUM ' ' TTL {                                              ;; Display the equivalent hymn if the search bar's text is complete
                     UI.MAIN.SetHymnText(Format("{1}: {2} {3}", EQ_CT, EQ_NUM, EQ_TTL))
                     UI.MAIN.HYMN.SetFont("C" SW.TEXT_DISABLED)
@@ -101,10 +103,10 @@ class UISearchBar {
                 _LOG.Verbose(
                     Format(
                         "Query: Hymn #{1} Found at index {2} in {3} ({4} ms) | Source: {5}",
-                        REF, ZFill(IDX, 3), CT, A_TickCount-ST, source
+                        REF, ZFill(IDX, 3), CT, A_TickCount - ST, source
                     )
                 )
-                
+
                 /*  Save to session data */
                 SES.CURR_NUM := NUM
                 SES.CURR_TTL := TTL
@@ -129,9 +131,9 @@ class UISearchBar {
         _LOG.Verbose(
             Format(
                 "Query: No matching results for {1} ({2}ms)",
-                this.Text(), A_TickCount-ST
+                this.Text(), A_TickCount - ST
             )
         )
-        
+
     }
 }

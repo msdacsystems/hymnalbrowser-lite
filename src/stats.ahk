@@ -8,7 +8,8 @@
     The stats data utilizes JSON for data storage.
     All hymn stats are stored in a JSON file which will be sent to the cloud for analytics.
 
-    (c) 2022 Ken Verdadero, Reynald Ycong
+        (c) 2022 MSDAC Systems
+    Author: Ken Verdadero
     Written 2022-06-10
 */
 

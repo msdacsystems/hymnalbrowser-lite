@@ -5,7 +5,7 @@
     All methods under this class should be used in thread.
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-04
 */
 
@@ -13,9 +13,9 @@ class FileManagement {
     static GetTempAttrib() {
         /*
             Returns two arrays that has data.
-
+        
             FN - Filenames
-            TM - Timestamps            
+            TM - Timestamps
         */
         FN := []
         TM := []
@@ -26,8 +26,8 @@ class FileManagement {
             TM.Push(FileGetTime(A_LoopFileFullPath, "C"))
         }
         OUT := Object()
-        OUT.DefineProp("FN", {value: FN})
-        OUT.DefineProp("TM", {value: TM})
+        OUT.DefineProp("FN", { value: FN })
+        OUT.DefineProp("TM", { value: TM })
         return OUT
     }
 
@@ -35,7 +35,7 @@ class FileManagement {
         /*
             Removes all items that are old by analyzing their creation date.
             Only retains items the size of SW.TEMP_MAX_RECENT.
-
+        
             Even if the file is still open and the system needs to delete it,
             the system will wait until it finishes
         */
@@ -44,7 +44,7 @@ class FileManagement {
         _LOG.Info(
             Format(
                 "System: Temp {1}: {2}/{3}",
-                (TEMP_LENGTH <= CF.TEMP.MAX_RECENT ? "file count":"files overflowed"),
+                (TEMP_LENGTH <= CF.TEMP.MAX_RECENT ? "file count" : "files overflowed"),
                 TEMP_LENGTH, CF.TEMP.MAX_RECENT
             )
         )
@@ -61,21 +61,22 @@ class FileManagement {
                 REMOVED++
             }
         }
-        
+
         if FileManagement.GetTempAttrib().FN.Length == CF.TEMP.MAX_RECENT && REMOVED {
             _LOG.Info(Format(
                 "System: Temp file count is nominal; "
-                "removed {1} item{2}", REMOVED, (REMOVED == 1 ? '':'s'))
+                "removed {1} item{2}", REMOVED, (REMOVED == 1 ? '' : 's'))
             )
         }
-    } 
+    }
 
     static CloseTemp() {
         try if !System.DEV_MODE {
             FileDelete(SW.BIN_ZIP)
             FileDelete(SW.FILE_ZIPDLL)
             _LOG.Info("System: Internal files were closed successfully")
-        } catch Error as e {
+        }
+        catch Error as e {
             _LOG.Warn("System: Unable to close internal file(s): " e.Message)
         }
     }

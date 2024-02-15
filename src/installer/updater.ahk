@@ -9,7 +9,7 @@
     * Should be compiled because it needs to accept arguments
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
 */
 __NAME := "Hymnal Browser Lite Updater"
 
@@ -56,7 +56,7 @@ class Updater {
         this.ProcessMove()
     }
 
-    ProcessMove(bypass:=false) {
+    ProcessMove(bypass := false) {
         /*
             Performs the move and deletion of the old version.
             Also runs the new version.
@@ -66,8 +66,8 @@ class Updater {
         while FileExist(this.OLD_EXE) {
             try FileDelete(this.OLD_EXE)
         }
-        
-        loop { 
+
+        loop {
             try FileMove(this.NEW_DB, this.DIR_DOCS, true)
             try FileDelete(this.PKG_NAME)
         } until !FileExist(this.PKG_NAME)
@@ -119,7 +119,3 @@ class Updater {
 }
 
 Updater.Run()
-
-
-
-

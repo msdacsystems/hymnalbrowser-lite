@@ -9,15 +9,17 @@
 [![](https://img.shields.io/sourceforge/dt/hymnalbrowser-lite?color=008dc9&label=SourceForge)](https://sourceforge.net/projects/hymnalbrowser-lite)
 
 ## What is Hymnal Browser?
+
 Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.
 ![](res/mainmenu.png)
 
-
 ## Features
+
 - Browse through 474 Hymns based on SDA Philippine Hymnal
 - Supports English and Tagalog hymns
 
 ## Usage
+
 1. Open **Hymnal Browser Lite**
 2. Type the number or the title of the hymn
 3. Click <Kbd>Launch</Kbd> or press <Kbd>Enter</Kbd> to launch the presentation.
@@ -25,11 +27,13 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 ## [Download Hymnal Browser Lite](https://sourceforge.net/projects/hymnalbrowser-lite/files/latest/download)
 
 ## Screenshots
+
 ![](res/screenshot.png)
 
 ## Support
+
 - [Email](mailto:msdacsystems@gmail.com)
 - [Changelog](CHANGELOG.md)
 - [Documentation](DOCUMENTATION.md)
 
-Hymnal Browser Lite © 2023 MSDAC Systems
+Hymnal Browser Lite © 2024 MSDAC Systems

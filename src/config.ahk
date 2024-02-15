@@ -4,7 +4,7 @@
     Manages the configuration settings for Hymnal Browser Lite
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-04
 */
 
@@ -12,24 +12,24 @@ class Config {
     /*
         Configuration will be aliased to "CF" when referencing from other classes.
         (i.e: CF.TEMP_MAX_RECENT)
-
+    
         The configuration will load the defaults first to the instance
         before loading the custom settings specified in Software.FILE_CONFIG.
         This is to prevent unexpected property errors.
-
+    
         All properties that has prefix of '__' in their names will be considered
         as private properties, these will not be included in dumping configurations.
-
+    
         Improvements:
-            - Place the generatedDefaults config to A_Temp before moving to ProgramData
+            TODO: Place the generatedDefaults config to A_Temp before moving to ProgramData
             in case the parent directories are also absent.
     */
     static FILE := Software.FILE_CONFIG
     static HEAD_TEXT := Format(
-                "{1} Configuration`nThis file was generated automatically."
-                "`n`n{2}`nLast updated: {3}",
-                Software.PARENT_NAME, Software.VERSION_STRING, Time.GetCurrentTime()
-                )
+        "{1} Configuration`nThis file was generated automatically."
+        "`n`n{2}`nLast updated: {3}",
+        Software.PARENT_NAME, Software.VERSION_STRING, Time.GetCurrentTime()
+    )
 
     __New() {
         if !FileExist(Config.FILE) {
@@ -40,7 +40,7 @@ class Config {
             this.Load()                                                                     ;; Loads the custom configuration; Conflicting keys will override the default.
         }
     }
-    
+
     Load() {
         /*
             Reads and loads from external configuration file.
@@ -58,39 +58,39 @@ class Config {
             _LOG.Error("Config: There was an error loading the configuration", true)
             return
         }
-        
+
         this.ApplyData(this.__CFG)
         _LOG.Info("Config: Successfully loaded configuration", true)
     }
 
-    GetDefaults(includeHidden:=false, hiddenOnly:=false) {
+    GetDefaults(includeHidden := false, hiddenOnly := false) {
         /*
             Returns default configuration.
-
+        
             This method contains all the keys and values to be inserted when:
                 (1) the configuration was missing
                 (2) the configuration was corrupted (i.e, there's missing pairs)
-
-            The HID object contatins the configuration that system needs
+        
+            The HID object contains the configuration that system needs
             but not necessarily should be present in the configuration file.
             This is useful for keys like VERBOSE_LOG as it's considered as an advanced
             setting.
-
+        
             Configuration generator (Config.GenerateDefaults) should not include
             the hidden keys, but they should be still defined in the system.
-
+        
             Maintainer could add default values using object structure.
             This object will be converted to a configuration-readable file.
-
+        
             Objects are treated as a section.
             Properties of an object are treated as pairs of keys and values.
             Nested objects [sections] are not allowed.
-
+        
             See KConfig documentation for more info.
         */
         DEF := Object()
         HID := Object()                                                                     ;; Hidden configuration that will not be present when generated. Still needed by the system
-        
+
         HID.TME_QUERY := 1                                                                  ;; Time delay before a hymn query is considered a count
 
         HID.MAIN := Object()
@@ -113,14 +113,14 @@ class Config {
         DEF.LAUNCH.FOCUS_BACK := false                                                      ;; Focus back to the main window after launching a presentation
         DEF.LAUNCH.TYPE := 0                                                                ;; Presenter type; 1 - Open, 2 - Open in Slideshow
 
-        DEF := (includeHidden ? ObjectMerge(DEF, HID):DEF)
-        return (hiddenOnly ? HID:DEF)
+        DEF := (includeHidden ? ObjectMerge(DEF, HID) : DEF)
+        return (hiddenOnly ? HID : DEF)
     }
 
-    LoadDefaults(includeHidden:=false) => this.ApplyData(this.GetDefaults(includeHidden))   ;; Applies the default configuration to the base instance
+    LoadDefaults(includeHidden := false) => this.ApplyData(this.GetDefaults(includeHidden))   ;; Applies the default configuration to the base instance
 
     ApplyData(configObject) {
-        /*  
+        /*
             Inherits configObject to config instance.
             Keeps default keys that is absent in config.
         */
@@ -131,38 +131,38 @@ class Config {
             if TypeMatch(val, "Object") {                                                   ;; Since object's properties will be fully replaced, we need to retain props that might be absent in the new data
                 C_CFG := this.GetDefaults(true)                                             ;; Copy of default configuration
                 DEF := C_CFG.GetOwnPropDesc(name).Value                                     ;; Retrieve default CFG.Object.Object value
-                this.DefineProp(name, {value: ObjectMerge(DEF, val)})                       ;; ! Merged object will be defined; e.g: In case ALWAYS_ON_TOP is removed from CFG, the default will still be present.
+                this.DefineProp(name, { value: ObjectMerge(DEF, val) })                       ;; ! Merged object will be defined; e.g: In case ALWAYS_ON_TOP is removed from CFG, the default will still be present.
                 continue
             }
-            this.DefineProp(name, {value: val})                                             ;; Transfer the loaded configuration data to the instance's properties
+            this.DefineProp(name, { value: val })                                             ;; Transfer the loaded configuration data to the instance's properties
         }
-        this.__CFG := configObject
+        this.__CFG := configObject                                                          ;; Backup of the original data
     }
 
-    GenerateDefaults(autoReload:=true) {
+    GenerateDefaults(autoReload := true) {
         /*  Generates a configuration file based on the default values */
         if KConfig.Dump(this.GetDefaults(), Config.FILE, Config.HEAD_TEXT) {
             _LOG.Warn(
-                "Config: Required folders does not exists, " 
+                "Config: Required folders does not exists, "
                 "invoking system to resolve", true)
             System.VerifyDirectories(true)
             this.GenerateDefaults()
         } else {
             _LOG.Info("Config: Configuration was generated successfully.", true)
-            (autoReload ? this.LoadDefaults(true):0)
+            (autoReload ? this.LoadDefaults(true) : 0)
         }
     }
 
     Dump() {
         /*
-            Dumps the updated configuration to file.   
+            Dumps the updated configuration to file.
         */
         F_CFG := Object()                                                                   ;; Filtered configuration
         for name, val in this.OwnProps() {
             if SubStr(name, 1, 2) == '__' {                                                 ;; Ignore all entries that prefixes '__' since they are considered as private properties
                 continue
             }
-            F_CFG.DefineProp(name, {value: val})
+            F_CFG.DefineProp(name, { value: val })
         }
         F_CFG := ObjectSub(F_CFG, this.GetDefaults(, true))                                 ;; ! Needs review
         KConfig.Dump(F_CFG, Config.FILE, Config.HEAD_TEXT)

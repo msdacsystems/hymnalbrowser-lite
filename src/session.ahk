@@ -7,7 +7,7 @@
     already uploaded to stats file.
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-06
 */
 
@@ -23,21 +23,21 @@ class Session {
 
     GenerateProps() {
         this.DATA := {
-            CURR_NUM:       0,
-            CURR_TTL:       '',
-            CURR_HYMN:      '',
-            HYMN_PATH:      '',
-            FILENAME:       '',
-            SUGGESTIONS:    0,
-            LAUNCH_READY:   false,
-            COUNT_LAUNCH:   0,
-            COUNT_QUERY:    0,
-            LAST_QUERIED:   '',
-            TME_QUERY:      CF.TME_QUERY,
+            CURR_NUM: 0,
+            CURR_TTL: '',
+            CURR_HYMN: '',
+            HYMN_PATH: '',
+            FILENAME: '',
+            SUGGESTIONS: 0,
+            LAUNCH_READY: false,
+            COUNT_LAUNCH: 0,
+            COUNT_QUERY: 0,
+            LAST_QUERIED: '',
+            TME_QUERY: CF.TME_QUERY,
         }
 
         for name, val in this.DATA.OwnProps() {
-            this.DefineProp(name, {value: val})
+            this.DefineProp(name, { value: val })
         }
     }
 
@@ -63,11 +63,11 @@ class Session {
         */
         if this.COUNT_LAUNCH {
             _LOG.Info(Format("Session: Launched {1} file(s) at end of session",
-            this.COUNT_LAUNCH))
+                this.COUNT_LAUNCH))
         }
         if this.COUNT_QUERY {
             _LOG.Info(Format("Session: Queried {1} hymn(s) at end of session",
-            this.COUNT_QUERY))
+                this.COUNT_QUERY))
         }
     }
 

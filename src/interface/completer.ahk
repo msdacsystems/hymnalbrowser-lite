@@ -4,7 +4,7 @@
     A customized ListBox as a line completer suggestion box.
 
     (c) 2022 MSDAC Systems
-    Ken Verdadero, Reynald Ycong
+    Author: Ken Verdadero
     Written 2022-06-04
 */
 
@@ -18,12 +18,12 @@ Class UICompleter {
         this.MAX_ITEMS := SW.CPLTR_MAX_ITEMS
         this.ITEM_HEIGHT := 25                                                              ;; Size of a single item measured in pixels
         this.DATA := Object()
-        this.DATA.DefineProp("LIT", {value: []})                                            ;; Array of the items in completer (List Items / LIT)
-        this.DATA.DefineProp("IDX", {value: 0})                                             ;; Cached index number of completer
-        this.DATA.DefineProp("FCS", {value: ''})                                            ;; Cached current item text of completer
+        this.DATA.DefineProp("LIT", { value: [] })                                            ;; Array of the items in completer (List Items / LIT)
+        this.DATA.DefineProp("IDX", { value: 0 })                                             ;; Cached index number of completer
+        this.DATA.DefineProp("FCS", { value: '' })                                            ;; Cached current item text of completer
         this.ACTIVE := false
         this.REQUEST_SEARCH_UPDATE := false                                                 ;; Search updater indicator; when turned on, the listener will change the text according to the recent IDX
-        
+
         this.Update(true)                                                                   ;; Update the completer for the first time
 
         /* Binds all hotkeys to their corresponding keypress mode */
@@ -35,12 +35,12 @@ Class UICompleter {
         Hotkey('~WheelDown', ObjBindMethod(this, "KeyPress", "WheelDown"))
         Hotkey('~LButton Up', ObjBindMethod(this, "KeyPress", "LButton Up"))
     }
-    
-    Update(init:=false) {
+
+    Update(init := false) {
         /*
             Updates the Completer window.
             This method is used when dynamically resizing the listbox.
-
+        
             This is due to the limitation that AHK cannot redraw—
             the listbox unless it's destroyed and created again.
         */
@@ -48,7 +48,7 @@ Class UICompleter {
         this.OBJ := Gui("-Caption +ToolWindow", this.TITLE)                                 ;; Completer GUI Object
         this.OBJ.SetFont("S" SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.LIST := this.OBJ.AddListBox(Format("W{1} H{2} -VScroll",                       ;; List box inside the completer.
-                                        this.WIDTH, this.HEIGHT))
+            this.WIDTH, this.HEIGHT))
         WinSetTransColor("f0f0f0", this.OBJ)                                              ;; Make the list box only visible
 
         if init {                                                                           ;; Initial completer setup
@@ -64,11 +64,11 @@ Class UICompleter {
         /*
             Handles TextChangedEvent for completer.
             Forwarded from Events.Search.Changed
-
+        
             Scans the search bar's value and filters the hymns according
             to the current search bar's text using ArrayFilter().
         */
-        try this.OBJ.Hide()                                                                 ;; Hide the completer 
+        try this.OBJ.Hide()                                                                 ;; Hide the completer
         if !StrLen(UI.SEARCH.Text()) {                                                      ;; If the search bar is empty
             ToolTip('')                                                                     ;; Clear tooltips and the status bar
             UI.MAIN.ShowStatus('')
@@ -76,17 +76,17 @@ Class UICompleter {
         }
 
         FILTERED := ArrayFilter(HYMNAL["HYMNS"], UI.SEARCH.Text(), 'Contains')              ;; Retrieve all matching hymns from the search bar keyword
-        FLEN := FILTERED.Length        
+        FLEN := FILTERED.Length
 
         if FLEN <= 0 {                                                                      ;; When there's no matching results
             UI.MAIN.ShowStatus('')
             UI.MAIN.ClearHymnText()
             return this.Close()
         }
-            
-        this.HEIGHT := (this.ITEM_HEIGHT * (FLEN > this.MAX_ITEMS ? this.MAX_ITEMS:FLEN))   ;; Calculates the new height for the completer's ListBox
+
+        this.HEIGHT := (this.ITEM_HEIGHT * (FLEN > this.MAX_ITEMS ? this.MAX_ITEMS : FLEN))   ;; Calculates the new height for the completer's ListBox
         this.Update()                                                                       ;; Reinitalize a new completer GUI
-        
+
         try {
             this.LIST.Opt("-Redraw")                                                        ;; Turn off redraw before adding the items
             this.LIST.Add(FILTERED)                                                         ;; Appends all filtered/matched hymns to the list box
@@ -94,10 +94,10 @@ Class UICompleter {
         }
 
         System.SetActive()                                                                  ;; Responsible for keeping the focus on main window
-        
+
         SES.SUGGESTIONS := FLEN                                                             ;; Update item count data (List Size); Sets suggestion count
         this.DATA.LIT := FILTERED                                                           ;; Update items array (List Items)
-        
+
         UI.BTN.LaunchSetMode("ShowSuggestions")
     }
 
@@ -109,7 +109,7 @@ Class UICompleter {
             Keeps track of the index and text value of the ListBox.
             This method is responsible for keeping the hymn entry same
             with the selection in list box.
-
+        
             The way listener updates the search bar is when the keystrokes
             are pressed and requested for changes.
         */
@@ -134,7 +134,7 @@ Class UICompleter {
         /*
             Handles keystrokes and shortcut for the completer.
             The main window must be active to trigger the keypresses.
-
+        
             Includes:
                 - Ctrl+A (Select all)
                 - Up, Down, Left, Right (Navigation)
@@ -152,16 +152,16 @@ Class UICompleter {
                 }
             }
             try {
-                switch (ArrayMatch(key, ['NextItem', 'WheelDown']) ? 1:0) {
-                    case 0: 
-                        (this.DATA.IDX ? this.DATA.IDX--:0)                                 ;; Previous item
+                switch (ArrayMatch(key, ['NextItem', 'WheelDown']) ? 1 : 0) {
+                    case 0:
+                        (this.DATA.IDX ? this.DATA.IDX-- : 0)                                 ;; Previous item
                     case 1:
-                        (this.DATA.IDX < this.DATA.LIT.Length ? this.DATA.IDX++:0)          ;; Next item
+                        (this.DATA.IDX < this.DATA.LIT.Length ? this.DATA.IDX++ : 0)          ;; Next item
                 }
                 this.LIST.Choose(this.DATA.IDX)                                             ;; Focus the next item
                 if this.DATA.IDX && this.DATA.LIT[this.DATA.IDX] != UI.SEARCH.Text() {      ;; Prevent search request for if same item is queried
                     this.REQUEST_SEARCH_UPDATE := true                                      ;; Request an update of search bar for the listener
-                } 
+                }
             } catch Error as e {
                 _LOG.Error('UICompleter: Unable to process item actions. ' e.Message)
                 _LOG.Error("UICompleter: Source trigger: " key)
@@ -187,11 +187,11 @@ Class UICompleter {
     Close() {
         /*
             Destroys the completer.
-
+        
             The text value is unaffected to preserve the search bar's value.
             This is due to the listener is running and any changes to the cached text
             will reflect to the search bar.
-            
+        
         */
         if !this.ACTIVE                                                                     ;; Ignore when the completer is already destroyed
             return
@@ -206,7 +206,7 @@ Class UICompleter {
         if !this.ACTIVE
             return 0
         MouseGetPos(&X, &Y, &W, &C)
-        return (WinExist(this.OBJ) = W ? 1:0)
+        return (WinExist(this.OBJ) = W ? 1 : 0)
     }
 
     GetSpawnPoint(&X, &Y) {
