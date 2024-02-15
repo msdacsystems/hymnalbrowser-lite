@@ -51,16 +51,16 @@
 ## Introduction
 
 This file contains both developer and user documentation for the application.
-This documentation is last updated on **June 16, 2022**.
+This documentation is last updated on **May 4, 2023**.
 
 > Changes may or may not be made without prior notice.
 
 
 ## AutoHotkey
 
-Autohotkey may not be the best language to develop this app, but this is just an experimental project to temporarily fix the slow runtime issue in the Python-based Hymnal Browser.
+While Autohotkey may not be the most optimal programming language for the development of this application, it has been chosen for the purpose of an experimental project to provide a temporary solution for the slow runtime issue present in the Python-based Hymnal Browser.
 
-It is programmed in C++ and its source code is open source. Though it's made for task automation which doesn't fit much in our application, the speed it offers makes it easier to run faster which is why we decided to create an application using this language.
+The language is primarily designed for task automation and may not be an ideal fit for our application. However, due to its superior speed and open-source nature, we have decided to utilize it for this project to achieve faster performance. The application has been programmed in C++ for optimal efficiency.
 
 
 ## Code Dependencies
@@ -84,16 +84,14 @@ It is programmed in C++ and its source code is open source. Though it's made for
 
 ## Localization
 
-Unfortunately, Hymnal Browser Lite only offers English and Tagalog presentations. We currently don't have plans for other languages as it will need to recreate the hymn files.
+Regrettably, at present, Hymnal Browser Lite only supports English and Tagalog presentations, and we do not have any immediate plans to include other languages. This is because the addition of other languages would require the recreation of the hymn files, which is currently not feasible.
 
   
 ## Code Architecture
 
-Classes are broken down into different files to keep the code organized and maintainable. The code structure relies on object-oriented programming.
+To ensure the codebase remains organized and maintainable, the classes in the program have been separated into distinct files. The code structure adheres to the principles of object-oriented programming, wherein each class serves a specific purpose. A list of these classes is provided below.
 
-The program consists of several classes in which every class has a different purpose. (See the list of classes below)
-
-Since an [external library](#code-dependencies) is needed to make the program run properly, most of the functions are custom and may not be explained very well. Many custom codes are implemented and inspired by Python's syntax and terminology like the use of leading underscores ( _ ) to indicate a method that should only be used internally.
+As the program requires an [external library](#code-dependencies) to function correctly, a significant portion of the functions are customized and may lack in-depth explanations. Many of the custom codes implemented in the program draw inspiration from Python's syntax and terminology.
 
 #### Syntax and Terminology
 
@@ -322,10 +320,9 @@ Reloads the program. Also invokes `Events.System.Exit()` with an error code of `
 
 ### Relation of Config and Software
 
-The configuration and software share a similar purpose like storing a variable's value. However, there is a difference that makes these two comparable.
+The configuration and software components of the system serve a similar purpose in that they both store variable values. However, there is a fundamental difference between the two that sets them apart.
 
-In the Config class, variables can be modified by the user once specified a custom value. On the other hand, the Software class variables are fixed and cannot be changed by the user.
-
+The Config class allows users to modify variables by specifying custom values, while the Software class variables are immutable and cannot be changed by the user.
 
 
 ## Acknowledgements
