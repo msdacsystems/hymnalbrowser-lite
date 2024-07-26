@@ -8,7 +8,7 @@
 [![](https://img.shields.io/github/downloads/msdacsystems/hymnalbrowser-lite/total?color=008dc9&label=Downloads)](https://github.com/msdacsystems/hymnalbrowser-lite/releases)
 [![](https://img.shields.io/sourceforge/dt/hymnalbrowser-lite?color=008dc9&label=SourceForge)](https://sourceforge.net/projects/hymnalbrowser-lite)
 
-## What is Hymnal Browser?
+## About
 
 Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.
 ![](res/mainmenu.png)

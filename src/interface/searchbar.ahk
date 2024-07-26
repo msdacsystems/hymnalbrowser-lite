@@ -111,7 +111,7 @@ class UISearchBar {
                 SES.CURR_NUM := NUM
                 SES.CURR_TTL := TTL
                 SES.CURR_HYMN := NUM ' ' TTL
-                SES.FILENAME := Format("{1} {2}.pptx", NUM, TTL)
+                SES.FILENAME := Format("{1} {2}.ppsx", NUM, TTL)
                 SES.HYMN_PATH := Format("{1}/{2}", CT, SES.FILENAME)
 
                 SES.LAUNCH_READY := true

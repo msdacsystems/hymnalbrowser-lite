@@ -120,18 +120,18 @@ Class HymnalDB {
 
         for FILE in HYMN_ZIP.PATHS {
             spH := HymnalDB.SplitHymn(FILE)
-            if (!ArrayMatch(spH.Ext, ['pptx', 'sda']) and
+            if (!ArrayMatch(spH.Ext, ['pptx', 'ppsx', 'sda']) and
                 !ArrayMatch(FILE, CATS)) and StrLen(FILE) {
-                    _LOG.Warn(
-                        Format("HymnsDB: Unnecessary file `"{1}`""
-                            " detected inside the database.",
-                            FILE)
-                    )
-                    INVALID_ITEMS.Push(FILE)
+                _LOG.Warn(
+                    Format("HymnsDB: Unnecessary file `"{1}`""
+                        " detected inside the database.",
+                        FILE)
+                )
+                INVALID_ITEMS.Push(FILE)
             }
 
             loop CATS.Length {
-                if (spH.CAT != CATS[A_Index] || spH.EXT != "pptx") {
+                if (spH.CAT != CATS[A_Index] || spH.EXT != "ppsx") {
                     continue
                 }
                 _HYMNAL[A_Index][1].push(spH.NUM)

@@ -38,7 +38,7 @@ __VERSION := "0.3.2.1"
 #MaxThreads 100
 SetTitleMatchMode("RegEx")
 A_MaxHotkeysPerInterval := 5000
-TraySetIcon("res/app_icon.ico")
+; TraySetIcon("res/app_icon.ico")
 
 /* External libraries */
 #Include %A_MyDocuments%\AutoHotkey\Lib\ext\Basic.ah2
