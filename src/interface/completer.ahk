@@ -45,7 +45,7 @@ Class UICompleter {
             the listbox unless it's destroyed and created again.
         */
         this.Close()
-        this.OBJ := Gui("-Caption +ToolWindow", this.TITLE)                                 ;; Completer GUI Object
+        this.OBJ := Gui("-Caption +ToolWindow AlwaysOnTop", this.TITLE)                                 ;; Completer GUI Object
         this.OBJ.SetFont("S" SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.LIST := this.OBJ.AddListBox(Format("W{1} H{2} -VScroll",                       ;; List box inside the completer.
             this.WIDTH, this.HEIGHT))
@@ -57,6 +57,11 @@ Class UICompleter {
             this.GetSpawnPoint(&X, &Y)
             this.ACTIVE := true
             this.OBJ.show(Format("X{1} Y{2}", X, Y))
+
+            ;; Add Windows 11 support for rounded corners
+            if (VerCompare(A_OSVersion, "10.0.22000") >= 0) { ; Check if the OS is Windows 11
+                DllCall("Dwmapi.dll\DwmSetWindowAttribute", "Ptr", this.OBJ.Hwnd, "UInt", 33, "Int*", 2, "UInt", 4)
+            }
         }
     }
 
