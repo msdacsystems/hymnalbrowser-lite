@@ -142,10 +142,13 @@ class Updater {
             return
         }
         PKG_SZ := Round(this.PKG_SIZE / (1024 * 1024))                                          ;; MB-converted package size
-        try CSZ := FileOpen(this.PKG_NAME, 'r').Length / (1024 * 1024)                          ;; Current Size of the file
-        this.LBL_PERCENTAGE.Text := Format("{1}%", Round((CSZ / PKG_SZ) * 100))
-        this.LBL_SIZE.Text := Format("{1}/{2} MB", Round(CSZ), Round(PKG_SZ))
-        this.PROGRESS.Value := Trim(this.LBL_PERCENTAGE.Text, '%')
+        try {
+            CSZ := FileOpen(this.PKG_NAME, 'r').Length / (1024 * 1024)                          ;; Current Size of the file
+            this.LBL_PERCENTAGE.Text := Format("{1}%", Round((CSZ / PKG_SZ) * 100))
+            this.LBL_SIZE.Text := Format("{1}/{2} MB", Round(CSZ), Round(PKG_SZ))
+            this.PROGRESS.Value := Trim(this.LBL_PERCENTAGE.Text, '%')
+        }
+
     }
 
     InstallPackage() {
