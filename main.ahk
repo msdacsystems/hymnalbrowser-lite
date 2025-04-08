@@ -31,7 +31,7 @@
     Original 2022-04-22 prototype
 */
 
-__VERSION := "0.4.1"
+__VERSION := "0.4.2"
 
 /* AHK Settings */
 #SingleInstance Force
@@ -88,8 +88,8 @@ try TraySetIcon("res/app_icon.ico")
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
 ;@Ahk2Exe-SetProductName Hymnal Browser Lite
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
-;@Ahk2Exe-SetCopyright (c) 2024 MSDAC Systems`, Verdadero`, Ycong
-;@Ahk2Exe-SetLegalTrademarks (c) 2024 MSDAC Systems
+;@Ahk2Exe-SetCopyright © 2022-2025 MSDAC Systems
+;@Ahk2Exe-SetLegalTrademarks © 2022-2025 MSDAC Systems
 ;@Ahk2Exe-SetMainIcon res/app_icon.ico
 ;@Ahk2Exe-SetFileVersion 0.3.3
 ;@Ahk2Exe-SetLanguage 0x3409
