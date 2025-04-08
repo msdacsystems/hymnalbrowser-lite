@@ -22,6 +22,7 @@ Class UIContextMenu {
         this.OBJ.Add("&Settings", Events.Settings.Click)
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add()
+        this.OBJ.Add("&Website", ObjBindMethod(UI, "Open Website"))
         this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
         this.OBJ.Add("&Exit", ObjBindMethod(Events.System, "Exit", 0, "Hi"))
     }

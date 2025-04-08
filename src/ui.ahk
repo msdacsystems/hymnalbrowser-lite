@@ -177,6 +177,18 @@ class UI {
             SW.AUTHORS[2]), "About v" SW.VERSION, "0x24")
     }
 
+    /**
+     * Launches developer website
+     * @param args 
+     */
+    static Website(args*) {
+        try {
+            Run(SW.DEV_WEBSITE)
+        } catch Error {
+            _LOG.Error("UI: Unable to open developer website")
+        }
+    }
+
     static SetSettingsModal(mode) {
         /*  Controls main window elements when settings modal is present */
         switch mode {
