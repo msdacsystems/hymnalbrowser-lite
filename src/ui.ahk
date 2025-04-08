@@ -181,7 +181,7 @@ class UI {
      * Launches developer website
      * @param args 
      */
-    static Website(args*) {
+    static OpenWebsite(args*) {
         try {
             Run(SW.DEV_WEBSITE)
         } catch Error {
