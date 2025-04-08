@@ -31,7 +31,8 @@
     Original 2022-04-22 prototype
 */
 
-__VERSION := "0.4.2"
+__VERSION := "0.4.3"
+;@Ahk2Exe-Obey U_Ver, = "0.4.3"
 
 /* AHK Settings */
 #SingleInstance Force
@@ -91,8 +92,8 @@ try TraySetIcon("res/app_icon.ico")
 ;@Ahk2Exe-SetCopyright © 2022-2025 MSDAC Systems
 ;@Ahk2Exe-SetLegalTrademarks © 2022-2025 MSDAC Systems
 ;@Ahk2Exe-SetMainIcon res/app_icon.ico
-;@Ahk2Exe-SetFileVersion 0.3.3
+;@Ahk2Exe-SetFileVersion %U_Ver%
 ;@Ahk2Exe-SetLanguage 0x3409
-;@Ahk2Exe-SetVersion 0.3.3
+;@Ahk2Exe-SetVersion %U_Ver%
 
 System.Exec()
