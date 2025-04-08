@@ -1,11 +1,11 @@
-/*
-    * System class for HBL
-    ---------------------
-    Main System class. Handles all process and system management.
-
-    (c) 2022 MSDAC Systems
-    Author: Ken Verdadero
-*/
+/**
+ * * System class for HBL
+ *  ---------------------
+ *  Main System class. Handles all process and system management.
+ * 
+ *  (c) 2022-2025 MSDAC Systems
+ *  Author: Ken Verdadero (@verdaderoken)
+ */
 
 class System {
     static DEV_MODE := false
@@ -37,7 +37,7 @@ class System {
         )
         _LOG.Info(System.DEV_MODE ? "APPLICATION IS RUNNING ON DEVELOPER MODE" : '')
         _LOG.Info("System: Process ID: " System.GetPID())
-        _LOG.Info("System: Verbose logging is " (CF.MAIN.VERBOSE_LOG ? 'ON' : 'OFF'))
+        _LOG.Info("System: Verbose logging is " (System.DEV_MODE ? 'ALWAYS ON (Dev Mode)' : (CF.MAIN.VERBOSE_LOG ? 'ON' : 'OFF')))
         _LOG.Info("System: Initializing core")
 
         A_TrayMenu.Delete()                                                                 ;; Remove items in tray menu
@@ -49,6 +49,7 @@ class System {
         global ENV := Environments.Load(SW.FILE_ENV, !System.DEV_MODE)                      ;; Load and delete the environment file after loading
         global HYMNAL := HymnalDB.ScanHymnal()                                              ;; Contains map of hymnal data
         global SES := Session.Setup()
+        global STS := Stats.Setup()
         UI.Setup()                                                                          ;; Initiate User Interface setup
         BackgroundThread.Setup()
         _LOG.DumpPostponedLogs()                                                            ;; Releases all deferred logs that wasn't supposed to dump early

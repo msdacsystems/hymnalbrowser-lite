@@ -59,6 +59,7 @@ Class Software {
     static FILE_PKG_UPT := (A_IsCompiled ? PathJoin(A_Temp, 'Hymnal Browser Lite Updater.exe') : 'bin\Hymnal Browser Lite Updater.exe')
     static FILE_ICON := "res\app_icon.ico"
     static FILE_CONFIG := PathJoin(this.DIR_PROGRAM, "settings.cfg")
+    static FILE_STATS := PathJoin(this.DIR_PROGRAM, "stats.json")
     static FILE_POWERPOINT := ''                                                            ;; Placeholder; to be filled by System.VerifyRequisites.
     static FILE_PRESENTER := ''                                                             ;; Placeholder; to be filled by System.VerifyRequisites.
     static FILE_LOG := (A_IsCompiled ? PathJoin(this.DIR_PROGRAM, "app.log") : "dev.log")

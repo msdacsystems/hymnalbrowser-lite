@@ -1,15 +1,14 @@
-/*
-    Presentation Launcher for HBL
-    ----------------------------
-    Extracts the presentation from the database and launches the file.
+/**
+ *  Presentation Launcher for HBL
+ *  ----------------------------
+ *  Extracts the presentation from the database and launches the file.
+ * 
+ *  (c) 2022-2025 MSDAC Systems
+ *  Author: Ken Verdadero
+ *  Written 2022-06-06
+ */
 
-    (c) 2022 MSDAC Systems
-    Author: Ken Verdadero
-    Written 2022-06-06
-*/
-
-
-Class Launcher {
+class Launcher {
     static Launch() {
         /*
             Extracts the target file from the database and launches them.
@@ -67,6 +66,7 @@ Class Launcher {
                 SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount - ST))
             )
             SES.COUNT_LAUNCH += 1
+            STS.RecordLaunch(SES.CURR_NUM)                                                    ;; Record the launch to the stats
             UI.BTN.LaunchSetMode("Launched")
 
             if CF.LAUNCH.FOCUS_BACK {                                                       ;; Focus back to main window if configuration is set to true, also selects all the text
