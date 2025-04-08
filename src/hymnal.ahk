@@ -122,12 +122,12 @@ Class HymnalDB {
             spH := HymnalDB.SplitHymn(FILE)
             if (!ArrayMatch(spH.Ext, ['pptx', 'sda']) and
                 !ArrayMatch(FILE, CATS)) and StrLen(FILE) {
-                    _LOG.Warn(
-                        Format("HymnsDB: Unnecessary file `"{1}`""
-                            " detected inside the database.",
-                            FILE)
-                    )
-                    INVALID_ITEMS.Push(FILE)
+                _LOG.Warn(
+                    Format("HymnsDB: Unnecessary file `"{1}`""
+                        " detected inside the database.",
+                        FILE)
+                )
+                INVALID_ITEMS.Push(FILE)
             }
 
             loop CATS.Length {
@@ -175,5 +175,19 @@ Class HymnalDB {
             MapAsStr(_BOOK["TOTAL"], , ': ', false)
         )
         return _BOOK
+    }
+
+    /**
+     * Returns the hymn name by number.
+     */
+    static GetHymnNameByNumber(number) {
+        hymns := HYMNAL["HYMNS"]
+        for i, name in hymns {
+            id := HymnalDB.ToHymnNumber(name)
+            if id == number {
+                return RegExReplace(name, '^[0-9]{3} ', "")
+            }
+        }
+        return ""
     }
 }
