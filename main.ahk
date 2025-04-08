@@ -50,24 +50,27 @@ try TraySetIcon("res/app_icon.ico")
 #Include %A_MyDocuments%/AutoHotkey/Lib/ext/Types.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/ext/Window.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/Env.ah2
+#Include %A_MyDocuments%/AutoHotkey/Lib/JSON.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/7Zip.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/KConfig.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/KLogger.ah2
 #Include %A_MyDocuments%/AutoHotkey/Lib/GitHub.ah2
 
 /*  External classes */
+#Include src/software.ahk
 #Include src/system/system.ahk
 #Include src/system/errors.ahk
 #Include src/system/fileManagement.ahk
 #Include src/system/background.ahk
 #Include src/system/events.ahk
 #Include src/system/updater.ahk
-#Include src/software.ahk
+#Include src/system/utils.ahk
 #Include src/ui.ahk
 #Include src/config.ahk
 #Include src/hymnal.ahk
 #Include src/launcher.ahk
 #Include src/session.ahk
+#Include src/stats.ahk
 
 /*  Interface classes */
 #Include src/interface/mainmenu.ahk
