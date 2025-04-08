@@ -3,7 +3,7 @@
     ---------
     Manifest file about the Hymnal Browser Lite.
 
-    (c) 2022 MSDAC Systems
+    (c) 2022-2025 MSDAC Systems
     Author: Ken Verdadero
 */
 
@@ -16,13 +16,13 @@ Class Software {
     static AUTHORS := ["Ken Verdadero", "Reynald Ycong"]
     static NAME := "Hymnal Browser Lite"
     static TITLE := this.NAME
-    static COPYRIGHT := "© 2024 MSDAC Systems"
-    static COPYRIGHT_NAME := this.NAME " © 2024 MSDAC Systems"
+    static COPYRIGHT := "© 2022-2025 MSDAC Systems"
+    static COPYRIGHT_NAME := this.NAME " © 2022-2025 MSDAC Systems"
     static PARENT_NAME := this.PARENT ' ' this.NAME
     static EXE_NAME := this.NAME '.exe'
     static VERSION := __VERSION
     static VERSION_SHORT := 'v' Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.')
-    static VERSION_LABEL := "Beta"
+    static VERSION_LABEL := ""
     static VERSION_STRING := Format("v{1} {2}",
         Join(ArrayTrunc(StrSplit(this.VERSION, '.'), 1, 3), '.'), this.VERSION_LABEL
     )
@@ -35,6 +35,7 @@ Class Software {
         this.PARENT_NAME, this.VERSION, this.VERSION_LABEL
     )
     static GITHUB_REPO := 'msdacsystems/hymnalbrowser-lite'
+    static DEV_WEBSITE := "https://msdacsystems.com/"
 
     /*  Directories */
     static DIR_PARENT := PathJoin(A_AppDataCommon, this.PARENT)
