@@ -135,6 +135,13 @@ class UI {
         } catch Error as e {
             _LOG.Error(e.Message)
             UI.MAIN.GUI.Show()                                                              ;; Show at last coords when arg 1 and 2 is not specified.
+        } finally {
+            UI.UpdatePos()                                                                  ;; Reupdate position with new coords
+
+            ;; Add Windows 11 support for rounded corners
+            if (VerCompare(A_OSVersion, "10.0.22000") >= 0) { ; Check if the OS is Windows 11
+                DllCall("Dwmapi.dll\DwmSetWindowAttribute", "Ptr", UI.MAIN.GUI.Hwnd, "UInt", 33, "Int*", 2, "UInt", 4)
+            }
         }
     }
 
@@ -168,6 +175,18 @@ class UI {
         TrayTip(Format("{1}`n{2}, {3}",
             SW.COPYRIGHT, SW.AUTHORS[1],
             SW.AUTHORS[2]), "About v" SW.VERSION, "0x24")
+    }
+
+    /**
+     * Launches developer website
+     * @param args 
+     */
+    static OpenWebsite(args*) {
+        try {
+            Run(SW.DEV_WEBSITE)
+        } catch Error {
+            _LOG.Error("UI: Unable to open developer website")
+        }
     }
 
     static SetSettingsModal(mode) {

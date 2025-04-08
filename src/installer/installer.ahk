@@ -37,7 +37,7 @@ class Installer {
     */
     static APP_NAME := "Hymnal Browser Lite Installer"
     static APP := "Hymnal Browser Lite"
-    static COPYRIGHT := "Hymnal Browser Lite © 2022 MSDAC Systems"
+    static COPYRIGHT := "Hymnal Browser Lite © 2022-2025 MSDAC Systems"
     static DESC := Format(
         "A hymn browser and launcher for Seventh-day Adventist Church, lightweight version.`n"
         "`nInstall path: ",

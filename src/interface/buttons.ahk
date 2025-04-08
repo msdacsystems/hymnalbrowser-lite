@@ -9,13 +9,21 @@
 
 class UIButtons {
     static _NAME := "BTN"
+    static LAUNCH_STATES := {
+        Launch: "🚀 Launch",
+        InsertHymn: "Start typing",
+        NotAvailable: "Not Available",
+        ShowSuggestions: "Show suggestions",
+        Launching: "🔃 Launching",
+        Launched: "🟢 Launched",
+    }
 
     __New() {
         this.CLEAR := GUIx.Button.Extend(
             UI.MAIN.GUI.AddButton("0x40 0x300 0xC00 YP H25 W27", '❌')
         )
         this.LAUNCH := GUIx.Button.Extend(
-            UI.MAIN.GUI.AddButton("0x300 0xC00 YP W100", " Launch")
+            UI.MAIN.GUI.AddButton("0x300 0xC00 YP W100", UIButtons.LAUNCH_STATES.Launch)
         )
 
         this.LAUNCH.LAST_STATE := 0
@@ -41,18 +49,18 @@ class UIButtons {
             case "InsertHymn":
                 SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
-                this.LAUNCH.SetText("Insert Hymn")
+                this.LAUNCH.SetText(UIButtons.LAUNCH_STATES.InsertHymn)
                 UI.MAIN.ClearHymnText()
                 UI.MAIN.DETAILS.Text := ""
                 (UI.CPLTR.ACTIVE ? UI.CPLTR.Close() : 0)
 
             case "Ready":
-                this.LAUNCH.SetText("Launch")
+                this.LAUNCH.SetText(UIButtons.LAUNCH_STATES.Launch)
 
             case "NotAvailable":
                 SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
-                this.LAUNCH.SetText("Not Available")
+                this.LAUNCH.SetText(UIButtons.LAUNCH_STATES.NotAvailable)
                 UI.MAIN.DETAILS.Text := ''
                 UI.MAIN.SetHymnText(Format("No matching results for '{1}'", UI.SEARCH.Text()))
                 UI.MAIN.HYMN.Opt('C' SW.TEXT_DISABLED)
@@ -60,14 +68,14 @@ class UIButtons {
             case "ShowSuggestions":
                 this.LAUNCH.SetText(SES.SUGGESTIONS " Match" (SES.SUGGESTIONS = 1 ? '' : 'es'))
 
-            case "Launching":
+            case "🔃 Launching":
                 this.LAUNCH.SetEnabled(0)
-                this.LAUNCH.SetText("Launching")
+                this.LAUNCH.SetText(UIButtons.LAUNCH_STATES.Launching)
 
             case "Launched":
                 SES.LAUNCH_READY := false
                 this.LAUNCH.SetEnabled(0)
-                this.LAUNCH.SetText("Launched")
+                this.LAUNCH.SetText(UIButtons.LAUNCH_STATES.Launched)
         }
 
     }

@@ -34,9 +34,23 @@ class Errors {
         Events.System.Exit(13)
     }
 
-    static Notify(message, tray := false, timeout := 0) {
-        /* Notifies the user about the error */
-        MsgBox("Error: " message, SW.NAME, "Icon! 0x40000 T" timeout)
+    static Notify(message, tray := false, timeout := 0, mode := "Error") {
+        /* Notifies the user about the error or warning */
+        if (mode = "Warning") {
+            MsgBox("Warning: " message, SW.NAME, "Icon! 0x30 T" timeout)  ;; Warning icon
+        } else {
+            MsgBox("Error: " message, SW.NAME, "Icon! 0x40000 T" timeout) ;; Error icon
+        }
+    }
+
+    static Alert(message, title := SW.NAME, timeout := 0) {
+        /*  Prompts the user with an alert message box */
+        return MsgBox(message, title, "Icon! 0x40000 T" timeout)
+    }
+
+    static PromptYesNo(message, title := SW.NAME, timeout := 0) {
+        /*  Prompts the user with a Yes/No message box */
+        return MsgBox(message, title, "Icon! 0x40024 T" timeout)
     }
 
     static HymnsDB(errorType) {
@@ -68,6 +82,37 @@ class Errors {
                 )
                 _LOG.Error(Format('7z Library cannot be found in "{1}"', SW.FILE_ZIPDLL))
                 Events.System.Reload()
+        }
+    }
+
+    static Stats(errorType, message := "") {
+        switch errorType {
+            case "Corrupted":
+                _LOG.Error("Stats: Corrupted stats file: " . message)
+
+                choice := Errors.PromptYesNo(
+                    "There was an error loading hymnal statistics. Continue anyway?`n",
+                    SW.NAME
+                )
+                _LOG.Debug(choice)
+
+                if choice == "Yes" {
+                    Stats.CleanStatsFile()
+                    Errors.Alert(
+                        "The application will restart now."
+                    )
+                    Events.System.Reload()
+                    return
+                }
+                Errors.Alert(
+                    "Backup your stats file and reinstall the app.`nClick OK to open the stats folder.`nThe application will now exit.",
+                )
+                OpenFolder(SW.FILE_STATS)
+                Events.System.Exit(1, "Corrupted stats file.")
+
+            case "CleanupFailed":
+                _LOG.Error("Stats: Failed to delete stats file: " . message)
+                Errors.Notify("There was an error deleting the stats file, please delete it manually.")
         }
     }
 }

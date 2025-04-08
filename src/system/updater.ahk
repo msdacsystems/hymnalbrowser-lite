@@ -1,17 +1,17 @@
-/*
-    Updater for HBL
-    --------------------
-    Handles latest release version checking, update, download, and installation
-    of a newer version of the application.
-
-    - Pre-releases are not included in checking
-    - Uses installer bin to perform operations even after system exit.
-    - Code 12 is used to let the system know it's being updated.
-
-    (c) 2022 MSDAC Systems
-    Author: Ken Verdadero
-    Written 2022-06-18
-*/
+/**
+ *   Updater for HBL
+ *   --------------------
+ *   Handles latest release version checking, update, download, and installation
+ *   of a newer version of the application.
+ * 
+ *   - Pre-releases are not included in checking
+ *   - Uses installer bin to perform operations even after system exit.
+ *   - Code 12 is used to let the system know it's being updated.
+ * 
+ *   (c) 2022-2025 MSDAC Systems
+ *   Author: Ken Verdadero
+ *   Written 2022-06-18
+ */
 
 
 class Updater {
@@ -63,7 +63,7 @@ class Updater {
         _LOG.Info("Updater: Checking for updates")
         try this.URL := GetReleaseAssetURL(SW.GITHUB_REPO)
         catch Error {
-            _LOG.Warn("Cannot retrieve update status")
+            _LOG.Error("Cannot retrieve update status")
             return
         }
         VERSION := StrSplit(
@@ -155,7 +155,7 @@ class Updater {
             The installation is made possible by using a 3rd file that performs
             the move and delete operations for the old version and the newer one.
         
-            The application will pass 7 arguments where the data is read by the installer.
+            The application will pass 8 arguments where the data is read by the installer.
                 1. Path of the old application
                 2. Path of the newly downloaded application (usually in temp folder)
                 3. Path of the old database
@@ -169,6 +169,7 @@ class Updater {
             The downloaded package will be also deleted after downloading.
         
             After all file operations are done, the installer will launch the updated file.
+            The updated file then cleans up the installer file.
         */
         _LOG.Info(Format(
             "Updater: Download completed in {1} second(s)",

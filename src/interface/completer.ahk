@@ -45,7 +45,7 @@ Class UICompleter {
             the listbox unless it's destroyed and created again.
         */
         this.Close()
-        this.OBJ := Gui("-Caption +ToolWindow", this.TITLE)                                 ;; Completer GUI Object
+        this.OBJ := Gui("-Caption +ToolWindow AlwaysOnTop", this.TITLE)                                 ;; Completer GUI Object
         this.OBJ.SetFont("S" SW.GLB_FONT_SIZE, SW.GLB_FONT_NAME)
         this.LIST := this.OBJ.AddListBox(Format("W{1} H{2} -VScroll",                       ;; List box inside the completer.
             this.WIDTH, this.HEIGHT))
@@ -57,6 +57,11 @@ Class UICompleter {
             this.GetSpawnPoint(&X, &Y)
             this.ACTIVE := true
             this.OBJ.show(Format("X{1} Y{2}", X, Y))
+
+            ;; Add Windows 11 support for rounded corners
+            if (VerCompare(A_OSVersion, "10.0.22000") >= 0) { ; Check if the OS is Windows 11
+                DllCall("Dwmapi.dll\DwmSetWindowAttribute", "Ptr", this.OBJ.Hwnd, "UInt", 33, "Int*", 2, "UInt", 4)
+            }
         }
     }
 
@@ -68,14 +73,16 @@ Class UICompleter {
             Scans the search bar's value and filters the hymns according
             to the current search bar's text using ArrayFilter().
         */
-        try this.OBJ.Hide()                                                                 ;; Hide the completer
-        if !StrLen(UI.SEARCH.Text()) {                                                      ;; If the search bar is empty
+        try this.OBJ.Hide()
+        query := UI.SEARCH.Text()                                                           ;; Hide the completer
+
+        if !StrLen(query) {                                                                ;; If the search bar is empty
             ToolTip('')                                                                     ;; Clear tooltips and the status bar
             UI.MAIN.ShowStatus('')
             return this.Close()
         }
 
-        FILTERED := ArrayFilter(HYMNAL["HYMNS"], UI.SEARCH.Text(), 'Contains')              ;; Retrieve all matching hymns from the search bar keyword
+        FILTERED := ArrayFilter(HYMNAL["HYMNS"], query, 'Contains')                        ;; Retrieve all matching hymns from the search bar keyword
         FLEN := FILTERED.Length
 
         if FLEN <= 0 {                                                                      ;; When there's no matching results

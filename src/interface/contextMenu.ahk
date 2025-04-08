@@ -2,7 +2,7 @@
     Right-click Context menu for HBL
     --------------------------------
 
-    (c) 2022 MSDAC Systems
+    (c) 2022-2025 MSDAC Systems
     Author: Ken Verdadero
     Written 2022-06-05
 */
@@ -14,6 +14,8 @@ Class UIContextMenu {
         this.OBJ := Menu()
         if System.DEV_MODE {
             /* For development mode only */
+            this.OBJ.Add("Dev &Tools", ObjBindMethod(this, "_DevItems", 0))
+            this.OBJ.Disable("Dev &Tools")
             this.OBJ.Add("Open &Script Directory", ObjBindMethod(this, "_DevItems", 1))
             this.OBJ.Add("Open &Program Directory", ObjBindMethod(this, "_DevItems", 2))
             this.OBJ.Add("Open Program &Docs Directory", ObjBindMethod(this, "_DevItems", 3))
@@ -22,6 +24,7 @@ Class UIContextMenu {
         this.OBJ.Add("&Settings", Events.Settings.Click)
         this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
         this.OBJ.Add()
+        this.OBJ.Add("Open &Website", ObjBindMethod(UI, "OpenWebsite"))
         this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
         this.OBJ.Add("&Exit", ObjBindMethod(Events.System, "Exit", 0, "Hi"))
     }

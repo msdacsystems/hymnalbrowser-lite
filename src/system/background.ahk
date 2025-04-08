@@ -55,16 +55,16 @@ class BackgroundThread {
 
         if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P')
             && !System.IsOnModal() {
-                try WinGetPos(&X, &Y, , , System.AHK_TITLE)
-                catch Error {
-                    return
-                }
-                _LOG.Verbose(Format(
-                    "BackgroundThread: Main window was moved. "
-                    "New window position: X:{1} Y:{2}", X, Y)
-                )
-                UI.UpdatePos()
-                UI.MAIN.SetMoving(0)
+            try WinGetPos(&X, &Y, , , System.AHK_TITLE)
+            catch Error {
+                return
+            }
+            _LOG.Verbose(Format(
+                "BackgroundThread: Main window was moved. "
+                "New window position: X:{1} Y:{2}", X, Y)
+            )
+            UI.UpdatePos()
+            UI.MAIN.SetMoving(0)
         }
     }
 
@@ -82,17 +82,21 @@ class BackgroundThread {
         /*
             Handles session hymn stats such as queries
         */
-        if !SES.TME_QUERY {
-            if UI.SEARCH.HasText() and SES.LAST_QUERIED != SES.CURR_HYMN {
-                SES.COUNT_QUERY++
-                SES.LAST_QUERIED := SES.CURR_HYMN
-                _LOG.Verbose(
-                    Format("Background: Query was incremented: {1} | Hymn: '{2}'",
-                        SES.COUNT_QUERY, SES.CURR_HYMN)
-                )
-            }
-            SES.TME_QUERY := CF.TME_QUERY
+        if SES.TME_QUERY {
+            SES.TME_QUERY--
+            return
         }
-        SES.TME_QUERY--
+
+        if UI.SEARCH.HasText() && SES.LAST_QUERIED != SES.CURR_HYMN {
+            SES.COUNT_QUERY++
+            SES.LAST_QUERIED := SES.CURR_HYMN
+            _LOG.Verbose(Format(
+                "Background: Query was incremented: {1} | Hymn: '{2}'",
+                SES.COUNT_QUERY, SES.CURR_HYMN
+            ))
+            STS.RecordQuery(SES.CURR_NUM)                                                    ;; Record the query to the stats
+        }
+
+        SES.TME_QUERY := CF.TME_QUERY
     }
 }
