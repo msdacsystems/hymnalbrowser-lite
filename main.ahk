@@ -31,7 +31,7 @@
     Original 2022-04-22 prototype
 */
 
-__VERSION := "0.4.0"
+__VERSION := "0.4.1"
 
 /* AHK Settings */
 #SingleInstance Force
