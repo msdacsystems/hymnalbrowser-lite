@@ -118,12 +118,16 @@ class UISearchBar {
                 UI.BTN.LAUNCH.SetEnabled(1)
                 SES.ResetQueryTimeout()
 
-                ; HYMNSIZE := StrLen(SES.CURR_HYMN)                                         ;; For hymn details
-                ; ControlMove(
-                ;     (HYMNSIZE > 40 ? 1000:HYMNSIZE*6.65),
-                ;     33, 200, 20, UI.MAIN.DETAILS
-                ; )
-                ; UI.MAIN.DETAILS.Text := Format("({1})", Random(1, 59) " minutes ago")
+
+                LaunchedAt := STS.GetStat(SES.CURR_NUM).launchedAt
+                if (LaunchedAt) {
+                    /* Move DETAILS to the right of HYMN text */
+                    UI.MAIN.HYMN.GetPos(&HymnX, &X_, &HymnW, &H_)
+                    ControlMove(HymnX + this._GetTextPixelWidth(UI.MAIN.HYMN) + 4, 33, HymnW, 20, UI.MAIN.DETAILS)
+                    UI.MAIN.DETAILS.Text := Format("({1})", Utils.HumanizeISO8601Date(LaunchedAt))
+                } else {
+                    UI.MAIN.DETAILS.Text := ""
+                }
                 return
             }
         }
@@ -134,6 +138,33 @@ class UISearchBar {
                 this.Text(), A_TickCount - ST
             )
         )
+    }
 
+    /**
+     * _GetTextPixelWidth(textCtrl)
+     * 
+     * Returns the pixel width of the text inside a given Text control, accurately accounting for its font.
+     * 
+     * @param textCtrl (GuiCtrlObj) - The AHK v2 Text control to measure.
+     * @returns (Integer) - The pixel width of the control's current text.
+     * 
+     * Example:
+     *     width := GetTextPixelWidth(MyText)
+     */
+    _GetTextPixelWidth(textCtrl) {
+        hwnd := textCtrl.Hwnd
+        text := textCtrl.Text
+        hdc := DllCall("GetDC", "Ptr", hwnd, "Ptr")
+        hFont := SendMessage(0x31, 0, 0, hwnd) ; WM_GETFONT
+        oldFont := DllCall("SelectObject", "Ptr", hdc, "Ptr", hFont, "Ptr")
+
+        size := Buffer(8)
+        DllCall("GetTextExtentPoint32W", "Ptr", hdc, "Str", text, "Int", StrLen(text), "Ptr", size)
+        width := NumGet(size, 0, "Int")
+
+        DllCall("SelectObject", "Ptr", hdc, "Ptr", oldFont)
+        DllCall("ReleaseDC", "Ptr", hwnd, "Ptr", hdc)
+
+        return width
     }
 }
