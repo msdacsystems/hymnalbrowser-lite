@@ -73,14 +73,16 @@ Class UICompleter {
             Scans the search bar's value and filters the hymns according
             to the current search bar's text using ArrayFilter().
         */
-        try this.OBJ.Hide()                                                                 ;; Hide the completer
-        if !StrLen(UI.SEARCH.Text()) {                                                      ;; If the search bar is empty
+        try this.OBJ.Hide()
+        query := UI.SEARCH.Text()                                                           ;; Hide the completer
+
+        if !StrLen(query) {                                                                ;; If the search bar is empty
             ToolTip('')                                                                     ;; Clear tooltips and the status bar
             UI.MAIN.ShowStatus('')
             return this.Close()
         }
 
-        FILTERED := ArrayFilter(HYMNAL["HYMNS"], UI.SEARCH.Text(), 'Contains')              ;; Retrieve all matching hymns from the search bar keyword
+        FILTERED := ArrayFilter(HYMNAL["HYMNS"], query, 'Contains')                        ;; Retrieve all matching hymns from the search bar keyword
         FLEN := FILTERED.Length
 
         if FLEN <= 0 {                                                                      ;; When there's no matching results
