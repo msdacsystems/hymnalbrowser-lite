@@ -32,8 +32,9 @@ Hymnal Browser makes it easier for users to present a hymn by just typing its nu
 
 ## Support
 
-- [Email](mailto:msdacsystems@gmail.com)
+- [Website](https://msdacsystems.com)
+- [Email](mailto:msdac@msdacsystems.com)
 - [Changelog](CHANGELOG.md)
 - [Documentation](DOCUMENTATION.md)
 
-Hymnal Browser Lite © 2024 MSDAC Systems
+Hymnal Browser Lite © 2022-2025 MSDAC Systems
