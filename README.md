@@ -13,7 +13,7 @@
 
 ## What is Hymnal Browser?
 
-Hymnal Browser makes it easier for users to present a hymn by just typing its number or searching a keyword.
+Hymnal Browser Lite allows users to quickly find and present hymns by simply entering a hymn number or searching by keyword.  
 ![](res/mainmenu.png)
 
 ## Features
