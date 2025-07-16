@@ -1,3 +1,12 @@
+/**
+ * * Utils
+ * -------- 
+ * 
+ * Utility class for various helper functions.
+ * 
+ * (c) 2022-2025 MSDAC Systems
+ * @author Ken Verdadero <dev@kenverdadero.com>
+ */
 class Utils {
   static HumanizeISO8601Date(iso8601) {
     if (!iso8601)
@@ -7,7 +16,37 @@ class Utils {
     if (timeDiff < 0)
       return "in the future"
 
-    units := [{ limit: 60, divisor: 1, singular: "second", plural: "seconds" }, { limit: 3600, divisor: 60, singular: "minute", plural: "minutes" }, { limit: 86400, divisor: 3600, singular: "hour", plural: "hours" }, { limit: 2592000, divisor: 86400, singular: "day", plural: "days" }, { limit: 31536000, divisor: 2592000, singular: "month", plural: "months" }
+    units := [
+      {
+        limit: 60,
+        divisor: 1,
+        singular: "second",
+        plural: "seconds"
+      },
+      {
+        limit: 3600,
+        divisor: 60,
+        singular: "minute",
+        plural: "minutes"
+      },
+      {
+        limit: 86400,
+        divisor: 3600,
+        singular: "hour",
+        plural: "hours"
+      },
+      {
+        limit: 2592000,
+        divisor: 86400,
+        singular: "day",
+        plural: "days"
+      },
+      {
+        limit: 31536000,
+        divisor: 2592000,
+        singular: "month",
+        plural: "months"
+      }
     ]
 
     for unit in units {
