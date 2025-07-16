@@ -1,102 +1,104 @@
-/*
-    Background Thread
-    -------------------
-    A thread collection for HBL
-
-    (c) 2022 MSDAC Systems
-    Author: Ken Verdadero
-    Written 2022-06-04
-*/
-
+/**
+ * * Background Thread
+ * -------------------
+ * A thread collection for HBL
+ * 
+ * (c) 2022-2025 MSDAC Systems
+ * @author Ken Verdadero <dev@kenverdadero.com>
+ * Written 2022-06-04
+ */
 class BackgroundThread {
-    static Setup() {
-        /*
-            Automatically connects all methods to a timer thread.
-            Excluding this Setup method.
-        
-            Refresh rates are specified by the REFRESH_RATE
-        */
-        methods := []                                                                       ;; Methods to be listed
-        for i in BackgroundThread.OwnProps() {                                              ;; Get method list of this class
-            if !ArrayMatch(i, ["__init", "prototype", "setup"]) {
-                methods.Push(i)
-            }
-        }
-        for method in methods {                                                             ;; Connect all methods to its background task
-            if SubStr(method, 1, 2) == '__' {                                               ;; Ignore methods that have '__' prefix because they have custom refresh time
-                continue
-            }
-            SetTimer(
-                ObjBindMethod(BackgroundThread, method),
-                SW.BG_REF_RATE
-            )
-        }
-
-        SetTimer(ObjBindMethod(BackgroundThread, '__HymnStats'), 1000)                      ;; Hymn Statistics
+  /**
+   * Automatically connects all methods to a timer thread.
+   * Excluding this Setup method.
+   *     
+   * Refresh rates are specified by the REFRESH_RATE
+   */
+  static Setup() {
+    methods := []                                                                       ;; Methods to be listed
+    for i in BackgroundThread.OwnProps() {                                              ;; Get method list of this class
+      if !ArrayMatch(i, [
+        "__init",
+        "prototype",
+        "setup"
+      ]) {
+        methods.Push(i)
+      }
+    }
+    for method in methods {                                                             ;; Connect all methods to its background task
+      if SubStr(method, 1, 2) == '__' {                                               ;; Ignore methods that have '__' prefix because they have custom refresh time
+        continue
+      }
+      SetTimer(
+        ObjBindMethod(BackgroundThread, method),
+        SW.BG_REF_RATE
+      )
     }
 
-    static WindowListener() {
-        /*
-            Background listener for window.
-            Checks if the main window is on focus.
-        
-            Used by UI.CPLTR, and UI class.
-        */
+    SetTimer(ObjBindMethod(BackgroundThread, '__HymnStats'), 1000)                      ;; Hymn Statistics
+  }
 
-        if !System.IsActive() && UI.ACTIVE && !System.HasCrashed() {
-            _LOG.Verbose('BackgroundThread: Window is inactive')
-            UI.SetInactive()
-        }
-
-        if System.IsActive() && !UI.ACTIVE && !System.IsOnModal() {
-            _LOG.Verbose('BackgroundThread: Window is activated')
-            UI.SetActive()
-        }
-
-        if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P')
-            && !System.IsOnModal() {
-            try WinGetPos(&X, &Y, , , System.AHK_TITLE)
-            catch Error {
-                return
-            }
-            _LOG.Verbose(Format(
-                "BackgroundThread: Main window was moved. "
-                "New window position: X:{1} Y:{2}", X, Y)
-            )
-            UI.UpdatePos()
-            UI.MAIN.SetMoving(0)
-        }
+  /**
+   * Background listener for window.
+   * Checks if the main window is on focus.
+   *     
+   * Used by UI.CPLTR, and UI class.
+   */
+  static WindowListener() {
+    if !System.IsActive() && UI.ACTIVE && !System.HasCrashed() {
+      Console.Verbose('BackgroundThread: Window is inactive')
+      UI.SetInactive()
     }
 
-    static LaunchButton() {
-        /*  Delayed setting of mode via keyboard time idle */
-        if SES.LAUNCH_READY and A_TimeIdleKeyboard > 500 {                                  ;; Make a delay before setting the text back to ready mode
-            UI.BTN.LaunchSetMode("Ready")
-        }
-        if UI.BTN.LAUNCH.Text == "Launching" and A_TimeIdleKeyboard > 750 {                 ;; Time allowance before concluding the launch/ready mode
-            UI.BTN.LaunchSetMode("Launched")
-        }
+    if System.IsActive() && !UI.ACTIVE && !System.IsOnModal() {
+      Console.Verbose('BackgroundThread: Window is activated')
+      UI.SetActive()
     }
 
-    static __HymnStats() {
-        /*
-            Handles session hymn stats such as queries
-        */
-        if SES.TME_QUERY {
-            SES.TME_QUERY--
-            return
-        }
-
-        if UI.SEARCH.HasText() && SES.LAST_QUERIED != SES.CURR_HYMN {
-            SES.COUNT_QUERY++
-            SES.LAST_QUERIED := SES.CURR_HYMN
-            _LOG.Verbose(Format(
-                "Background: Query was incremented: {1} | Hymn: '{2}'",
-                SES.COUNT_QUERY, SES.CURR_HYMN
-            ))
-            STS.RecordQuery(SES.CURR_NUM)                                                    ;; Record the query to the stats
-        }
-
-        SES.TME_QUERY := CF.TME_QUERY
+    if UI.MAIN.WasMoved() and !GetKeyState("LButton", 'P')
+      && !System.IsOnModal() {
+      try WinGetPos(&X, &Y, , , System.AHK_TITLE)
+      catch Error {
+        return
+      }
+      Console.Verbose(Format(
+        "BackgroundThread: Main window was moved. "
+        "New window position: X:{1} Y:{2}", X, Y)
+      )
+      UI.UpdatePos()
+      UI.MAIN.SetMoving(0)
     }
+  }
+
+  /*  Delayed setting of mode via keyboard time idle */
+  static LaunchButton() {
+    if SES.LAUNCH_READY and A_TimeIdleKeyboard > 500 {                                  ;; Make a delay before setting the text back to ready mode
+      UI.BTN.LaunchSetMode("Ready")
+    }
+    if UI.BTN.LAUNCH.Text == "Launching" and A_TimeIdleKeyboard > 750 {                 ;; Time allowance before concluding the launch/ready mode
+      UI.BTN.LaunchSetMode("Launched")
+    }
+  }
+
+  /**
+   * Handles session hymn stats such as queries
+   */
+  static __HymnStats() {
+    if SES.TME_QUERY {
+      SES.TME_QUERY--
+      return
+    }
+
+    if UI.SEARCH.HasText() && SES.LAST_QUERIED != SES.CURR_HYMN {
+      SES.COUNT_QUERY++
+      SES.LAST_QUERIED := SES.CURR_HYMN
+      Console.Verbose(Format(
+        "Background: Query was incremented: {1} | Hymn: '{2}'",
+        SES.COUNT_QUERY, SES.CURR_HYMN
+      ))
+      STS.RecordQuery(SES.CURR_NUM)                                                    ;; Record the query to the stats
+    }
+
+    SES.TME_QUERY := CF.TME_QUERY
+  }
 }

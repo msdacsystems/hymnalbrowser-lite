@@ -1,82 +1,110 @@
 /**
- *  Presentation Launcher for HBL
- *  ----------------------------
- *  Extracts the presentation from the database and launches the file.
+ * * Presentation Launcher for HBL
+ * ----------------------------
+ * Extracts the presentation from the database and launches the file.
  * 
- *  (c) 2022-2025 MSDAC Systems
- *  Author: Ken Verdadero
+ * (c) 2022-2025 MSDAC Systems
+ * @author Ken Verdadero <dev@kenverdadero.com>
  *  Written 2022-06-06
  */
-
 class Launcher {
-    static Launch() {
-        /*
-            Extracts the target file from the database and launches them.
-        */
-        ST := A_TickCount
-        UI.BTN.LaunchSetMode("Launching")
+  /**
+   * Ensures that the temporary folder exists.
+   */
+  static EnsureTempFolderExists() {
+    if !IsFolderExists(SW.DIR_TEMP)
+      DirCreate(SW.DIR_TEMP)
+  }
 
-        (!IsFolderExists(SW.DIR_TEMP) ? DirCreate(SW.DIR_TEMP) : 0)                           ;; Check for temp directory
-
-        System.SetActive()                                                                  ;; Weird. Prevents windows sound from playing when a hotkey (Return/Enter) was pressed.
-        try {
-            RESULT := HYMN_ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
-        } catch Error as e {
-            switch e.Extra {
-                case 'Binary': Errors.Launcher("AbsentBinary")                              ;; Call system error if the binary is missing
-                case 'Library': Errors.Launcher("AbsentLibrary")                            ;; Call system error if the 7z library is missing
-                default: Errors.BaseError(e)
-            }
-            return
-        }
-
-        if RESULT == 2 {                                                                    ;; 2 means the file is already existing
-            _LOG.Verbose(
-                'Launcher: Hymn "' SES.FILENAME
-                '" already exists in temp folder'
-            )
-        }
-
-        ; ! Missing `RemoveTempSubdirs` method (2024-02-16)
-        ; SetTimer(ObjBindMethod(FileManagement, "RemoveTempSubdirs"), -2000)
-        SetTimer(ObjBindMethod(FileManagement, "RemoveOldest"), -3000)
-
-        if !FileExist(PathJoin(SW.DIR_TEMP, SES.FILENAME)) {                                ;; If the extracted file was not found, notify the user about the error
-            _LOG.Error("Extracted file cannot be found")
-            Errors.Notify(Format(
-                "'{1}' was not found.`n"
-                "Restarting the application may fix the problem.", SES.CURR_HYMN)
-            )
-            return
-        }
-
-        try {
-            if SW.FILE_PRESENTER {
-                Run(Format('{1} {2} "{3}"',                                                 ;; Run the actual presentation file
-                    SW.FILE_POWERPOINT,                                                     ;; MS Office PowerPoint exe
-                    (!CF.LAUNCH.TYPE ? '/C' : '/S'),                                          ;; C - Open, S - Start in slideshow (Only works in powerpoint; made for powerpoint); Default is '/C'
-                    PathJoin(SW.DIR_TEMP, SES.FILENAME))
-                )
-            } else {
-                _LOG.Verbose("Launcher: Running presentation without PowerPoint")
-                Run(PathJoin(SW.DIR_TEMP, SES.FILENAME))                                    ;; Run the file despite of PowerPoint's absence. If the .pptx's association is unset, the 'Open With' dialog with likely to show up
-            }
-
-            _LOG.Info(Format('Launcher: Launched Hymn "{1} {2}" ({3} ms)',
-                SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount - ST))
-            )
-            SES.COUNT_LAUNCH += 1
-            STS.RecordLaunch(SES.CURR_NUM)                                                    ;; Record the launch to the stats
-            UI.BTN.LaunchSetMode("Launched")
-
-            if CF.LAUNCH.FOCUS_BACK {                                                       ;; Focus back to main window if configuration is set to true, also selects all the text
-                UI.SetActive()
-                System.SetActive()
-            }
-        } catch Error as e {
-            _LOG.Error("Launcher: Error occured while launching Hymn #"
-                SES.CURR_NUM "; " e.Message)
-        }
-
+  /**
+   * Handles extraction errors.
+   */
+  static HandleExtractError(e) {
+    switch e.Extra {
+      case 'Binary': Errors.Launcher("AbsentBinary")
+      case 'Library': Errors.Launcher("AbsentLibrary")
+      default: Errors.BaseError(e)
     }
+  }
+
+  /**
+   * Notifies user if extracted file is missing.
+   */
+  static NotifyMissingFile() {
+    Console.Error("Extracted file cannot be found")
+    Errors.Notify(Format(
+      "'{1}' was not found.`nRestarting the application may fix the problem.", SES.CURR_HYMN)
+    )
+  }
+
+  /**
+   * Runs the presentation file.
+   */
+  static RunPresentation(ExtractedFilePath, LaunchTypeOverride := false) {
+    if SW.FILE_PRESENTER {
+      ; Determine launch type: LaunchTypeOverride takes precedence if set
+      launchType := LaunchTypeOverride
+      if !launchType {
+        launchType := (!CF.LAUNCH.TYPE ? '/C' : '/S')
+      }
+      Run(Format('{1} {2} "{3}"',
+        SW.FILE_POWERPOINT,
+        launchType,
+        ExtractedFilePath)
+      )
+    } else {
+      Console.Verbose("Launcher: Running presentation without PowerPoint")
+      Run(ExtractedFilePath)
+    }
+  }
+
+  /**
+   * Extracts the target file from the database and launches it.
+   * 
+   * * The target file depends on the current session data.
+   */
+  static Launch(LaunchTypeOverride := false) {
+    ST := A_TickCount
+    UI.BTN.LaunchSetMode("Launching")
+    Launcher.EnsureTempFolderExists()
+    System.SetActive()
+
+    try {
+      Result := HYMN_ZIP.Extract(SES.HYMN_PATH, SW.DIR_TEMP)
+    } catch Error as e {
+      Launcher.HandleExtractError(e)
+      return
+    }
+
+    ExtractedFilePath := PathJoin(SW.DIR_TEMP, SES.FILENAME)
+
+    if !FileExist(ExtractedFilePath) {
+      Launcher.NotifyMissingFile()
+      return
+    }
+
+    if Result == 2 {
+      Console.Verbose('Launcher: Hymn "' SES.FILENAME '" already exists in temp folder')
+    }
+
+    SetTimer(FileManagement.RemoveOldest.Bind(this), -3000)
+
+    try {
+      Launcher.RunPresentation(ExtractedFilePath, LaunchTypeOverride)
+
+      Console.Info(Format('Launcher: Launched Hymn "{1} {2}" ({3} ms)',
+        SES.CURR_NUM, SES.CURR_TTL, Round(A_TickCount - ST))
+      )
+      SES.COUNT_LAUNCH += 1
+      STS.RecordLaunch(SES.CURR_NUM)
+      UI.BTN.LaunchSetMode("Launched")
+
+      if CF.LAUNCH.FOCUS_BACK {
+        UI.SetActive()
+        System.SetActive()
+      }
+    } catch Error as e {
+      Console.Error("Launcher: Error occured while launching Hymn #" SES.CURR_NUM "; " e.Message)
+    }
+  }
 }

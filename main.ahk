@@ -1,38 +1,24 @@
-/*
-    -------------------------------------
-    * MSDAC Systems Hymnal Browser Lite *
-    -------------------------------------
-    A hymn browser and launcher for Seventh-day Adventist Church, lightweight version.
+/**
+ * ----------------------------------
+ * MSDAC Systems Hymnal Browser Lite
+ * ----------------------------------
+ * A hymn browser and launcher for Seventh-day Adventist Church, lightweight version.
+ * 
+ * This file is the entry point to run the whole application.
+ * 
+ * (c) 2022-2025 MSDAC Systems
+ * 
+ * Authors:
+ * @author Ken Verdadero - @verdaderoken <dev@kenverdadero.com>
+ * @author Reynald Ycong - @4raiven, Github
+ * 
+ * Rev 3. 2022-06-10 updated to AHKv2 Beta 4
+ * Rev 2. 2022-06-06 initial build
+ * Rev 1. 2022-06-03 restructuring classes
+ * Original 2022-04-22 prototype
+ */
 
-    * This file is the main executable file to run the whole application.
-
-    Coding Guidelines:
-        - Use PascalCase for Classes, Functions, and Methods.
-        - Use camelCase for Parameters and External Class names.
-        - Avoid parentheses in `if` statement expressions unless necessary.
-        - Maintain a code ruler width of 90 characters for readability.
-        - Follow a type-prefix naming convention for variables, where the type of the variable
-          precedes its name (e.g., TYPE_NAME_NAME -> DIR_Docs_Program).
-
-    The rest of documentation can be found in DOCUMENTATION.md
-
-    -------------------------------------------------------------------------------------
-    (c) 2022-2025 MSDAC Systems
-
-    Authors:
-        Ken Verdadero - @verdaderoken, Github
-        Reynald Ycong - @4raiven, Github
-
-    Written in AutoHotKey v2 Beta 4
-
-    Rev 3. 2022-06-10 updated to AHKv2 Beta 4
-    Rev 2. 2022-06-06 initial build
-    Rev 1. 2022-06-03 restructuring classes
-    Original 2022-04-22 prototype
-*/
-
-__VERSION := "0.4.3"
-;@Ahk2Exe-Obey U_Ver, = "0.4.3"
+#Include src/version.ahk
 
 /* AHK Settings */
 #SingleInstance Force
@@ -59,7 +45,9 @@ try TraySetIcon("res/app_icon.ico")
 
 /*  External classes */
 #Include src/software.ahk
+#Include src/system/args.ahk
 #Include src/system/system.ahk
+#Include src/system/search.ahk
 #Include src/system/errors.ahk
 #Include src/system/fileManagement.ahk
 #Include src/system/background.ahk
