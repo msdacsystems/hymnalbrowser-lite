@@ -1,11 +1,10 @@
 assets/
 archive/
-bin/
 dist/
 
 *.bak
 *.env
-*.exe
+/*.exe
 *.log
 *.sda
 *.code-workspace
