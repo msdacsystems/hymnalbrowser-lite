@@ -6,7 +6,7 @@
  * 
  * This file is the entry point to run the whole application.
  * 
- * (c) 2022-2025 MSDAC Systems
+ * (c) 2022-2026 MSDAC Systems
  * 
  * Authors:
  * @author Ken Verdadero - @verdaderoken <dev@kenverdadero.com>
@@ -77,8 +77,8 @@ try TraySetIcon("res/app_icon.ico")
 ;@Ahk2Exe-SetOrigFilename Hymnal Browser Lite
 ;@Ahk2Exe-SetProductName Hymnal Browser Lite
 ;@Ahk2Exe-SetCompanyName MSDAC Systems
-;@Ahk2Exe-SetCopyright © 2022-2025 MSDAC Systems
-;@Ahk2Exe-SetLegalTrademarks © 2022-2025 MSDAC Systems
+;@Ahk2Exe-SetCopyright © 2022-2026 MSDAC Systems
+;@Ahk2Exe-SetLegalTrademarks © 2022-2026 MSDAC Systems
 ;@Ahk2Exe-SetMainIcon res/app_icon.ico
 ;@Ahk2Exe-SetFileVersion %U_Ver%
 ;@Ahk2Exe-SetLanguage 0x3409

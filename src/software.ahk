@@ -3,7 +3,7 @@
  * ---------
  * Contains the metadata and configuration of the software.
  * 
- * (c) 2022-2025 MSDAC Systems
+ * (c) 2022-2026 MSDAC Systems
  * @author Ken Verdadero <dev@kenverdadero.com>
  */
 class SW extends Software {                                                                 ;; This is a shorter class name of Software. Made for aliasing purposes
@@ -17,8 +17,8 @@ class Software {
   ]
   static NAME := "Hymnal Browser Lite"
   static TITLE := this.NAME
-  static COPYRIGHT := "© 2022-2025 MSDAC Systems"
-  static COPYRIGHT_NAME := this.NAME " © 2022-2025 MSDAC Systems"
+  static COPYRIGHT := "© 2022-2026 MSDAC Systems"
+  static COPYRIGHT_NAME := this.NAME " © 2022-2026 MSDAC Systems"
   static PARENT_NAME := this.PARENT ' ' this.NAME
   static EXE_NAME := this.NAME '.exe'
   static VERSION := __VERSION
