@@ -118,16 +118,16 @@ updater launched.
 The application accepts two optional switches when invoked from a terminal or
 via a shortcut:
 
-| Switch | Alias         | Description                                               |
-| ------ | ------------- | --------------------------------------------------------- |
-| `-s`   | `--slideshow` | Start the presentation in slideshow mode                  |
-| `-q`   | `--query`     | Pre‑populate the search field with the following argument |
+| Switch | Alias         | Description                                                          |
+| ------ | ------------- | -------------------------------------------------------------------- |
+| `-s`   | `--slideshow` | Start the presentation in slideshow mode                             |
+| `-q`   | `--query`     | Immediately resolve the hymn/number and launch it non‑interactively. |
 
 Examples:
 
 ```powershell
 & "Hymnal Browser Lite.exe" -s
-& "Hymnal Browser Lite.exe" --query "80"
+& "Hymnal Browser Lite.exe" --query "80"    # resolves hymn 80 and launches immediately
 ```
 
 The arguments are parsed by `src/system/args.ahk` and merged with configuration
@@ -435,7 +435,8 @@ Developers can add new event hooks by extending `Events` and updating the caller
 ## 🛠️ Developer Notes
 
 - **Logging**: use `_LOG.Info/Warn/Error/Verbose()`; verbosity controlled by `CF.MAIN.VERBOSE_LOG`.
-- **Developer mode**: launch the script directly (`.ahk`) or pass the `--dev` argument.
+- **Developer mode**: run `main.ahk` directly or invoke the executable/script with the supported
+  CLI switches (`-s`/`--slideshow`, `-q`/`--query`).
 - **Adding a new config key**: update `Config.GetDefaults()` with the default and hidden value
   if necessary; the file will auto‑upgrade.
 - **Stats**: `Stats` saves each hymn’s `launches`, `queries`, and timestamps to
