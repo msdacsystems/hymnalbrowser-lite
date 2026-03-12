@@ -139,9 +139,13 @@ class Config {
 
   /**
    * Inherits configObject to config instance.
-   * Keeps default keys that is absent in config.
+   * Keeps default keys that are absent in config and tracks when defaults are injected.
+   * When missing sections/properties are added the configuration will be dumped to
+   * file automatically so that the on-disk copy stays in sync with the defaults.
    */
   ApplyData(configObject) {
+    madeChanges := false                                  ;; track if we injected any defaults
+
     for name, val in configObject.OwnProps() {
       if ArrayMatch(name, [
         'DATA',
@@ -152,6 +156,15 @@ class Config {
       if TypeMatch(val, "Object") {                                                   ;; Since object's properties will be fully replaced, we need to retain props that might be absent in the new data
         C_CFG := this.GetDefaults(true)                                             ;; Copy of default configuration
         DEF := C_CFG.GetOwnPropDesc(name).Value                                     ;; Retrieve default CFG.Object.Object value
+
+        ;; determine whether merging will add any missing default keys
+        for k, _ in DEF.OwnProps() {
+          if !val.HasOwnProp(k) {
+            madeChanges := true
+            break
+          }
+        }
+
         this.DefineProp(name, {
           value: ObjectMerge(DEF, val)
         })                       ;; ! Merged object will be defined; e.g: In case ALWAYS_ON_TOP is removed from CFG, the default will still be present.
@@ -169,13 +182,14 @@ class Config {
         this.DefineProp(name, {
           value: val
         })
+        madeChanges := true
       }
     }
 
     this.__CFG := configObject                                                          ;; Backup of the original data
 
-    ;; if the loaded config lacked MAIN or the new key, persist the updated defaults
-    if !this.__CFG.HasOwnProp('MAIN') || !this.__CFG.MAIN.HasOwnProp('CHECK_UPDATES') {
+    ;; persist updated configuration if any defaults were injected
+    if madeChanges {
       Console.Info("Config: Upgrading configuration with new keys")
       this.Dump()
     }
