@@ -80,6 +80,9 @@ class UI {
     UI.SETTINGS.CHK_AOT.OnEvent(
       "Click", ObjBindMethod(Events.Settings,
         "ToggleCheck", UI.SETTINGS.CHK_AOT, 'AOT'))
+    UI.SETTINGS.CHK_UPDATES.OnEvent(
+      "Click", ObjBindMethod(Events.Settings,
+        "ToggleCheck", UI.SETTINGS.CHK_UPDATES, 'UPD'))
     UI.SETTINGS.CHK_FOCUS_BACK.OnEvent(
       "Click", ObjBindMethod(Events.Settings,
         "ToggleCheck", UI.SETTINGS.CHK_FOCUS_BACK, 'FBK'))

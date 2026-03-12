@@ -94,6 +94,10 @@ class Updater {
 
   /*  Checks the repo for latest release. Invoked from System.Exec() */
   CheckForUpdates() {
+    if !CF.MAIN.CHECK_UPDATES {
+      Console.Info("Updater: Skipped checking for updates (disabled in config)")
+      return
+    }
     Console.Info("Updater: Checking for updates")
     try this.URL := GetReleaseAssetURL(SW.GITHUB_REPO)
     catch Error {

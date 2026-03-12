@@ -96,6 +96,8 @@ class Events {
         case 'AOT':
           CF.WINDOW.ALWAYS_ON_TOP := chkObj.CheckState()
           UI.MAIN.GUI.Opt((chkObj.CheckState() ? '+' : '-') "AlwaysOnTop")
+        case 'UPD':
+          CF.MAIN.CHECK_UPDATES := chkObj.CheckState()
       }
       CF.Dump()
     }
