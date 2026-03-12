@@ -71,15 +71,19 @@ The application includes and/or requires the following libraries under the `src/
 - **KConfig** – configuration serializer/deserializer
 - **SevenZip** – wrapper for extracting hymnal archives
 
-These dependencies are bundled with the executable; no separate installation is needed.
+These dependencies are bundled with the executable; no separate installation is needed. When running the script from source the libraries must still be discoverable by AutoHotkey. By default `main.ahk` looks in `%A_MyDocuments%/AutoHotkey/Lib` – you can copy or create symbolic links for `src/AHK2ExtLib`, `src/KConfig`, and `src/SevenZip` there, or alter the `#Include` paths in `main.ahk` to point at the corresponding folders under `src/`.
 
 ### Installation
 
 1. **Download** the latest ZIP from [releases](https://github.com/msdacsystems/hymnalbrowser-lite/releases).
 2. **Extract** anywhere; the program is portable and does **not** require installation.
 3. Run `Hymnal Browser Lite.exe` or `main.ahk` (script mode).
+   - When running from source, ensure the required libraries are available to AutoHotkey
+     (see **Dependencies** above). Copy or symlink `src/AHK2ExtLib`, `src/KConfig`, and
+     `src/SevenZip` into `%A_MyDocuments%/AutoHotkey/Lib` or adjust the `#Include` paths
+     in `main.ahk` to point at the respective `src/` folders.
 
-> The first run will create a configuration file in `%PROGRAMDATA%\\MSDAC Systems\\hymnalbrowser\\`.
+> The first run will create a configuration file in `%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg`. 
 
 ### First Run & Configuration
 
@@ -89,9 +93,9 @@ On startup the app:
 2. Loads or generates `settings.cfg` with sane defaults. See **Configuration** below for details.
 3. Scans the hymnal package and populates internal indexes for quick lookup.
 4. Instantiates the UI and attaches event handlers.
-5. Optionally checks GitHub for updates (disabled by default).
+5. Optionally checks GitHub for updates (enabled by default).
 
-If you prefer to edit settings manually, look in `%PROGRAMDATA%\\MSDAC Systems\\hymnalbrowser\\`.
+If you prefer to edit settings manually, look in `%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg`. 
 Missing keys are automatically added at launch.
 
 ### Auto‑Updater
@@ -122,8 +126,8 @@ via a shortcut:
 Examples:
 
 ```powershell
-"Hymnal Browser Lite.exe" -s
-"Hymnal Browser Lite.exe" --query "80"
+& "Hymnal Browser Lite.exe" -s
+& "Hymnal Browser Lite.exe" --query "80"
 ```
 
 The arguments are parsed by `src/system/args.ahk` and merged with configuration
@@ -153,8 +157,8 @@ Defaults are merged with user settings; unknown keys are ignored.
 
 File location:
 
-```
-%PROGRAMDATA%\\MSDAC Systems\\hymnalbrowser\\settings.cfg
+```text
+%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg
 ```
 
 ### Available options
@@ -183,7 +187,7 @@ Any new keys added by the program are automatically written back to the file.
 
 ### Directory layout
 
-```
+```text
 src/
   config.ahk           ← user configuration loader/generator
   hymnal.ahk           ← parser for .sda hymn package
