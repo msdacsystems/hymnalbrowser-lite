@@ -175,9 +175,15 @@ class Config {
       })                                             ;; Transfer the loaded configuration data to the instance's properties
     }
 
-    ;; ensure any missing default sections/properties are still present
-    C_CFG := this.GetDefaults(true)
-    for name, val in C_CFG.OwnProps() {
+    ;; ensure any missing top-level entries from the original
+    ;; configuration object are reflected on the instance.  Previously
+    ;; we iterated over the defaults (C_CFG) but those defaults are
+    ;; already applied by LoadDefaults(), so the ``this.HasOwnProp``
+    ;; check would never fire and madeChanges would remain false.
+    ;; Instead, walk the original configObject itself and add any
+    ;; names it contains that somehow were skipped during the first
+    ;; pass (e.g. excluded by ArrayMatch).
+    for name, val in configObject.OwnProps() {
       if !this.HasOwnProp(name) {
         this.DefineProp(name, {
           value: val
