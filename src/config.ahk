@@ -91,10 +91,12 @@ class Config {
 
     HID.TME_QUERY := 1                                                                  ;; Time delay before a hymn query is considered a count
 
-    HID.MAIN := Object()
-    HID.MAIN.VERBOSE_LOG := false                                                       ;; Extra details when logging
+    ; MAIN section holds user-facing options that may be toggled
+    ; both verbose logging and update-check preference are configurable.
+    DEF.MAIN := Object()
+    DEF.MAIN.VERBOSE_LOG := false                                                       ;; Extra details when logging (previously hidden)
+    DEF.MAIN.CHECK_UPDATES := true                                                      ;; Automatically check for updates on startup
 
-    DEF.WINDOW := Object()
     DEF.WINDOW := Object()
     DEF.WINDOW.ALWAYS_ON_TOP := true                                                    ;; Make the window always on top of other windows
     DEF.WINDOW.XPOS := 0                                                                ;; Window X position on startup
@@ -111,7 +113,25 @@ class Config {
     DEF.LAUNCH.FOCUS_BACK := false                                                      ;; Focus back to the main window after launching a presentation
     DEF.LAUNCH.TYPE := 0                                                                ;; Presenter type; 1 - Open, 2 - Open in Slideshow
 
-    DEF := (includeHidden ? ObjectMerge(DEF, HID) : DEF)
+    ; merge hidden values into defaults without overwriting existing default keys
+    if includeHidden {
+      for key, val in HID.OwnProps() {
+        if !DEF.HasOwnProp(key) {
+          DEF.DefineProp(key, {
+            value: val
+          })
+        } else if TypeMatch(val, "Object") && TypeMatch(DEF[key], "Object") {
+          ; merge nested objects shallowly for hidden entries
+          for subk, subv in val.OwnProps() {
+            if !DEF[key].HasOwnProp(subk) {
+              DEF[key].DefineProp(subk, {
+                value: subv
+              })
+            }
+          }
+        }
+      }
+    }
     return (hiddenOnly ? HID : DEF)
   }
 
@@ -119,9 +139,13 @@ class Config {
 
   /**
    * Inherits configObject to config instance.
-   * Keeps default keys that is absent in config.
+   * Keeps default keys that are absent in config and tracks when defaults are injected.
+   * When missing sections/properties are added the configuration will be dumped to
+   * file automatically so that the on-disk copy stays in sync with the defaults.
    */
   ApplyData(configObject) {
+    madeChanges := false                                  ;; track if we injected any defaults
+
     for name, val in configObject.OwnProps() {
       if ArrayMatch(name, [
         'DATA',
@@ -132,6 +156,15 @@ class Config {
       if TypeMatch(val, "Object") {                                                   ;; Since object's properties will be fully replaced, we need to retain props that might be absent in the new data
         C_CFG := this.GetDefaults(true)                                             ;; Copy of default configuration
         DEF := C_CFG.GetOwnPropDesc(name).Value                                     ;; Retrieve default CFG.Object.Object value
+
+        ;; determine whether merging will add any missing default keys
+        for k, _ in DEF.OwnProps() {
+          if !val.HasOwnProp(k) {
+            madeChanges := true
+            break
+          }
+        }
+
         this.DefineProp(name, {
           value: ObjectMerge(DEF, val)
         })                       ;; ! Merged object will be defined; e.g: In case ALWAYS_ON_TOP is removed from CFG, the default will still be present.
@@ -141,7 +174,31 @@ class Config {
         value: val
       })                                             ;; Transfer the loaded configuration data to the instance's properties
     }
+
+    ;; ensure any missing top-level entries from the original
+    ;; configuration object are reflected on the instance.  Previously
+    ;; we iterated over the defaults (C_CFG) but those defaults are
+    ;; already applied by LoadDefaults(), so the ``this.HasOwnProp``
+    ;; check would never fire and madeChanges would remain false.
+    ;; Instead, walk the original configObject itself and add any
+    ;; names it contains that somehow were skipped during the first
+    ;; pass (e.g. excluded by ArrayMatch).
+    for name, val in configObject.OwnProps() {
+      if !this.HasOwnProp(name) {
+        this.DefineProp(name, {
+          value: val
+        })
+        madeChanges := true
+      }
+    }
+
     this.__CFG := configObject                                                          ;; Backup of the original data
+
+    ;; persist updated configuration if any defaults were injected
+    if madeChanges {
+      Console.Info("Config: Upgrading configuration with new keys")
+      this.Dump()
+    }
   }
 
   /*  Generates a configuration file based on the default values */
@@ -171,7 +228,7 @@ class Config {
         value: val
       })
     }
-    F_CFG := ObjectSub(F_CFG, this.GetDefaults(, true))                                 ;; ! Needs review
+    F_CFG := ObjectSub(F_CFG, this.GetDefaults(false, true))                              ;; exclude hidden defaults (explicit args)
     KConfig.Dump(F_CFG, Config.FILE, Config.HEAD_TEXT)
   }
 }

@@ -45,6 +45,18 @@ class Events {
       Console.Close()                                                                    ;; Close the log
       ExitApp(exitCode)
     }
+
+    /**
+     * Manual update check triggered from UI (context menu or otherwise).
+     */
+    static CheckUpdates(args*) {
+      if UPT && UPT.IsDownloading() {
+        MsgBox("An update is already being downloaded. Please wait.", SW.TITLE)
+        return
+      }
+      Console.Info("Events: Manual update check requested")
+      UPT.CheckForUpdates(true)
+    }
     static Reload() {
       Events.System.Exit(10)
     }
@@ -96,6 +108,8 @@ class Events {
         case 'AOT':
           CF.WINDOW.ALWAYS_ON_TOP := chkObj.CheckState()
           UI.MAIN.GUI.Opt((chkObj.CheckState() ? '+' : '-') "AlwaysOnTop")
+        case 'UPD':
+          CF.MAIN.CHECK_UPDATES := chkObj.CheckState()
       }
       CF.Dump()
     }

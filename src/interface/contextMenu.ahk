@@ -24,6 +24,7 @@ class UIContextMenu {
     this.OBJ.Add("&Minimize", ObjBindMethod(UI, "Minimize"))
     this.OBJ.Add()
     this.OBJ.Add("Open &Website", ObjBindMethod(UI, "OpenWebsite"))
+    this.OBJ.Add("&Check for Updates", ObjBindMethod(Events.System, "CheckUpdates"))
     this.OBJ.Add("&About", ObjBindMethod(UI, "About"))
     this.OBJ.Add("&Exit", ObjBindMethod(Events.System, "Exit", 0, "Hi"))
   }
@@ -31,6 +32,12 @@ class UIContextMenu {
   ShowMenu() {
     Console.Verbose("ContextMenu: Context menu was opened")
     UI.CPLTR.Close()
+    ;; disable manual update check while downloading
+    if UPT && UPT.IsDownloading() {
+      this.OBJ.Disable("&Check for Updates")
+    } else {
+      this.OBJ.Enable("&Check for Updates")
+    }
     this.OBJ.Show()
   }
 

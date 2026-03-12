@@ -92,21 +92,36 @@ class Updater {
     return VerCompare(latestVersion, SW.VERSION_TAG) = 1
   }
 
-  /*  Checks the repo for latest release. Invoked from System.Exec() */
-  CheckForUpdates() {
-    Console.Info("Updater: Checking for updates")
-    try this.URL := GetReleaseAssetURL(SW.GITHUB_REPO)
-    catch Error {
-      Console.Error("Cannot retrieve update status")
+  /**
+   * Checks the repo for the latest release. Invoked from `System.Exec()` or manual request.
+   * @param {bool} force  When true, ignore the configuration setting and always perform the check.
+   */
+  CheckForUpdates(force := false) {
+    if !force && !CF.MAIN.CHECK_UPDATES {
+      Console.Info("Updater: Skipped checking for updates (disabled in config)")
       return
     }
-    this.VERSION := this.ParseVersionFromURL(this.URL)
+    Console.Info("Updater: Checking for updates")
+    try {
+      this.URL := GetReleaseAssetURL(SW.GITHUB_REPO)
+      this.VERSION := this.ParseVersionFromURL(this.URL)
+    } catch Error {
+      Console.Error("Updater: Cannot retrieve update status")
+      return
+    }
 
-    switch VerCompare(this.VERSION, SW.VERSION_TAG) {
+    updateStatus := VerCompare(this.VERSION, SW.VERSION_TAG)
+    switch updateStatus {
       case -1:
         Console.Info("Updater: Application is newer than release version " this.VERSION)
+        if force {
+          MsgBox("You are running a newer version than the latest release. No update needed.", SW.TITLE)
+        }
       case 0:
         Console.Info("Updater: Application is up-to-date.")
+        if force {
+          MsgBox("You are already running the latest version.", SW.TITLE)
+        }
       case 1:
         Console.Info("Updater: New update available: " this.VERSION)
         Console.Verbose(Format('Updater: AssetURL: "{1}"', this.URL))
