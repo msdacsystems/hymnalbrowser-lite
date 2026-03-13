@@ -1,331 +1,464 @@
 # Hymnal Browser Lite Documentation
 
+_Last updated: March 12, 2026_
+
+---
+
 ## Table of Contents
+
 - [Hymnal Browser Lite Documentation](#hymnal-browser-lite-documentation)
   - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [AutoHotkey](#autohotkey)
-  - [Code Dependencies](#code-dependencies)
-  - [Prerequisites](#prerequisites)
-  - [Known Limitations](#known-limitations)
-  - [Localization](#localization)
-  - [Code Architecture](#code-architecture)
-      - [Syntax and Terminology](#syntax-and-terminology)
-      - [List of Classes](#list-of-classes)
-        - [Core Classes](#core-classes)
-        - [Interface Classes](#interface-classes)
-      - [Initialization Flow](#initialization-flow)
-        - [1. System Execution](#1-system-execution)
-        - [2. Developer Mode](#2-developer-mode)
-        - [3. Configuration and Logger](#3-configuration-and-logger)
-        - [4. Tray Menu](#4-tray-menu)
-        - [5. Directory Verification](#5-directory-verification)
-        - [6. Requisites Verification (Presentation)](#6-requisites-verification-presentation)
-        - [7. Environments](#7-environments)
-        - [8. Hymnal](#8-hymnal)
-        - [9. Session](#9-session)
-        - [10. User Interface](#10-user-interface)
-        - [11. Background Thread](#11-background-thread)
-        - [12. Initialization Complete](#12-initialization-complete)
-    - [User Interface](#user-interface)
-      - [Main Window Elements](#main-window-elements)
-      - [Settings Window Elements](#settings-window-elements)
-    - [Program Flow](#program-flow)
-    - [Error Handling](#error-handling)
-      - [List of Exit Codes](#list-of-exit-codes)
-      - [List of Error Names](#list-of-error-names)
-    - [Events](#events)
-      - [System](#system)
-        - [Exit](#exit)
-        - [Reload](#reload)
-      - [Launch](#launch)
-        - [Click](#click)
-      - [Settings](#settings)
-        - [Click](#click-1)
-      - [Search](#search)
-        - [TextChanged](#textchanged)
-        - [Clear](#clear)
-    - [Relation of Config and Software](#relation-of-config-and-software)
-  - [Acknowledgements](#acknowledgements)
+  - [📌 Overview](#-overview)
+  - [🚀 Getting Started](#-getting-started)
+    - [Requirements](#requirements)
+    - [Dependencies](#dependencies)
+    - [Installation](#installation)
+    - [First Run \& Configuration](#first-run--configuration)
+    - [Auto‑Updater](#autoupdater)
+    - [Running the App](#running-the-app)
+      - [Command‑Line Options](#commandline-options)
+  - [✅ Features](#-features)
+  - [⚙️ Configuration](#️-configuration)
+    - [Available options](#available-options)
+  - [🧱 Code Architecture](#-code-architecture)
+    - [Directory layout](#directory-layout)
+      - [Architecture diagram](#architecture-diagram)
+    - [Primary classes](#primary-classes)
+  - [🖥️ User Interface](#️-user-interface)
+    - [Main window](#main-window)
+    - [Completer window](#completer-window)
+    - [Settings window](#settings-window)
+    - [Tray menu](#tray-menu)
+  - [🔄 Program Flow](#-program-flow)
+  - [🚨 Error Handling](#-error-handling)
+    - [Exit codes](#exit-codes)
+    - [Error names](#error-names)
+  - [🔔 Events](#-events)
+    - [System](#system)
+    - [Launch](#launch)
+    - [Settings](#settings)
+    - [Search](#search)
+  - [🛠️ Developer Notes](#️-developer-notes)
+  - [📚 Acknowledgements](#-acknowledgements)
 
-## Introduction
+---
 
-This file contains both developer and user documentation for the application.
-This documentation is last updated on **May 4, 2023**.
-
-> Changes may or may not be made without prior notice.
-
+## 📌 Overview
 
-## AutoHotkey
-
-While Autohotkey may not be the most optimal programming language for the development of this application, it has been chosen for the purpose of an experimental project to provide a temporary solution for the slow runtime issue present in the Python-based Hymnal Browser.
+**Hymnal Browser Lite** is a portable, lightweight hymn lookup and presentation launcher tailored
+for the Seventh‑day Adventist Philippine hymnals. It lets users search by number or keyword
+and open the corresponding `.pptx` file in a single keystroke.
 
-The language is primarily designed for task automation and may not be an ideal fit for our application. However, due to its superior speed and open-source nature, we have decided to utilize it for this project to achieve faster performance. The application has been programmed in C++ for optimal efficiency.
+This document targets both end‑users and developers; it describes how to install and run the
+application, explains the code architecture, and provides notes for contributors.
 
+---
 
-## Code Dependencies
+## 🚀 Getting Started
 
-1. [AHK2ExtLib](https://github.com/verdaderoken/AHK2ExtLib) - a personalized extended library for AutoHotkey v2
-2. KConfig - customized configuration serializer/deserializer 
-3. SevenZip - AHK wrapper for 7zip
+### Requirements
 
+- Windows 10 or later
+- [AutoHotkey v2](https://www.autohotkey.com/) (if running from source)
+- A valid hymnal database (`.sda` file) – the default package is shipped with the release
+- Microsoft PowerPoint or any application registered to open `.pptx` files
 
-## Prerequisites
+### Dependencies
 
-- Hymnal Database (.sda) file
-- Microsoft Office PowerPoint or any .pptx-compatible software.
+The application includes and/or requires the following libraries under the `src/` tree:
 
+- **AHK2ExtLib** – extended AutoHotkey utilities by @verdaderoken
+- **KConfig** – configuration serializer/deserializer
+- **SevenZip** – wrapper for extracting hymnal archives
 
-## Known Limitations
+These dependencies are bundled with the executable; no separate installation is needed. When running the script from source the libraries must still be discoverable by AutoHotkey. By default `main.ahk` looks in `%A_MyDocuments%/AutoHotkey/Lib` – you can copy or create symbolic links for `src/AHK2ExtLib`, `src/KConfig`, and `src/SevenZip` there, or alter the `#Include` paths in `main.ahk` to point at the corresponding folders under `src/`.
 
-- Since this application is written in AHKv2, interface design is limited to what's available resources.
-- Although efforts have been made to maximize user interface, the primary goal is focused on better functionality and reliability.
+### Installation
 
+1. **Download** the latest ZIP from [releases](https://github.com/msdacsystems/hymnalbrowser-lite/releases).
+2. **Extract** anywhere; the program is portable and does **not** require installation.
+3. Run `Hymnal Browser Lite.exe` or `main.ahk` (script mode).
+   - When running from source, ensure the required libraries are available to AutoHotkey
+     (see **Dependencies** above). Copy or symlink `src/AHK2ExtLib`, `src/KConfig`, and
+     `src/SevenZip` into `%A_MyDocuments%/AutoHotkey/Lib` or adjust the `#Include` paths
+     in `main.ahk` to point at the respective `src/` folders.
 
-## Localization
+> The first run will create a configuration file in `%PROGRAMDATA%\MSDAC Systems\Hymnal Browser Lite\settings.cfg`.
 
-Regrettably, at present, Hymnal Browser Lite only supports English and Tagalog presentations, and we do not have any immediate plans to include other languages. This is because the addition of other languages would require the recreation of the hymn files, which is currently not feasible.
+### First Run & Configuration
 
-  
-## Code Architecture
+On startup the app:
 
-To ensure the codebase remains organized and maintainable, the classes in the program have been separated into distinct files. The code structure adheres to the principles of object-oriented programming, wherein each class serves a specific purpose. A list of these classes is provided below.
+1. Ensures required directories exist (`logs`, `data`, `temp`, etc.).
+2. Loads or generates `settings.cfg` with sane defaults. See **Configuration** below for details.
+3. Scans the hymnal package and populates internal indexes for quick lookup.
+4. Instantiates the UI and attaches event handlers.
+5. Optionally checks GitHub for updates (enabled by default).
 
-As the program requires an [external library](#code-dependencies) to function correctly, a significant portion of the functions are customized and may lack in-depth explanations. Many of the custom codes implemented in the program draw inspiration from Python's syntax and terminology.
+If you prefer to edit settings manually, look in `%PROGRAMDATA%\MSDAC Systems\Hymnal Browser Lite\settings.cfg`.
+Missing keys are automatically added at launch.
 
-#### Syntax and Terminology
+### Auto‑Updater
 
-(No content yet.)
+A built‑in updater (class `Updater`) queries the GitHub releases of `msdacsystems/hymnalbrowser-lite`.
+If a newer version is found, the user is prompted to download and install it. Pre‑releases are ignored.
+
+Updates are downloaded to `%TEMP%` and applied via the bundled installer helper. The process
+runs even after the main window closes; successful updates exit with code `12` to indicate the
+updater launched.
+
+### Running the App
+
+- Type a hymn **number** (e.g. `42`) or part of a **title** in the search box.
+- Press <kbd>Enter</kbd> or click **Launch** to open the corresponding presentation.
+- Use <kbd>Ctrl</kbd> + <kbd>Backspace</kbd> to clear the search field.
 
-#### List of Classes
+#### Command‑Line Options
 
-##### Core Classes
-1. [System](src/system/system.ah2) - This handles system-related info of the application such as checking if the required folders are present, executing the main program, and getting the monitor number where the application is visible.
-2. [UI](src/ui.ah2) - Handles user-interface behavior, threads, and connections between every control (or widgets) such as Search bar, Launch button, Suggestion box, and Hymn detail text. It also handles every control.
-3. [Config](src/config.ah2) - Handles and processes the user-specified configuration. This also covers application-related configurations like `TME_QUERY` (Time before the search considers the count).
-4. [Hymnal](src/hymnal.ah2) - Works with the hymnal package's content such as parsing and generating a map of the parsed data.
-5. [Session](src/session.ah2) - Works similarly to the Config class but this handles only the data in the current session.
-6. [Background](src/system/background.ah2) - Acts like the background thread/listener for the application. It covers events like detecting if the app is currently active or the window is moved. 
-7. [Events](src/system/events.ah2) - Handle events forwarded by signals from controls or the system. This contains methods like `Events.System.Exit()` where the system will request a proper close event for the application.
-8. [Errors](src/system/errors.ah2) - Handle errors properly for the system.
-9. [Launcher](src/launcher.ah2) - Handles extraction and presentation launch for the application.
-10. [File Management](src/system/fileManagement.ah2) - Manages the external files that are within the scope of the program such as removing temp files.
-11. [SW/Software](src/software.ah2) - Contains metadata about the software such as `SW.TITLE` to retrieve the title of the application.
-
-##### Interface Classes
-12. [Buttons](src/interface/buttons.ah2) - Interface for buttons like **Clear** and **Launch** button.
-13. [Search Bar](src/interface/searchbar.ah2) - The LineEdit/TextEdit where the user inputs the hymn.
-14. [Completer](src/interface/completer.ah2) - A customized completer/suggestion box for the search bar.
-15. [Context Menu](src/interface/contextMenu.ah2) - Handles context menu items and their behaviors.
-16. [Main Menu](src/interface/mainmenu.ah2) - Interface for texts like the **Hymnal Browser Lite** title, the app version, and the hymn details.
-17. [Settings](src/interface/settings.ah2) - **[Not implemented yet]** a GUI version of configuration where user can change settings via this window.
-
-> Several classes are not implemented as a file in the program. For example, the `_LOG` object from `KLogger` class handles the logging for the app. This helps the developer to identify bugs easily. This also acts as a replacement for the default exception message box from AHK
-
-#### Initialization Flow
-
-##### 1. System Execution
-The main program will start with the **Hymnal Browser Lite.ah2** file where AHK settings will be set and `System.Exec()` is called.
-
-Inside `System.Exec()`, there are several instructions on setting up the interface, handlers, and threads.
-
-The following statements are under the `System.Exec()` method.
-
-`_STARTUP` - This variable starts the startup counter to measure how long the initialization will take time.
-
-##### 2. Developer Mode
-`System.CheckDevMode()` will check if the application is being run in script mode or the compiled mode. The differences are minimal but noticeable. These include (1) additional menu items in the context menu as well as (2) the indicator beside the version text. But more importantly, the `FileInstall` command will be only executed if the system detects a compiled mode.
-
-##### 3. Configuration and Logger
-Global variables like `_LOG` (KLogger) and `CF` (Config) are also initiated at this point. These are now the instance of their class, where `_LOG` handles logging and `CF` handles the configuration data of the application.
-
-The system will now set the settings for `_LOG` object:
-1. Verbose logging will be set according to `CF.MAIN.VERBOSE_LOG`.
-    > In script mode, the verbose log will be always set to 1 (Enabled)
-2. Max lines will be set according to `SW.LOG_MAX_LINES`.
-    > Default value is set to 1,000 lines before the log is truncated
-
-Since the KLogger is instantiated, several logs will be dumped:
-- Application start message
-- System information report
-- Dev mode notice (Only shows in compiled mode)
-- Process ID report
-- Verbose logging status
-- Core initialization message
-  
-> Config is always placed ahead of Logger to load the `CF.MAIN.VERBOSE_LOG` before instantiating the logger. Both instances are global.
-
-##### 4. Tray Menu
-Menu tray items are deleted and replaced with an **Exit** item. You can see this item by right-clicking the tray icon of Hymnal Browser Lite.
-
-`Error.Setup()` will rebind the error messages to `Error.BaseError()` method if the `SW.ERROR_HANDLING` is set to True
-
-##### 5. Directory Verification
-The system will now verify each required directory. Directories are retrieved from `SW.DIRS`. Every absent directory will be created. After this, the system logs the report, including `MISSING` and `RESOLVED` directories if available.
-
-##### 6. Requisites Verification (Presentation)
-After directory verification, the system will now verify the presentation software that will be used later for launching.
-
-There are two (2) situations that the program may encounter:
-1. If the computer does not have an Office PowerPoint installed, the file will be executed by `Run()` command, in which in some cases, Windows will ask the user for the presentation software the '.pptx' file should be opened with. 
-2. If **Microsoft Office PowerPoint** is detected (via registry path search), the retrieved value will be stored in `SW.FILE_POWERPOINT`
-
-##### 7. Environments
-System environments are loaded and stored in an `ENV` object. This contains the sensitive keys for the program.
-
-##### 8. Hymnal
-This part will now scan the hymnal package and retrieves its parsed content. The hymn package is specified in `CF.__FILE_HYMNALDB`. If the user changes the `[HYMNAL] PACKAGE = <name>` in settings.cfg (`SW.FILE_CONFIG`), the specified package will be used.
-
-**HymnalDB._VerifyDatabase()** 
-
-There are several directories for the package search. This includes:
-1. `A_ScriptDir` or the directory where the .exe is located.
-2. `SW.DIR_PROGRAM` or the program's directory in `A_CommonAppdata` (ProgramData)
-3. `SW.DIR_DOCS_PROGRAM` or the program's directory in `Documents\MSDAC Systems`
-
-Failure to find the package in these directories will result in `AbsentPackage` error in `Errors.HymnsDB`.
-
-The package path is stored in `CF.__FILE_HYMNALDB` which will be used
-later in Launcher class.
-
-**HymnalDB.ScanHymnal()**
-
-The method will return a map of all hymnal data such as the number of hymns in English, Tagalog, User, or both, the hymn titles, and hymn numbers.
-
-The method uses `SevenZip` to read the contents inside the package.
-
-The map object is stored in `HYMNAL` as a global variable.
-
-##### 9. Session
-The Session data will start. The object is stored in global `SES` and all properties in session data will be referenced as `SES.PROPERTY_NAME`.
-
-##### 10. User Interface
-The user interface or [UI](src/ui.ah2) will execute several instructions for its `UI.Setup()` method, in which the individual controls are initialized.
-
-It calls every UI element specified in `UI.UIs` array and holds its object to bind all objects together in a UI's property.
-
-> Class names are different from provided class names in static variable `_NAME`. (e.g: ContextMenu class is referenced as UI.RCTX, not UI.ContextMenu)
-
-For example, the `UI.CPLTR` is referencing the Completer object that is instantiated in the setup method.
-
-**UI.ConnectEvents()**
-
-After instantiating all UI elements, their events will now connect to `Events` class where Events will handle their function
-
-**UI.StartThreads()**
-
-The setup will now invoke the `UI.StartThreads()` to start the background listeners of some UI elements like the search bar.
-
-**UI.Keybinds**
-
-The UI will now bind certain keys to its function. One of examples is the <kbd>Ctrl</kbd> + <kbd>Backspace</kbd> which is connected to `UI.SEARCH.Keypress` to emulate a regular key combination in search bar (because it's apparently not working in AHK).
-
-##### 11. Background Thread
-After setting up the UI, the `BackgroundThread` class will now be initialized. This class contains methods that are in a [timer](https://lexikos.github.io/v2/docs/commands/SetTimer.htm) with a specific period defined by `SW.BG_REF_RATE`
-
-One of the methods it contains is the `BackgroundThread.WindowListener()` that detects and listens to the activity of the main window if it's active or not, or whether the main window was moved.
-
-The hymn stats can be also found here which listens at different periods (custom listener) and logs a query and launch for a particular hymn.
-
-##### 12. Initialization Complete
-Before the initialization is complete, the `_LOG` will dump all postponed logs to the log file.
-
-After that, the main window will now show the saved coordinates (if available) provided by `CF.WINDOW.XPOS` and `CF.WINDOW.YPOS`
-
-A completion log will be sent to the logger along with the startup time that was declared [here](#1-system-execution).
-
-`_RUNTIME` will now start to mark the runtime of the program.
-
-At this point, the program is now ready for usage, assuming that there was no error encountered by the system as discussed in [Error handling](#error-handling).
-
-### User Interface
-
-This section contains all the details about the controls of the UI.
-
-The application utilizes 3 GUI interfaces:
-1. Main Window
-2. Completer Window
-3. Settings Window
-
-Two context menus are found in the main window and the tray menu icon.
-
-There are seven (7) elements that can be found in the main window (from left to right, top to bottom):
-1. Title Text (Hymnal Browser Lite)
-2. Version Text
-3. Detail Text
-4. Last launched **[Not implemented yet]**
-5. Search Bar
-6. Clear Button
-7. Launch Button
-
-In the completer window or the suggestion box, the only element is the **ListBox** where the hymns are shown. The secondary window is transparent.
-
-
-#### Main Window Elements
-|     Name      | Control Type | Description                                                                      |
-| :-----------: | :----------: | -------------------------------------------------------------------------------- |
-|  Title Text   |     Text     | Displays "Hymnal Browser Lite" with a primary color                              |
-| Version Text  |     Text     | Displays the current version of the running app                                  |
-|  Detail Text  |     Text     | Displays the details of the hymn: Base hymn and Equivalent hymn                  |
-| Last Launched |     Text     | Dynamic text that displays the last launched time of the current hymn relatively |
-|  Search Bar   |     Edit     | A single-line edit that acts as an input for search query                        |
-| Clear Button  |    Button    | Clears the current search text                                                   |
-| Launch Button |    Button    | Launches the hymn. Also displays how many hymns are matching during the search   |
-
-#### Settings Window Elements
-> Not implemented yet.
-
-|      Name      | Control Type | Description |
-| :------------: | :----------: | ----------- |
-| Confirm Button |    Button    |             |
-
-
-### Program Flow
-
-### Error Handling
-
-#### List of Exit Codes
-These are the known exit codes covered by the program.
-| Code  |      Name       |  Scope   | Description                       |
-| :---: | :-------------: | :------: | --------------------------------- |
-|   0   |    `ExitApp`    |  System  | Normal application exit           |
-|   1   | `AbsentPackage` | HymnalDB | Hymnal package cannot be found    |
-|   2   |    `ExitApp`    |  System  | Normal application exit           |
-|  10   |   `ReloadApp`   |  System  | System reload request             |
-|  13   |   `BaseError`   |   Base   | A standard error if not specified |
-
-#### List of Error Names
-- `AbsentPackage` - Hymnal package cannot be found
-- `AbsentBinary`  - Binary 7z.exe cannot be found in `A_Temp`
-
-
-### Events
-This event class consists of nested classes.
-#### System
-##### Exit
-This event handles the proper exit of the application. Critical errors are also forwarded to this method to safely terminate the program.
-
-The exit code defines the severity of the application exit. (See [list of exit codes](#list-of-exit-codes)) An exit code of 0 or 2 is normal.
-##### Reload
-Reloads the program. Also invokes `Events.System.Exit()` with an error code of `10` which requests for a program restart. This doesn't save the session data and does not take parameters to execute in the next launch.
-
-#### Launch
-##### Click
-#### Settings
-##### Click
-#### Search
-##### TextChanged
-##### Clear
-
-
-### Relation of Config and Software
-
-The configuration and software components of the system serve a similar purpose in that they both store variable values. However, there is a fundamental difference between the two that sets them apart.
-
-The Config class allows users to modify variables by specifying custom values, while the Software class variables are immutable and cannot be changed by the user.
-
-
-## Acknowledgements
-Special thanks to the AutoHotkey team and Lexikos for making this possible with AHK. 
-
-Copyright © 2022 MSDAC Systems
+The application accepts two optional switches when invoked from a terminal or
+via a shortcut:
+
+| Switch | Alias         | Description                                                          |
+| ------ | ------------- | -------------------------------------------------------------------- |
+| `-s`   | `--slideshow` | Start the presentation in slideshow mode                             |
+| `-q`   | `--query`     | Immediately resolve the hymn/number and launch it non‑interactively. |
+
+Examples:
+
+```powershell
+& "Hymnal Browser Lite.exe" -s
+& "Hymnal Browser Lite.exe" --query "80"    # resolves hymn 80 and launches immediately
+```
+
+The arguments are parsed by `src/system/args.ahk` and merged with configuration
+values at startup.
+
+The search bar supports English and Tagalog hymns; results appear in the transparent completer
+window as you type.
+
+---
+
+## ✅ Features
+
+- Quick search by number or keyword (English/Tagalog)
+- Launch `.pptx` files directly or in slideshow mode
+- Portable – no installer required
+- Auto‑update mechanism with progress dialog
+- Session statistics (queries and launches) saved as JSON
+- Developer mode with extra context‑menu options and verbose logging
+- Configuration GUI (partial) and editable `settings.cfg`
+
+---
+
+## ⚙️ Configuration
+
+Configuration is handled by `src/config.ahk` and accessible via the global `CF` object.
+Defaults are merged with user settings; unknown keys are ignored.
+
+File location:
+
+```text
+%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg
+```
+
+### Available options
+
+| Section  | Key             | Type | Default | Description                              |
+| -------- | --------------- | ---- | ------- | ---------------------------------------- |
+| `MAIN`   | `VERBOSE_LOG`   | bool | `false` | Show debug-level log entries             |
+| `MAIN`   | `CHECK_UPDATES` | bool | `true`  | Query GitHub for new releases on startup |
+| `WINDOW` | `ALWAYS_ON_TOP` | bool | `true`  | Keep main window above others            |
+| `WINDOW` | `XPOS`,`YPOS`   | int  | `0`     | Saved window coordinates                 |
+| `WINDOW` | `MON`           | int  | `1`     | Preferred monitor number                 |
+| `LAUNCH` | `FOCUS_BACK`    | bool | `false` | Return focus after launching file        |
+| `LAUNCH` | `TYPE`          | int  | `0`     | 0=Open, 1=Slideshow mode                 |
+
+Hidden/advanced keys (not written to disk):
+
+- `TME_QUERY` – debounce time for search counting (seconds)
+- `TEMP.MAX_RECENT` – max temp files kept
+- `HYMNAL.PACKAGE` – filename of the hymnal database
+
+Any new keys added by the program are automatically written back to the file.
+
+---
+
+## 🧱 Code Architecture
+
+### Directory layout
+
+```text
+src/
+  config.ahk           ← user configuration loader/generator
+  hymnal.ahk           ← parser for .sda hymn package
+  launcher.ahk         ← presentation extraction & launch logic
+  session.ahk          ← in‑memory session state
+  stats.ahk            ← collects and serializes usage data
+  system/
+    args.ahk           ← command‑line argument parser
+    background.ahk     ← periodic window/activity monitor
+    errors.ahk         ← centralized error definitions/handler
+    fileManagement.ahk← temp file cleanup helpers
+    search.ahk         ← hymn search service (core lookup)
+    system.ahk         ← application startup and utilities
+    updater.ahk        ← auto‑update checking and download
+  interface/
+    mainmenu.ahk       ← main window layout controls
+    searchbar.ahk      ← search input widget logic
+    settings.ahk       ← configuration GUI (partial)
+    buttons.ahk        ← generic button wrappers
+    completer.ahk      ← suggestion dropdown window
+    contextMenu.ahk    ← right‑click menu definitions
+    …
+```
+
+#### Architecture diagram
+
+```mermaid
+flowchart LR
+    System[System] --> Config
+    System --> UI
+    System --> HymnalDB
+    UI --> UI_Components[UI Components]
+    UI --> Events
+    UI --> Stats
+    UI --> Session
+    HymnalDB --> SearchService
+    Stats --> stats_json["stats.json"]
+    Updater --> GitHub[GitHub releases]
+    Launcher --> PresentationFiles["Presentation files"]
+    FileManagement --> Temp[Temp folder]
+    SearchService --> HymnalDB
+```
+
+### Primary classes
+
+**Core**
+
+| Class            | Responsibility                                                    |
+| ---------------- | ----------------------------------------------------------------- |
+| `System`         | startup, directory verification, environment loading, exit/reload |
+| `UI`             | orchestrates GUI elements and threads                             |
+| `Config`         | loads/saves user settings                                         |
+| `HymnalDB`       | parses `.sda` package and provides lookup helpers                 |
+| `Session`        | ephemeral runtime data (last query, coords)                       |
+| `Stats`          | records hymn queries/launches, persists JSON to disk              |
+| `Updater`        | GitHub release polling and download/install                       |
+| `Errors`         | centralized error handling with exit codes                        |
+| `Launcher`       | prepares and executes presentation launches                       |
+| `FileManagement` | temp file housekeeping                                            |
+| `SearchService`  | translates free‑text queries to hymn numbers                      |
+
+> **Note:** `Config` stores user‑modifiable options; `Software` (aliased `SW`)
+> exposes immutable metadata such as version, directory paths, and constant values.
+> `Config` may read from `SW` when generating defaults. This distinction helps
+> separate user data from internal constants.
+
+**Interface**
+
+Classes under `src/interface` implement individual GUI widgets such as the search bar,
+completer window, settings dialog, buttons, context menus, etc. Each returns an object
+with event hooks consumed by `UI.ConnectEvents()`.
+
+---
+
+## 🖥️ User Interface
+
+### Main window
+
+| Element       | Type   | Notes                                      |
+| ------------- | ------ | ------------------------------------------ |
+| Title text    | Label  | "Hymnal Browser Lite"                      |
+| Version text  | Label  | shows build tag; dev mode marker if active |
+| Detail text   | Label  | base/equivalent hymn information           |
+| Last launched | Label  | timestamp of most recent hymn launch       |
+| Search bar    | Edit   | accepts number or text queries             |
+| Clear button  | Button | erases search field                        |
+| Launch button | Button | opens the hymn; shows match count          |
+
+### Completer window
+
+Transparent window containing a `ListBox` of matching hymns. Updates dynamically while
+typing.
+
+### Settings window
+
+Partial GUI for toggling configuration options. Changes are written to disk when the user
+clicks **Confirm**. New `MAIN` keys are added automatically during startup so this dialog
+remains backwards compatible.
+
+### Tray menu
+
+Right‑click the tray icon for **Exit** and, in developer mode, additional diagnostic items.
+
+---
+
+## 🔄 Program Flow
+
+The following sections describe the most common user‑facing workflows as well as
+background activities. A high‑level sequence diagram illustrates the path taken
+from typing a query through launching a hymn. The diagram reflects the exact
+method calls found in `src/interface/searchbar.ahk`, `src/launcher.ahk`, and
+`src/system/*.ahk`.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI
+    participant SearchSvc as HymnSearchService
+    participant SES as Session
+    participant Stats
+    participant Launch as Launcher
+    participant FileMgr as FileManagement
+    participant Updater
+    participant HymnZIP
+
+    User->>UI: keypress / paste text
+    UI->>UI: SearchBar.RetrieveDetails()
+    UI->>SearchSvc: Query(text)
+    SearchSvc-->>UI: result {NUM,TTL,IDX,CT,EQ_*}
+    UI->>UI: SearchBar._ProcessHymnResult(result)
+    UI->>UI: MAIN.SetHymnText(...) & update DETAILS label
+    UI->>SES: ProcessSearchResult(result)
+    SES->>Stats: RecordQuery(result.NUM)
+    Stats-->>Stats: write stats.json
+    UI->>UI: BTN.LaunchSetMode("Enabled")
+
+    Note over User,UI: Launch button now active
+    User->>UI: Click Launch / Enter
+    UI->>Launch: Launch(override?)
+    Launch->>FileMgr: EnsureTempFolderExists()
+    Launch->>HymnZIP: Extract(SES.HYMN_PATH)
+    HymnZIP-->>Launch: resultCode
+    Launch->>Launch: RunPresentation(filePath)
+    Launch->>Stats: RecordLaunch(SES.CURR_NUM)
+    Stats-->>Stats: write stats.json
+    Launch->>FileMgr: SetTimer(RemoveOldest, -3000)
+    Launch->>UI: BTN.LaunchSetMode("Launched")
+    Launch->>UI: optionally SetActive() if FOCUS_BACK
+
+    Note right of Updater: runs once on startup if enabled
+    Updater-->>UI: Prompt update
+```
+
+1. **Query handling**
+   - As user types or pastes, `SearchBar.RetrieveDetails()` is invoked by its event
+     listener. That method calls `HymnSearchService.Query` directly.
+   - Returned result is passed to `_ProcessHymnResult()`, which updates the main
+     UI text fields, adjusts the details label (showing last launched time), sets
+     `SES.LAUNCH_READY` and enables the launch button.
+   - `SES.ProcessSearchResult()` computes `CURR_NUM`, `FILENAME`, `HYMN_PATH`, etc.
+   - `Stats.RecordQuery()` is then called; the class increments the `queries` count
+     and immediately serializes the stats JSON.
+
+2. **Launch workflow**
+   - Triggered by UI when the launch button is pressed (or <kbd>Enter</kbd>), a
+     call to `Launcher.Launch()` begins.
+   - The launcher ensures `%TEMP%` exists, extracts the PPTX from `HYMN_ZIP` using
+     the path stored in session, and handles any extraction errors via
+     `Launcher.HandleExtractError()`.
+   - After verifying the extracted file exists, `Launcher.RunPresentation()` starts
+     PowerPoint with the chosen mode (`/C` for normal, `/S` for slideshow), or
+     falls back to a plain `Run` command.
+   - Successful launches log timing data, increment session counters, and record
+     the launch in stats. The launcher resets the button state to "Launched" and
+     schedules `FileManagement.RemoveOldest` to clean temp files after 3 s.
+   - If the config option `LAUNCH.FOCUS_BACK` is true the UI regains focus.
+
+3. **Background operations**
+   - `BackgroundThread` (in `src/system/background.ahk`) periodically monitors the
+     main window state and may log events via `_LOG`.
+   - The `Updater` class checks GitHub at startup. If an update is found it
+     prompts the user; the download GUI is managed by `Updater.RequestDownload()`.
+
+4. **Error handling & resilience**
+   - Any failure in query lookup, extraction, or presentation launch triggers an
+     `Errors.*` call which may show a message box and/or exit with a defined code.
+   - Corrupted stats files result in `Errors.Stats("Corrupted",...)` and the file
+     is ignored.
+
+This flow is designed to be responsive and fault‑tolerant, ensuring that users can quickly
+access hymns while providing feedback on errors and maintaining a clean state.
+
+---
+
+## 🚨 Error Handling
+
+Errors are funneled through `Errors.BaseError()` and may terminate the app with a code.
+
+### Exit codes
+
+| Code | Name            | Meaning                     |
+| :--: | --------------- | --------------------------- |
+|  0   | `ExitApp`       | Normal exit                 |
+|  1   | `AbsentPackage` | Hymnal DB missing           |
+|  2   | `ExitApp`       | Normal exit (duplicate)     |
+|  10  | `ReloadApp`     | Restart requested           |
+|  13  | `BaseError`     | Generic error               |
+|  12  | `Updater`       | Updater launched (internal) |
+
+### Error names
+
+- `AbsentPackage` – unable to locate the hymnal `.sda` file
+- `AbsentBinary` – 7‑Zip executable missing
+- `Stats.Corrupted` – stats JSON could not be parsed
+- …and others, defined in `src/system/errors.ahk`
+
+---
+
+## 🔔 Events
+
+Events are defined in nested classes under `Events` and are wired by `UI.ConnectEvents()`.
+
+### System
+
+- **Exit** – clean shutdown, accepts an exit code
+- **Reload** – exit with code `10`, caller may restart the script
+
+### Launch
+
+- **Click** – invoked when user presses Launch button or <kbd>Enter</kbd>
+
+### Settings
+
+- **Click** – save settings and close dialog
+
+### Search
+
+- **TextChanged** – update completer suggestions and query statistics
+- **Clear** – wipes search field
+
+Developers can add new event hooks by extending `Events` and updating the callers.
+
+---
+
+## 🛠️ Developer Notes
+
+- **Logging**: use `_LOG.Info/Warn/Error/Verbose()`; verbosity controlled by `CF.MAIN.VERBOSE_LOG`.
+- **Developer mode**: run `main.ahk` directly or invoke the executable/script with the supported
+  CLI switches (`-s`/`--slideshow`, `-q`/`--query`).
+- **Adding a new config key**: update `Config.GetDefaults()` with the default and hidden value
+  if necessary; the file will auto‑upgrade.
+- **Stats**: `Stats` saves each hymn’s `launches`, `queries`, and timestamps to
+  `%PROGRAMDATA%/.../stats.json`.
+- **Session**: runtime-only state (`SES` global) holds the current hymn, query/launch
+  counters, and other ephemeral values; it is reset each start and logged on exit.
+- **Updater**: refer to `src/system/updater.ahk` for the GitHub API helpers; `SW.GITHUB_REPO`
+  must be set correctly.
+- **Search logic**: refactored into `HymnSearchService` to allow unit‑testing.
+
+---
+
+## 📚 Acknowledgements
+
+Thanks to the AutoHotkey team and Lexikos for AHK v2; external libraries:
+
+- AHK2ExtLib by @verdaderoken
+- KConfig configuration helper
+- SevenZip wrapper
+
+Application icon and logos © 2022–2026 MSDAC Systems
+
+---
+
+_Documentation generated and maintained by MSDAC Systems._

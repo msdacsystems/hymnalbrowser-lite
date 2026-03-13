@@ -21,6 +21,8 @@ Hymnal Browser Lite allows users to quickly find and present hymns by simply ent
 - Browse 474 hymns from the SDA Philippine Hymnal
 - Portable and lightweight, no installation required
 - Supports both English and Tagalog hymns
+- Built‑in auto‑updater with progress dialog
+- Records query and launch statistics (JSON export)
 
 ## Usage
 
@@ -28,7 +30,7 @@ Hymnal Browser Lite allows users to quickly find and present hymns by simply ent
 2. Type the number or the title of the hymn
 3. Click <Kbd>Launch</Kbd> or press <Kbd>Enter</Kbd> to launch the presentation.
 
-## [Download Hymnal Browser Lite](https://knv.li/hbl-latest)
+## [Download Hymnal Browser Lite](https://cdn.msdacsystems.com/hbl/latest)
 
 ## Screenshots
 
@@ -38,7 +40,6 @@ Hymnal Browser Lite allows users to quickly find and present hymns by simply ent
 
 - [Website](https://msdacsystems.com)
 - [Email](mailto:msdac@msdacsystems.com?subject=Hymnal%20Browser%20Lite%20Support)
-- [Changelog](CHANGELOG.md)
 - [Documentation](DOCUMENTATION.md)
 
-Hymnal Browser Lite © 2022-2025 MSDAC Systems
+Hymnal Browser Lite © 2022-2026 MSDAC Systems
