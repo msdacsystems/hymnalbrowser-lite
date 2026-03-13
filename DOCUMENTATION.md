@@ -83,7 +83,7 @@ These dependencies are bundled with the executable; no separate installation is 
      `src/SevenZip` into `%A_MyDocuments%/AutoHotkey/Lib` or adjust the `#Include` paths
      in `main.ahk` to point at the respective `src/` folders.
 
-> The first run will create a configuration file in `%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg`.
+> The first run will create a configuration file in `%PROGRAMDATA%\MSDAC Systems\Hymnal Browser Lite\settings.cfg`.
 
 ### First Run & Configuration
 
@@ -95,7 +95,7 @@ On startup the app:
 4. Instantiates the UI and attaches event handlers.
 5. Optionally checks GitHub for updates (enabled by default).
 
-If you prefer to edit settings manually, look in `%PROGRAMDATA%\\MSDAC Systems\\Hymnal Browser Lite\\settings.cfg`.
+If you prefer to edit settings manually, look in `%PROGRAMDATA%\MSDAC Systems\Hymnal Browser Lite\settings.cfg`.
 Missing keys are automatically added at launch.
 
 ### Auto‑Updater
